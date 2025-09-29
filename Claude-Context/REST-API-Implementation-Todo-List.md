@@ -64,11 +64,11 @@
 ```
 
 **检查清单**:
-- [ ] test-setup.ts包含所有必要的测试配置
-- [ ] article.factory.ts提供文章数据创建功能
-- [ ] webhook.server.ts提供Mock服务器功能
-- [ ] 所有函数都有完整的TypeScript类型
-- [ ] 测试工具函数可以正常导入和使用
+- [x] test-setup.ts包含所有必要的测试配置
+- [x] article.factory.ts提供文章数据创建功能
+- [x] webhook.server.ts提供Mock服务器功能
+- [x] 所有函数都有完整的TypeScript类型
+- [x] 测试工具函数可以正常导入和使用
 
 ---
 
