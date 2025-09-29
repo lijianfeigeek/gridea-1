@@ -766,6 +766,6 @@ const message = {
     Proxy: 'HTTPプロキシ',
     ProxyAddress: 'プロキシアドレス',
     ProxyPort: 'プロキシポート',
-  }
+  },
 }
 export default message

@@ -27,12 +27,12 @@
 ```
 
 **检查清单**:
-- [ ] Jest依赖包正确安装
-- [ ] jest.config.js配置文件创建并配置正确
-- [ ] .env.test环境变量文件创建
-- [ ] test-setup.ts基础设置文件创建
-- [ ] package.json中添加测试脚本命令
-- [ ] 运行yarn test能够执行测试
+- [x] Jest依赖包正确安装
+- [x] jest.config.js配置文件创建并配置正确
+- [x] .env.test环境变量文件创建
+- [x] test-setup.ts基础设置文件创建
+- [x] package.json中添加测试脚本命令
+- [x] 运行yarn test能够执行测试
 
 ---
 

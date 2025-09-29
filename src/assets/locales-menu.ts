@@ -88,6 +88,6 @@ const messages: any = {
     toggledevtools: '開発者ツール',
     close: '閉じる',
     quit: '終了',
-  }
+  },
 }
 export default messages

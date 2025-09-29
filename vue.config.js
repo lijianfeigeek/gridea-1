@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const TerserPlugin = require('terser-webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -16,6 +17,38 @@ module.exports = {
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     }])
+
+    // Suppress webpack warnings
+    config.performance.hints(false)
+  },
+  configureWebpack: {
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            compress: {
+              drop_console: false,
+              ecma: 5,
+              warnings: false,
+              comparisons: false,
+              inline: 2,
+            },
+            output: {
+              ecma: 5,
+              comments: false,
+            },
+          },
+        }),
+      ],
+    },
+    // Suppress warnings about problematic modules
+    stats: {
+      warningsFilter: [
+        /require.extensions is not supported by webpack/,
+        /Critical dependency: the request of a dependency is an expression/,
+        /export .* was not found in/,
+      ],
+    },
   },
   css: {
     loaderOptions: {
