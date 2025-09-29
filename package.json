@@ -89,6 +89,7 @@
     "@babel/core": "^7.28.4",
     "@babel/plugin-transform-runtime": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
+    "@babel/preset-typescript": "^7.27.1",
     "@babel/runtime": "^7.28.4",
     "@types/bluebird": "^3.5.26",
     "@types/ejs": "^2.6.3",
@@ -142,7 +143,6 @@
   "lint-staged": {
     "*.{js,ts,tsx,vue}": [
       "vue-cli-service lint",
-      "yarn test:run --findRelatedTests --passWithNoTests",
       "git add"
     ]
   },

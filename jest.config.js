@@ -2,10 +2,11 @@ module.exports = {
   testEnvironment: 'node',
   testTimeout: 30000,
   testMatch: [
-    '**/tests/**/*.test.js',
+    '**/tests/**/*.test.{js,ts}',
   ],
   transform: {
     '^.+\\.js$': ['babel-jest', { configFile: './babel.config.jest.js' }],
+    '^.+\\.ts$': ['babel-jest', { configFile: './babel.config.jest.js' }],
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
