@@ -1,10 +1,22 @@
 const path = require('path')
+const webpack = require('webpack')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
 module.exports = {
+  chainWebpack: (config) => {
+    config.resolve.alias.set('stream', 'stream-browserify')
+    config.resolve.alias.set('buffer', 'buffer/')
+    config.resolve.alias.set('crypto', 'crypto-browserify')
+    config.resolve.alias.set('process', 'process/browser')
+
+    config.plugin('provide').use(webpack.ProvidePlugin, [{
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    }])
+  },
   css: {
     loaderOptions: {
       less: {

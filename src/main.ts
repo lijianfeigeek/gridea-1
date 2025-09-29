@@ -10,7 +10,7 @@ import VueI18n from 'vue-i18n'
 import Prism from 'prismjs'
 import VueShortkey from 'vue-shortkey'
 import { remote } from 'electron'
-import * as Sentry from '@sentry/electron'
+// import * as Sentry from '@sentry/electron'
 import locale from './assets/locales'
 import App from './App.vue'
 import router from './router'
@@ -23,7 +23,8 @@ ga.event('Client', 'show', {
   evLabel: 'startup',
 })
 
-Sentry.init({ dsn: 'https://6a6dacc57a6a4e27a88eb31596c152f8@sentry.io/1887150' })
+// Sentry初始化已移至主进程，避免版本解析错误
+// Sentry.init({ dsn: 'https://6a6dacc57a6a4e27a88eb31596c152f8@sentry.io/1887150' })
 
 const defaultLocale = ({
   'zh-CN': 'zhHans',

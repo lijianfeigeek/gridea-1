@@ -10,7 +10,7 @@ import App from './server/app'
 import messages from './assets/locales-menu'
 import initServer from './server'
 
-init({ dsn: 'https://6a6dacc57a6a4e27a88eb31596c152f8@sentry.io/1887150' })
+// Sentry 初始化将在 app ready 事件中处理
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -33,6 +33,7 @@ function createWindow() {
       webSecurity: false, // FIXED: Not allowed to load local resource
       nodeIntegration: true,
       enableRemoteModule: true, // FIXED: 兼容 electron@11.0.1
+      contextIsolation: false, // FIXED: 解决 require is not defined 问题
     },
     // frame: false, // 去除默认窗口栏
     titleBarStyle: 'hiddenInset' as ('hidden' | 'default' | 'hiddenInset' | 'customButtonsOnHover' | undefined),
@@ -143,6 +144,18 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+  // 初始化 Sentry
+  try {
+    init({
+      dsn: 'https://6a6dacc57a6a4e27a88eb31596c152f8@sentry.io/1887150',
+      debug: false,
+      // 对于 Electron v13，我们需要禁用一些可能导致问题的功能
+      autoSessionTracking: false,
+    })
+  } catch (error) {
+    console.warn('Sentry initialization failed:', error)
+  }
+
   // if (isDevelopment && !process.env.IS_TEST) {
   //   // Install Vue Devtools
   //   await installVueDevtools()
