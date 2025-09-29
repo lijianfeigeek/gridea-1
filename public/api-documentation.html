@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gridea REST API 文档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        header p {
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover {
+            color: #764ba2;
+        }
+
+        .content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .content h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+        }
+
+        .content h3 {
+            color: #764ba2;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .content h4 {
+            color: #495057;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+
+        .get { background: #28a745; }
+        .post { background: #007bff; }
+        .put { background: #ffc107; color: #212529; }
+        .delete { background: #dc3545; }
+
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            background: #e9ecef;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .parameters {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .parameters th,
+        .parameters td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .parameters th {
+            background: #e9ecef;
+            font-weight: 600;
+        }
+
+        .error-codes {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .error-codes th,
+        .error-codes td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .error-codes th {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .example {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .example-header {
+            background: #e9ecef;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .example-content {
+            padding: 1rem;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin: 0.5rem 0;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Gridea REST API 文档</h1>
+            <p>静态博客写作客户端的完整 API 接口文档</p>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="container">
+            <ul>
+                <li><a href="#overview">API 概述</a></li>
+                <li><a href="#endpoints">端点文档</a></li>
+                <li><a href="#examples">请求/响应示例</a></li>
+                <li><a href="#errors">错误代码</a></li>
+                <li><a href="#security">安全说明</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section id="overview" class="content">
+            <h2>API 概述</h2>
+
+            <h3>功能介绍</h3>
+            <p>Gridea REST API 为静态博客写作客户端提供了完整的后端接口支持，主要功能包括：</p>
+            <ul>
+                <li><strong>文章管理</strong>：创建、发布、更新和删除文章</li>
+                <li><strong>内容验证</strong>：Markdown 内容格式和安全验证</li>
+                <li><strong>状态监控</strong>：文章发布状态和系统健康检查</li>
+                <li><strong>Webhook 支持</strong>：与第三方服务的集成</li>
+                <li><strong>部署管理</strong>：多平台部署支持</li>
+            </ul>
+
+            <h3>认证说明</h3>
+            <div class="warning">
+                <strong>重要提示：</strong>当前 API 版本不需要认证密钥，但生产环境建议启用 API 密钥认证。
+            </div>
+
+            <h4>API 密钥认证（推荐）</h4>
+            <pre><code>Authorization: Bearer your-api-key</code></pre>
+
+            <h4>请求头认证</h4>
+            <pre><code>X-API-Key: your-api-key</code></pre>
+
+            <h3>基础使用方法</h3>
+            <h4>基础 URL</h4>
+            <pre><code>开发环境: http://localhost:4000
+生产环境: https://your-domain.com</code></pre>
+
+            <h4>请求格式</h4>
+            <p>所有 API 请求都使用 JSON 格式，请求头应包含：</p>
+            <pre><code>Content-Type: application/json
+Accept: application/json</code></pre>
+
+            <h4>响应格式</h4>
+            <p>所有响应都是 JSON 格式，包含以下结构：</p>
+            <pre><code>{
+  "success": true,
+  "data": {},
+  "message": "操作成功",
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+        </section>
+
+        <section id="endpoints" class="content">
+            <h2>端点文档</h2>
+
+            <div class="toc">
+                <h4>目录</h4>
+                <ul>
+                    <li><a href="#health-check">GET /api/health - 健康检查</a></li>
+                    <li><a href="#publish-article">POST /api/v1/articles/publish - 发布文章</a></li>
+                    <li><a href="#validate-markdown">POST /api/v1/validate/markdown - 验证 Markdown</a></li>
+                    <li><a href="#article-status">GET /api/v1/articles/:id/status - 获取状态</a></li>
+                    <li><a href="#test-webhook">POST /api/v1/webhook/test - 测试 Webhook</a></li>
+                </ul>
+            </div>
+
+            <div id="health-check" class="endpoint">
+                <h3><span class="method get">GET</span>/api/health</h3>
+                <p><strong>描述：</strong>检查 API 服务状态和可用性</p>
+
+                <h4>请求参数</h4>
+                <p>无</p>
+
+                <h4>响应</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>status</td>
+                            <td>string</td>
+                            <td>服务状态：healthy, degraded, unhealthy</td>
+                        </tr>
+                        <tr>
+                            <td>timestamp</td>
+                            <td>string</td>
+                            <td>检查时间戳</td>
+                        </tr>
+                        <tr>
+                            <td>version</td>
+                            <td>string</td>
+                            <td>API 版本</td>
+                        </tr>
+                        <tr>
+                            <td>uptime</td>
+                            <td>number</td>
+                            <td>服务运行时间（秒）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="publish-article" class="endpoint">
+                <h3><span class="method post">POST</span>/api/v1/articles/publish</h3>
+                <p><strong>描述：</strong>发布新文章或更新现有文章</p>
+
+                <h4>请求参数</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>必需</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>title</td>
+                            <td>string</td>
+                            <td>是</td>
+                            <td>文章标题</td>
+                        </tr>
+                        <tr>
+                            <td>content</td>
+                            <td>string</td>
+                            <td>是</td>
+                            <td>文章内容（Markdown 格式）</td>
+                        </tr>
+                        <tr>
+                            <td>tags</td>
+                            <td>array</td>
+                            <td>否</td>
+                            <td>标签数组</td>
+                        </tr>
+                        <tr>
+                            <td>published</td>
+                            <td>boolean</td>
+                            <td>否</td>
+                            <td>是否立即发布（默认：true）</td>
+                        </tr>
+                        <tr>
+                            <td>slug</td>
+                            <td>string</td>
+                            <td>否</td>
+                            <td>URL 友好的文章标识符</td>
+                        </tr>
+                        <tr>
+                            <td>meta</td>
+                            <td>object</td>
+                            <td>否</td>
+                            <td>元数据信息</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>响应</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>string</td>
+                            <td>文章 ID</td>
+                        </tr>
+                        <tr>
+                            <td>title</td>
+                            <td>string</td>
+                            <td>文章标题</td>
+                        </tr>
+                        <tr>
+                            <td>slug</td>
+                            <td>string</td>
+                            <td>URL 标识符</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>string</td>
+                            <td>发布状态：published, draft, failed</td>
+                        </tr>
+                        <tr>
+                            <td>publishedAt</td>
+                            <td>string</td>
+                            <td>发布时间</td>
+                        </tr>
+                        <tr>
+                            <td>url</td>
+                            <td>string</td>
+                            <td>文章 URL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="validate-markdown" class="endpoint">
+                <h3><span class="method post">POST</span>/api/v1/validate/markdown</h3>
+                <p><strong>描述：</strong>验证 Markdown 内容的格式和安全性</p>
+
+                <h4>请求参数</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>必需</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>content</td>
+                            <td>string</td>
+                            <td>是</td>
+                            <td>要验证的 Markdown 内容</td>
+                        </tr>
+                        <tr>
+                            <td>options</td>
+                            <td>object</td>
+                            <td>否</td>
+                            <td>验证选项</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>验证选项</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>maxContentLength</td>
+                            <td>number</td>
+                            <td>100000</td>
+                            <td>最大内容长度</td>
+                        </tr>
+                        <tr>
+                            <td>maxLineLength</td>
+                            <td>number</td>
+                            <td>10000</td>
+                            <td>最大行长度</td>
+                        </tr>
+                        <tr>
+                            <td>allowedImageFormats</td>
+                            <td>array</td>
+                            <td>['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']</td>
+                            <td>允许的图片格式</td>
+                        </tr>
+                        <tr>
+                            <td>requireTitle</td>
+                            <td>boolean</td>
+                            <td>true</td>
+                            <td>是否要求标题</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>响应</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>isValid</td>
+                            <td>boolean</td>
+                            <td>验证结果</td>
+                        </tr>
+                        <tr>
+                            <td>errors</td>
+                            <td>array</td>
+                            <td>错误信息数组</td>
+                        </tr>
+                        <tr>
+                            <td>warnings</td>
+                            <td>array</td>
+                            <td>警告信息数组</td>
+                        </tr>
+                        <tr>
+                            <td>suggestions</td>
+                            <td>array</td>
+                            <td>建议信息数组</td>
+                        </tr>
+                        <tr>
+                            <td>statistics</td>
+                            <td>object</td>
+                            <td>内容统计信息</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="article-status" class="endpoint">
+                <h3><span class="method get">GET</span>/api/v1/articles/:id/status</h3>
+                <p><strong>描述：</strong>获取文章的发布状态和详细信息</p>
+
+                <h4>路径参数</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>参数</th>
+                            <th>类型</th>
+                            <th>必需</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>string</td>
+                            <td>是</td>
+                            <td>文章 ID</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>响应</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>string</td>
+                            <td>文章 ID</td>
+                        </tr>
+                        <tr>
+                            <td>title</td>
+                            <td>string</td>
+                            <td>文章标题</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>string</td>
+                            <td>状态：draft, publishing, published, failed</td>
+                        </tr>
+                        <tr>
+                            <td>progress</td>
+                            <td>number</td>
+                            <td>发布进度（0-100）</td>
+                        </tr>
+                        <tr>
+                            <td>createdAt</td>
+                            <td>string</td>
+                            <td>创建时间</td>
+                        </tr>
+                        <tr>
+                            <td>updatedAt</td>
+                            <td>string</td>
+                            <td>更新时间</td>
+                        </tr>
+                        <tr>
+                            <td>publishedAt</td>
+                            <td>string</td>
+                            <td>发布时间</td>
+                        </tr>
+                        <tr>
+                            <td>deployment</td>
+                            <td>object</td>
+                            <td>部署信息</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="test-webhook" class="endpoint">
+                <h3><span class="method post">POST</span>/api/v1/webhook/test</h3>
+                <p><strong>描述：</strong>测试 Webhook 配置和连接</p>
+
+                <h4>请求参数</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>必需</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>url</td>
+                            <td>string</td>
+                            <td>是</td>
+                            <td>Webhook URL</td>
+                        </tr>
+                        <tr>
+                            <td>event</td>
+                            <td>string</td>
+                            <td>否</td>
+                            <td>测试事件类型</td>
+                        </tr>
+                        <tr>
+                            <td>headers</td>
+                            <td>object</td>
+                            <td>否</td>
+                            <td>自定义请求头</td>
+                        </tr>
+                        <tr>
+                            <td>payload</td>
+                            <td>object</td>
+                            <td>否</td>
+                            <td>测试负载数据</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>响应</h4>
+                <table class="parameters">
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>success</td>
+                            <td>boolean</td>
+                            <td>Webhook 调用是否成功</td>
+                        </tr>
+                        <tr>
+                            <td>statusCode</td>
+                            <td>number</td>
+                            <td>HTTP 状态码</td>
+                        </tr>
+                        <tr>
+                            <td>responseTime</td>
+                            <td>number</td>
+                            <td>响应时间（毫秒）</td>
+                        </tr>
+                        <tr>
+                            <td>response</td>
+                            <td>object</td>
+                            <td>服务器响应</td>
+                        </tr>
+                        <tr>
+                            <td>error</td>
+                            <td>string</td>
+                            <td>错误信息（如果有）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="examples" class="content">
+            <h2>请求/响应示例</h2>
+
+            <h3>健康检查示例</h3>
+            <div class="example">
+                <div class="example-header">cURL 命令</div>
+                <div class="example-content">
+                    <pre><code>curl -X GET http://localhost:4000/api/health \
+  -H "Accept: application/json"</code></pre>
+                </div>
+            </div>
+
+            <div class="example">
+                <div class="example-header">成功响应</div>
+                <div class="example-content">
+                    <pre><code>{
+  "success": true,
+  "data": {
+    "status": "healthy",
+    "timestamp": "2024-01-01T00:00:00Z",
+    "version": "1.0.0",
+    "uptime": 86400,
+    "database": "connected",
+    "memory": {
+      "used": 128000000,
+      "total": 2147483648,
+      "percentage": 5.96
+    }
+  },
+  "message": "Service is healthy",
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+                </div>
+            </div>
+
+            <h3>发布文章示例</h3>
+            <div class="example">
+                <div class="example-header">cURL 命令</div>
+                <div class="example-content">
+                    <pre><code>curl -X POST http://localhost:4000/api/v1/articles/publish \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "title": "我的第一篇博客文章",
+    "content": "# 欢迎来到我的博客\n\n这是我的第一篇博客文章，使用了 Markdown 格式。\n\n## 子标题\n\n这里是一些内容...\n\n- 列表项 1\n- 列表项 2\n- 列表项 3",
+    "tags": ["博客", "教程", "Markdown"],
+    "published": true,
+    "meta": {
+      "description": "这是我的第一篇博客文章",
+      "keywords": ["博客", "教程"]
+    }
+  }'</code></pre>
+                </div>
+            </div>
+
+            <div class="example">
+                <div class="example-header">成功响应</div>
+                <div class="example-content">
+                    <pre><code>{
+  "success": true,
+  "data": {
+    "id": "article-123456",
+    "title": "我的第一篇博客文章",
+    "slug": "my-first-blog-post",
+    "status": "published",
+    "publishedAt": "2024-01-01T00:00:00Z",
+    "url": "https://myblog.com/posts/my-first-blog-post",
+    "tags": ["博客", "教程", "Markdown"],
+    "wordCount": 156,
+    "readTime": 2
+  },
+  "message": "文章发布成功",
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="example">
+                <div class="example-header">错误响应</div>
+                <div class="example-content">
+                    <pre><code>{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "标题不能为空",
+    "details": {
+      "field": "title",
+      "value": "",
+      "constraints": {
+        "isNotEmpty": "标题不能为空"
+      }
+    }
+  },
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+                </div>
+            </div>
+
+            <h3>验证 Markdown 示例</h3>
+            <div class="example">
+                <div class="example-header">cURL 命令</div>
+                <div class="example-content">
+                    <pre><code>curl -X POST http://localhost:4000/api/v1/validate/markdown \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "content": "# 测试文章\n\n这是一个测试文章，包含[链接](https://example.com)和![图片](https://example.com/image.jpg)。",
+    "options": {
+      "maxContentLength": 10000,
+      "requireTitle": true
+    }
+  }'</code></pre>
+                </div>
+            </div>
+
+            <div class="example">
+                <div class="example-header">成功响应</div>
+                <div class="example-content">
+                    <pre><code>{
+  "success": true,
+  "data": {
+    "isValid": true,
+    "errors": [],
+    "warnings": [],
+    "suggestions": [],
+    "statistics": {
+      "wordCount": 45,
+      "characterCount": 156,
+      "lineCount": 4,
+      "linkCount": 1,
+      "imageCount": 1,
+      "headingCount": 1
+    }
+  },
+  "message": "验证完成",
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="example">
+                <div class="example-header">验证失败响应</div>
+                <div class="example-content">
+                    <pre><code>{
+  "success": true,
+  "data": {
+    "isValid": false,
+    "errors": [
+      "检测到不安全的链接协议",
+      "标题层级不能跳级"
+    ],
+    "warnings": [
+      "建议将长行分割成多行"
+    ],
+    "suggestions": [
+      "内容包含Unicode字符，确保目标平台支持"
+    ],
+    "statistics": {
+      "wordCount": 123,
+      "characterCount": 456,
+      "lineCount": 12,
+      "linkCount": 3,
+      "imageCount": 1,
+      "headingCount": 3
+    }
+  },
+  "message": "验证完成",
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+                </div>
+            </div>
+
+            <h3>获取文章状态示例</h3>
+            <div class="example">
+                <div class="example-header">cURL 命令</div>
+                <div class="example-content">
+                    <pre><code>curl -X GET http://localhost:4000/api/v1/articles/article-123456/status \
+  -H "Accept: application/json"</code></pre>
+                </div>
+            </div>
+
+            <div class="example">
+                <div class="example-header">成功响应</div>
+                <div class="example-content">
+                    <pre><code>{
+  "success": true,
+  "data": {
+    "id": "article-123456",
+    "title": "我的第一篇博客文章",
+    "status": "published",
+    "progress": 100,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z",
+    "publishedAt": "2024-01-01T00:00:00Z",
+    "deployment": {
+      "platform": "github-pages",
+      "url": "https://myblog.com/posts/my-first-blog-post",
+      "status": "deployed",
+      "deployedAt": "2024-01-01T00:00:00Z"
+    }
+  },
+  "message": "状态获取成功",
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+                </div>
+            </div>
+
+            <h3>测试 Webhook 示例</h3>
+            <div class="example">
+                <div class="example-header">cURL 命令</div>
+                <div class="example-content">
+                    <pre><code>curl -X POST http://localhost:4000/api/v1/webhook/test \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "url": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
+    "event": "article.published",
+    "headers": {
+      "Authorization": "Bearer xoxb-your-token"
+    },
+    "payload": {
+      "text": "新文章发布：我的第一篇博客文章",
+      "blocks": [
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "*新文章发布*\n\n*标题*: 我的第一篇博客文章\n*作者*: 博客作者\n*链接*: https://myblog.com/posts/my-first-blog-post"
+          }
+        }
+      ]
+    }
+  }'</code></pre>
+                </div>
+            </div>
+
+            <div class="example">
+                <div class="example-header">成功响应</div>
+                <div class="example-content">
+                    <pre><code>{
+  "success": true,
+  "data": {
+    "success": true,
+    "statusCode": 200,
+    "responseTime": 245,
+    "response": {
+      "ok": true,
+      "message": "Message posted successfully"
+    },
+    "error": null
+  },
+  "message": "Webhook 测试成功",
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="errors" class="content">
+            <h2>错误代码说明</h2>
+
+            <h3>HTTP 状态码</h3>
+            <table class="error-codes">
+                <thead>
+                    <tr>
+                        <th>状态码</th>
+                        <th>含义</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>200</td>
+                        <td>OK</td>
+                        <td>请求成功</td>
+                    </tr>
+                    <tr>
+                        <td>201</td>
+                        <td>Created</td>
+                        <td>资源创建成功</td>
+                    </tr>
+                    <tr>
+                        <td>400</td>
+                        <td>Bad Request</td>
+                        <td>请求格式错误或参数无效</td>
+                    </tr>
+                    <tr>
+                        <td>401</td>
+                        <td>Unauthorized</td>
+                        <td>认证失败或缺少认证信息</td>
+                    </tr>
+                    <tr>
+                        <td>403</td>
+                        <td>Forbidden</td>
+                        <td>权限不足</td>
+                    </tr>
+                    <tr>
+                        <td>404</td>
+                        <td>Not Found</td>
+                        <td>请求的资源不存在</td>
+                    </tr>
+                    <tr>
+                        <td>422</td>
+                        <td>Unprocessable Entity</td>
+                        <td>数据验证失败</td>
+                    </tr>
+                    <tr>
+                        <td>429</td>
+                        <td>Too Many Requests</td>
+                        <td>请求频率超过限制</td>
+                    </tr>
+                    <tr>
+                        <td>500</td>
+                        <td>Internal Server Error</td>
+                        <td>服务器内部错误</td>
+                    </tr>
+                    <tr>
+                        <td>503</td>
+                        <td>Service Unavailable</td>
+                        <td>服务暂时不可用</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>错误消息格式</h3>
+            <p>所有错误响应都遵循统一格式：</p>
+            <pre><code>{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "错误描述",
+    "details": {
+      // 详细错误信息
+    }
+  },
+  "timestamp": "2024-01-01T00:00:00Z"
+}</code></pre>
+
+            <h3>常见错误代码</h3>
+            <table class="error-codes">
+                <thead>
+                    <tr>
+                        <th>错误代码</th>
+                        <th>HTTP 状态码</th>
+                        <th>描述</th>
+                        <th>解决方案</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>VALIDATION_ERROR</td>
+                        <td>422</td>
+                        <td>数据验证失败</td>
+                        <td>检查请求数据格式和必填字段</td>
+                    </tr>
+                    <tr>
+                        <td>UNAUTHORIZED</td>
+                        <td>401</td>
+                        <td>认证失败</td>
+                        <td>检查 API 密钥或认证信息</td>
+                    </tr>
+                    <tr>
+                        <td>FORBIDDEN</td>
+                        <td>403</td>
+                        <td>权限不足</td>
+                        <td>确认账户有相应权限</td>
+                    </tr>
+                    <tr>
+                        <td>NOT_FOUND</td>
+                        <td>404</td>
+                        <td>资源不存在</td>
+                        <td>检查资源 ID 或 URL 是否正确</td>
+                    </tr>
+                    <tr>
+                        <td>ARTICLE_NOT_FOUND</td>
+                        <td>404</td>
+                        <td>文章不存在</td>
+                        <td>检查文章 ID 是否正确</td>
+                    </tr>
+                    <tr>
+                        <td>INVALID_MARKDOWN</td>
+                        <td>422</td>
+                        <td>Markdown 格式错误</td>
+                        <td>检查 Markdown 语法和格式</td>
+                    </tr>
+                    <tr>
+                        <td>WEBHOOK_FAILED</td>
+                        <td>500</td>
+                        <td>Webhook 调用失败</td>
+                        <td>检查 Webhook URL 和网络连接</td>
+                    </tr>
+                    <tr>
+                        <td>PUBLISHING_FAILED</td>
+                        <td>500</td>
+                        <td>文章发布失败</td>
+                        <td>检查部署配置和网络状态</td>
+                    </tr>
+                    <tr>
+                        <td>RATE_LIMITED</td>
+                        <td>429</td>
+                        <td>请求频率限制</td>
+                        <td>降低请求频率，稍后重试</td>
+                    </tr>
+                    <tr>
+                        <td>INTERNAL_ERROR</td>
+                        <td>500</td>
+                        <td>服务器内部错误</td>
+                        <td>联系技术支持</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>常见问题解决方案</h3>
+
+            <h4>1. 认证失败 (401)</h4>
+            <div class="error">
+                <strong>症状：</strong>收到 401 Unauthorized 错误<br>
+                <strong>原因：</strong>API 密钥缺失、过期或无效<br>
+                <strong>解决方案：</strong>
+                <ul>
+                    <li>检查请求头中是否包含正确的 Authorization 头</li>
+                    <li>确认 API 密钥是否有效且未过期</li>
+                    <li>验证 API 密钥是否有足够的权限</li>
+                </ul>
+            </div>
+
+            <h4>2. 数据验证失败 (422)</h4>
+            <div class="error">
+                <strong>症状：</strong>收到 422 Unprocessable Entity 错误<br>
+                <strong>原因：</strong>请求数据格式错误或缺少必填字段<br>
+                <strong>解决方案：</strong>
+                <ul>
+                    <li>检查 JSON 格式是否正确</li>
+                    <li>确认所有必填字段都已提供</li>
+                    <li>验证字段值是否符合预期格式</li>
+                    <li>查看错误详情中的具体验证失败原因</li>
+                </ul>
+            </div>
+
+            <h4>3. 请求频率限制 (429)</h4>
+            <div class="error">
+                <strong>症状：</strong>收到 429 Too Many Requests 错误<br>
+                <strong>原因：</strong>请求频率超过 API 限制<br>
+                <strong>解决方案：</strong>
+                <ul>
+                    <li>实现请求重试机制</li>
+                    <li>使用指数退避算法</li>
+                    <li>批量处理请求以减少调用次数</li>
+                    <li>联系支持团队请求提高限制</li>
+                </ul>
+            </div>
+
+            <h4>4. 服务器错误 (500)</h4>
+            <div class="error">
+                <strong>症状：</strong>收到 500 Internal Server Error 错误<br>
+                <strong>原因：</strong>服务器内部处理错误<br>
+                <strong>解决方案：</strong>
+                <ul>
+                    <li>检查请求数据是否异常</li>
+                    <li>稍后重试请求</li>
+                    <li>查看服务状态页面</li>
+                    <li>联系技术支持</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="security" class="content">
+            <h2>安全说明</h2>
+
+            <h3>API 密钥管理</h3>
+
+            <h4>获取 API 密钥</h4>
+            <ol>
+                <li>登录 Gridea 管理后台</li>
+                <li>进入"设置" → "API 设置"</li>
+                <li>点击"生成新密钥"</li>
+                <li>复制并妥善保存 API 密钥</li>
+            </ol>
+
+            <h4>API 密钥安全最佳实践</h4>
+            <ul>
+                <li><strong>不要硬编码：</strong>避免在代码中直接写入 API 密钥</li>
+                <li><strong>使用环境变量：</strong>将 API 密钥存储在环境变量中</li>
+                <li><strong>定期轮换：</strong>定期更换 API 密钥</li>
+                <li><strong>权限最小化：</strong>只授予必要的权限</li>
+                <li><strong>监控使用情况：</strong>定期检查 API 使用日志</li>
+            </ul>
+
+            <h4>API 密钥示例</h4>
+            <pre><code># 环境变量示例
+export GRIDEA_API_KEY="gridea_sk_1234567890abcdef1234567890abcdef"
+
+# 使用示例
+curl -X POST http://localhost:4000/api/v1/articles/publish \
+  -H "Authorization: Bearer $GRIDEA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "测试文章", "content": "内容"}'</code></pre>
+
+            <h3>CORS 配置</h3>
+
+            <h4>默认 CORS 策略</h4>
+            <pre><code>{
+  "origin": ["http://localhost:3000", "https://yourdomain.com"],
+  "methods": ["GET", "POST", "PUT", "DELETE"],
+  "allowedHeaders": ["Content-Type", "Authorization", "X-API-Key"],
+  "credentials": true
+}</code></pre>
+
+            <h4>自定义 CORS 配置</h4>
+            <p>如需添加额外的域名，请在服务器配置中修改 CORS 设置：</p>
+            <pre><code>// 示例：添加新的域名
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://yourdomain.com',
+    'https://subdomain.yourdomain.com'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key']
+}));</code></pre>
+
+            <h3>安全最佳实践</h3>
+
+            <h4>1. 传输安全</h4>
+            <ul>
+                <li><strong>HTTPS：</strong>始终使用 HTTPS 协议进行 API 调用</li>
+                <li><strong>证书验证：</strong>验证服务器证书的有效性</li>
+                <li><strong>加密传输：</strong>敏感数据必须加密传输</li>
+            </ul>
+
+            <h4>2. 认证安全</h4>
+            <ul>
+                <li><strong>Bearer Token：</strong>使用 Bearer Token 认证方式</li>
+                <li><strong>短期令牌：</strong>使用短期有效的访问令牌</li>
+                <li><strong>刷新令牌：</strong>实现令牌刷新机制</li>
+            </ul>
+
+            <h4>3. 数据安全</h4>
+            <ul>
+                <li><strong>输入验证：</strong>验证所有输入数据</li>
+                <li><strong>输出编码：</strong>对输出数据进行编码</li>
+                <li><strong>SQL 注入防护：</strong>使用参数化查询</li>
+                <li><strong>XSS 防护：</strong>过滤用户输入</li>
+            </ul>
+
+            <h4>4. 访问控制</h4>
+            <ul>
+                <li><strong>IP 白名单：</strong>限制 API 访问的 IP 地址</li>
+                <li><strong>速率限制：</strong>实现 API 调用频率限制</li>
+                <li><strong>权限检查：</strong>基于角色的访问控制</li>
+            </ul>
+
+            <h4>5. 监控和日志</h4>
+            <ul>
+                <li><strong>访问日志：</strong>记录所有 API 访问</li>
+                <li><strong>错误日志：</strong>记录详细错误信息</li>
+                <li><strong>异常监控：</strong>监控异常访问模式</li>
+                <li><strong>安全审计：</strong>定期进行安全审计</li>
+            </ul>
+
+            <h3>安全示例代码</h3>
+
+            <h4>JavaScript 示例</h4>
+            <pre><code>// 安全的 API 调用示例
+class GrideaAPI {
+  constructor(apiKey, baseUrl = 'https://api.gridea.com') {
+    this.apiKey = apiKey;
+    this.baseUrl = baseUrl;
+  }
+
+  async request(endpoint, options = {}) {
+    const url = `${this.baseUrl}${endpoint}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.apiKey}`,
+      ...options.headers
+    };
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API request failed:', error);
+      throw error;
+    }
+  }
+
+  async publishArticle(articleData) {
+    return this.request('/api/v1/articles/publish', {
+      method: 'POST',
+      body: JSON.stringify(articleData)
+    });
+  }
+}
+
+// 使用示例
+const api = new GrideaAPI(process.env.GRIDEA_API_KEY);
+api.publishArticle({
+  title: '安全示例',
+  content: '# 安全示例\n\n这是一个安全调用 API 的示例。'
+}).then(result => {
+  console.log('发布成功:', result);
+}).catch(error => {
+  console.error('发布失败:', error);
+});</code></pre>
+
+            <h4>Python 示例</h4>
+            <pre><code># 安全的 API 调用示例
+import requests
+import os
+from typing import Dict, Any, Optional
+
+class GrideaAPI:
+    def __init__(self, api_key: str, base_url: str = 'https://api.gridea.com'):
+        self.api_key = api_key
+        self.base_url = base_url
+        self.session = requests.Session()
+        self.session.headers.update({
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.api_key}'
+        })
+
+    def request(self, endpoint: str, method: str = 'GET',
+                data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        url = f"{self.base_url}{endpoint}"
+
+        try:
+            response = self.session.request(
+                method=method,
+                url=url,
+                json=data
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"API request failed: {e}")
+            raise
+
+    def publish_article(self, article_data: Dict[str, Any]) -> Dict[str, Any]:
+        return self.request('/api/v1/articles/publish', 'POST', article_data)
+
+# 使用示例
+api = GrideaAPI(os.getenv('GRIDEA_API_KEY'))
+try:
+    result = api.publish_article({
+        'title': '安全示例',
+        'content': '# 安全示例\n\n这是一个安全调用 API 的示例。'
+    })
+    print('发布成功:', result)
+except Exception as e:
+    print('发布失败:', e)</code></pre>
+
+            <div class="warning">
+                <strong>安全警告：</strong>
+                <ul>
+                    <li>请勿在客户端代码中暴露 API 密钥</li>
+                    <li>定期检查 API 使用日志</li>
+                    <li>如发现异常访问，立即禁用相关 API 密钥</li>
+                    <li>遵循最小权限原则配置 API 密钥权限</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <footer style="background: #2d3748; color: white; text-align: center; padding: 2rem 0; margin-top: 3rem;">
+        <div class="container">
+            <p>&copy; 2024 Gridea. 保留所有权利。</p>
+            <p>文档版本：1.0.0 | 最后更新：2024-01-01</p>
+        </div>
+    </footer>
+</body>
+</html>
