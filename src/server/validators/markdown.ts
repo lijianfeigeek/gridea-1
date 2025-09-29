@@ -20,15 +20,15 @@ export interface ValidatorConfig {
 const CONSTANTS = {
   DEFAULT_MAX_CONTENT_LENGTH: 100000,
   DEFAULT_MAX_LINE_LENGTH: 10000,
-  DEFAULT_IMAGE_FORMATS: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'] as const,
-  DEFAULT_ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', '#'] as const,
+  DEFAULT_IMAGE_FORMATS: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+  DEFAULT_ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', '#'],
   LINK_PERFORMANCE_THRESHOLD: 100,
   HEADING_PERFORMANCE_THRESHOLD: 50,
   MIN_LINK_TEXT_LENGTH: 2,
   // eslint-disable-next-line no-script-url
-  UNSAFE_PROTOCOLS: ['javascript:', 'vbscript:', 'data:'] as const,
+  UNSAFE_PROTOCOLS: ['javascript:', 'vbscript:', 'data:'],
   // eslint-disable-next-line no-script-url
-  UNSAFE_IMAGE_PROTOCOLS: ['javascript:', 'vbscript:'] as const,
+  UNSAFE_IMAGE_PROTOCOLS: ['javascript:', 'vbscript:'],
 }
 
 /**
