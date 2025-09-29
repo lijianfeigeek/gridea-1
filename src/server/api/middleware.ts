@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from 'express'
 import { APIError } from './types'
+import { createLoggerMiddlewareWithOptions } from './logger/middleware'
 
 export class MiddlewareManager {
   private config: any
 
+  private loggerMiddlewares: any
+
   constructor(config: any) {
     this.config = config
+    this.loggerMiddlewares = createLoggerMiddlewareWithOptions(config.logging)
   }
 
   public setupCORS() {
@@ -111,37 +115,7 @@ export class MiddlewareManager {
   }
 
   public setupRequestLogging() {
-    return (req: Request, res: Response, next: NextFunction) => {
-      const start = Date.now()
-
-      res.on('finish', () => {
-        const duration = Date.now() - start
-        const logLevel = this.getLogLevel(res.statusCode)
-
-        if (this.config.logging.level === 'debug'
-            || (this.config.logging.level === 'info' && logLevel !== 'debug')
-            || (this.config.logging.level === 'warn' && ['warn', 'error'].includes(logLevel))
-            || (this.config.logging.level === 'error' && logLevel === 'error')) {
-          const logData = {
-            method: req.method,
-            url: req.url,
-            statusCode: res.statusCode,
-            duration: `${duration}ms`,
-            userAgent: req.get('User-Agent'),
-            ip: req.ip,
-            timestamp: new Date().toISOString(),
-          }
-
-          if (this.config.logging.format === 'json') {
-            console.log(JSON.stringify(logData))
-          } else {
-            console.log(`[${logData.timestamp}] ${logData.method} ${logData.url} ${logData.statusCode} - ${logData.duration}`)
-          }
-        }
-      })
-
-      next()
-    }
+    return this.loggerMiddlewares.logger
   }
 
   public setupRateLimit() {
@@ -183,23 +157,7 @@ export class MiddlewareManager {
   }
 
   public errorHandler() {
-    return (error: Error, req: Request, res: Response, next: NextFunction) => {
-      console.error('API Error:', error)
-
-      const apiError: APIError = {
-        message: error.message || 'Internal Server Error',
-        statusCode: (error as any).statusCode || 500,
-        error: error.name || 'InternalServerError',
-        details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-        timestamp: new Date().toISOString(),
-      }
-
-      res.status(apiError.statusCode).json({
-        success: false,
-        error: apiError,
-        timestamp: new Date().toISOString(),
-      })
-    }
+    return this.loggerMiddlewares.errorLogger
   }
 
   public notFoundHandler() {
