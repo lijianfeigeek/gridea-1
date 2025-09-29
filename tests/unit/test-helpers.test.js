@@ -7,13 +7,13 @@ const {
   createTestConfig,
   createWebhookPayload,
   generateTestSignature,
-  NodeTestHelpers
+  NodeTestHelpers,
 } = require('../helpers/test-setup-node.js')
 
 const {
   ArticleFactory,
   ConfigFactory,
-  WebhookPayloadFactory
+  WebhookPayloadFactory,
 } = require('../helpers/test-utils.js')
 
 // WebhookMockServer removed to avoid import conflicts
@@ -37,19 +37,19 @@ describe('Test Helpers and Data Management', () => {
       expect(user).toMatchObject({
         id: expect.stringContaining('user-'),
         name: 'Test User',
-        email: 'test@example.com'
+        email: 'test@example.com',
       })
     })
 
     test('should create a user with custom values', () => {
       const user = testDataManager.createUser({
         name: 'Custom User',
-        email: 'custom@example.com'
+        email: 'custom@example.com',
       })
 
       expect(user).toMatchObject({
         name: 'Custom User',
-        email: 'custom@example.com'
+        email: 'custom@example.com',
       })
     })
 
@@ -62,7 +62,7 @@ describe('Test Helpers and Data Management', () => {
         content: expect.stringContaining('# Test Content'),
         tags: ['test', 'article'],
         published: false,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -76,7 +76,7 @@ describe('Test Helpers and Data Management', () => {
         theme: 'default',
         language: 'zh-CN',
         postsPerPage: 10,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -87,7 +87,7 @@ describe('Test Helpers and Data Management', () => {
         headers: {},
         body: createWebhookPayload('test.event', { data: 'test' }),
         method: 'POST',
-        url: '/webhook'
+        url: '/webhook',
       }
 
       testDataManager.addWebhookRequest(webhookRequest)
@@ -119,7 +119,7 @@ describe('Test Helpers and Data Management', () => {
     test('should create custom test config', () => {
       const customConfig = {
         timeout: 60000,
-        apiUrl: 'http://localhost:3000'
+        apiUrl: 'http://localhost:3000',
       }
       const config = createTestConfig(customConfig)
 
@@ -135,7 +135,7 @@ describe('Test Helpers and Data Management', () => {
         event: 'article.created',
         data: { id: '123' },
         timestamp: expect.any(String),
-        signature: 'test-signature'
+        signature: 'test-signature',
       })
     })
 
@@ -157,7 +157,7 @@ describe('Test Helpers and Data Management', () => {
         content: expect.stringContaining('# Test Article'),
         tags: expect.arrayContaining(['test', 'article']),
         published: false,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -201,7 +201,7 @@ describe('Test Helpers and Data Management', () => {
         theme: 'default',
         language: 'zh-CN',
         postsPerPage: 10,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -213,7 +213,7 @@ describe('Test Helpers and Data Management', () => {
         event: 'article.created',
         data: article,
         timestamp: expect.any(String),
-        signature: expect.any(String)
+        signature: expect.any(String),
       })
     })
 
@@ -268,7 +268,7 @@ describe('Test Helpers and Data Management', () => {
     })
 
     test('should timeout waiting for condition', async () => {
-      let conditionMet = false
+      const conditionMet = false
 
       await expect(NodeTestHelpers.waitFor(() => conditionMet, 200, 50))
         .rejects.toThrow('Condition not met within 200ms')
@@ -276,7 +276,7 @@ describe('Test Helpers and Data Management', () => {
 
     test('should mock fetch implementation', () => {
       const mockResponses = [
-        { ok: true, status: 200, json: async () => ({ success: true }) }
+        { ok: true, status: 200, json: async () => ({ success: true }) },
       ]
 
       NodeTestHelpers.mockFetchImplementation(mockResponses)

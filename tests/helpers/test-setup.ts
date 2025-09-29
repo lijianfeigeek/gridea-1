@@ -77,7 +77,7 @@ export const DEFAULT_TEST_CONFIG: TestConfig = {
   apiUrl: 'http://localhost:4000',
   webhookUrl: 'http://localhost:4001',
   testPort: 4000,
-  webhookPort: 4001
+  webhookPort: 4001,
 }
 
 export const DEFAULT_USER: TestUserData = {
@@ -85,7 +85,7 @@ export const DEFAULT_USER: TestUserData = {
   name: 'Test User',
   email: 'test@example.com',
   avatar: 'https://example.com/avatar.jpg',
-  token: 'test-token-123'
+  token: 'test-token-123',
 }
 
 export const DEFAULT_ARTICLE_DATA: Partial<TestArticleData> = {
@@ -94,7 +94,7 @@ export const DEFAULT_ARTICLE_DATA: Partial<TestArticleData> = {
   tags: ['test', 'article'],
   published: false,
   summary: 'Test article summary',
-  template: 'post'
+  template: 'post',
 }
 
 export const DEFAULT_SITE_CONFIG: Partial<TestSiteConfig> = {
@@ -103,20 +103,23 @@ export const DEFAULT_SITE_CONFIG: Partial<TestSiteConfig> = {
   domain: 'example.com',
   theme: 'default',
   language: 'zh-CN',
-  postsPerPage: 10
+  postsPerPage: 10,
 }
 
 class TestDataManager {
   private users: TestUserData[] = []
+
   private articles: TestArticleData[] = []
+
   private configs: TestSiteConfig[] = []
+
   private webhooks: WebhookRequest[] = []
 
   createUser(overrides: Partial<TestUserData> = {}): TestUserData {
     const user: TestUserData = {
       ...DEFAULT_USER,
       ...overrides,
-      id: overrides.id || `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      id: overrides.id || `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     }
     this.users.push(user)
     return user
@@ -132,7 +135,7 @@ class TestDataManager {
       slug: overrides.slug || `test-article-${Date.now()}`,
       author: overrides.author || user,
       published: overrides.published || false,
-      ...overrides
+      ...overrides,
     } as TestArticleData
     this.articles.push(article)
     return article
@@ -143,7 +146,7 @@ class TestDataManager {
     const config: TestSiteConfig = {
       ...DEFAULT_SITE_CONFIG,
       author: overrides.author || user,
-      ...overrides
+      ...overrides,
     } as TestSiteConfig
     this.configs.push(config)
     return config
@@ -175,7 +178,7 @@ class TestDataManager {
       { title: 'a'.repeat(1001) },
       { tags: 'invalid-tags' as any },
       { published: 'invalid-boolean' as any },
-      { createdAt: 'invalid-date' as any }
+      { createdAt: 'invalid-date' as any },
     ]
   }
 
@@ -184,7 +187,7 @@ class TestDataManager {
       { email: 'invalid-email' },
       { name: '' },
       { email: '' },
-      { id: '' }
+      { id: '' },
     ]
   }
 }
@@ -194,7 +197,7 @@ export const testDataManager = new TestDataManager()
 export async function waitForServer(
   url: string,
   timeout: number = DEFAULT_TEST_CONFIG.timeout,
-  interval: number = 1000
+  interval: number = 1000,
 ): Promise<void> {
   const startTime = Date.now()
 
@@ -202,7 +205,7 @@ export async function waitForServer(
     try {
       const response = await fetch(url, {
         method: 'GET',
-        signal: AbortSignal.timeout(interval)
+        signal: AbortSignal.timeout(interval),
       })
       if (response.ok) {
         return
@@ -219,7 +222,7 @@ export async function waitForServer(
 export async function waitForWebhook(
   expectedCount: number,
   timeout: number = DEFAULT_TEST_CONFIG.timeout,
-  interval: number = 500
+  interval: number = 500,
 ): Promise<WebhookRequest[]> {
   const startTime = Date.now()
 
@@ -237,20 +240,20 @@ export async function waitForWebhook(
 export function createTestConfig(overrides: Partial<TestConfig> = {}): TestConfig {
   return {
     ...DEFAULT_TEST_CONFIG,
-    ...overrides
+    ...overrides,
   }
 }
 
 export function createWebhookPayload(
   event: string,
   data: any,
-  signature?: string
+  signature?: string,
 ): WebhookPayload {
   return {
     event,
     data,
     timestamp: new Date().toISOString(),
-    signature
+    signature,
   }
 }
 
@@ -381,5 +384,5 @@ export {
   TestSiteConfig,
   WebhookPayload,
   WebhookRequest,
-  MockServerConfig
+  MockServerConfig,
 }

@@ -1,1 +1,22 @@
-tests/**/*
+# 测试配置文件
+tests/setup.ts
+vitest.config.ts
+
+# 有问题的旧测试文件（使用Jest语法或包含解析错误）
+tests/helpers/test-setup.ts
+tests/helpers/test-setup-node.js
+tests/helpers/test-utils.js
+tests/mocks/webhook.server.ts
+tests/types/index.ts
+tests/unit/example.test.ts
+tests/unit/server/api.server.test.ts
+tests/unit/test-setup.test.ts
+tests/unit/validators/markdown.validator.test.ts
+
+# 覆盖率报告
+coverage/
+reports/
+
+# 依赖和构建产物
+node_modules/
+dist/

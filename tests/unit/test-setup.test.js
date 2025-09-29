@@ -31,19 +31,19 @@ describe('Test Setup and Utilities', () => {
       expect(user).toMatchObject({
         id: expect.stringContaining('user-'),
         name: 'Test User',
-        email: 'test@example.com'
+        email: 'test@example.com',
       })
     })
 
     test('should create a user with custom values', () => {
       const user = testDataManager.createUser({
         name: 'Custom User',
-        email: 'custom@example.com'
+        email: 'custom@example.com',
       })
 
       expect(user).toMatchObject({
         name: 'Custom User',
-        email: 'custom@example.com'
+        email: 'custom@example.com',
       })
     })
 
@@ -56,7 +56,7 @@ describe('Test Setup and Utilities', () => {
         content: expect.stringContaining('# Test Content'),
         tags: ['test', 'article'],
         published: false,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -70,7 +70,7 @@ describe('Test Setup and Utilities', () => {
         theme: 'default',
         language: 'zh-CN',
         postsPerPage: 10,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -81,7 +81,7 @@ describe('Test Setup and Utilities', () => {
         headers: {},
         body: createWebhookPayload('test.event', { data: 'test' }),
         method: 'POST',
-        url: '/webhook'
+        url: '/webhook',
       }
 
       testDataManager.addWebhookRequest(webhookRequest)
@@ -105,7 +105,7 @@ describe('Test Setup and Utilities', () => {
     test('should create custom test config', () => {
       const customConfig = {
         timeout: 60000,
-        apiUrl: 'http://localhost:3000'
+        apiUrl: 'http://localhost:3000',
       }
       const config = createTestConfig(customConfig)
 
@@ -121,7 +121,7 @@ describe('Test Setup and Utilities', () => {
         event: 'article.created',
         data: { id: '123' },
         timestamp: expect.any(String),
-        signature: 'test-signature'
+        signature: 'test-signature',
       })
     })
 
@@ -143,7 +143,7 @@ describe('Test Setup and Utilities', () => {
         content: expect.stringContaining('# Test Article'),
         tags: expect.arrayContaining(['test', 'article']),
         published: false,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -187,7 +187,7 @@ describe('Test Setup and Utilities', () => {
         theme: 'default',
         language: 'zh-CN',
         postsPerPage: 10,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -199,7 +199,7 @@ describe('Test Setup and Utilities', () => {
         event: 'article.created',
         data: article,
         timestamp: expect.any(String),
-        signature: expect.any(String)
+        signature: expect.any(String),
       })
     })
 
@@ -213,8 +213,8 @@ describe('Test Setup and Utilities', () => {
         data: {
           article,
           changes: { title: 'Updated Title' },
-          updatedAt: expect.any(String)
-        }
+          updatedAt: expect.any(String),
+        },
       })
     })
 

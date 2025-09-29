@@ -2,7 +2,7 @@ import {
   TestArticleData,
   TestUserData,
   TestSiteConfig,
-  WebhookPayload
+  WebhookPayload,
 } from '../helpers/test-setup'
 
 export interface ArticleFactoryOptions {
@@ -40,7 +40,7 @@ export class ArticleFactory {
       id: `author-${counter}`,
       name: `Author ${counter}`,
       email: `author${counter}@example.com`,
-      avatar: `https://example.com/avatar${counter}.jpg`
+      avatar: `https://example.com/avatar${counter}.jpg`,
     }
 
     const title = overrides.title || `Test Article ${counter}`
@@ -93,8 +93,8 @@ function test() {
         seoDescription: `SEO description for article ${counter}`,
         keywords: ['test', 'article', `keyword-${counter}`],
         ogImage: `https://example.com/images/og-article-${counter}.jpg`,
-        canonicalUrl: `https://example.com/articles/${slug}`
-      }
+        canonicalUrl: `https://example.com/articles/${slug}`,
+      },
     }
 
     return article
@@ -116,21 +116,21 @@ function test() {
     return this.create({
       ...overrides,
       published: true,
-      publishedAt: new Date().toISOString()
+      publishedAt: new Date().toISOString(),
     })
   }
 
   static createDraft(overrides: ArticleFactoryOptions = {}): TestArticleData {
     return this.create({
       ...overrides,
-      published: false
+      published: false,
     })
   }
 
   static createWithTags(tags: string[], overrides: ArticleFactoryOptions = {}): TestArticleData {
     return this.create({
       ...overrides,
-      tags
+      tags,
     })
   }
 
@@ -139,8 +139,8 @@ function test() {
       ...overrides,
       customMeta: {
         ...overrides.customMeta,
-        ...customMeta
-      }
+        ...customMeta,
+      },
     })
   }
 
@@ -173,7 +173,7 @@ function test() {
       { tags: undefined },
       { published: undefined },
       { createdAt: undefined },
-      { author: undefined }
+      { author: undefined },
     ]
   }
 
@@ -183,7 +183,7 @@ function test() {
       { title: 'a'.repeat(1000) },
 
       // Very long content
-      { content: '# Very Long Content\n\n' + 'Lorem ipsum dolor sit amet, '.repeat(1000) },
+      { content: `# Very Long Content\n\n${'Lorem ipsum dolor sit amet, '.repeat(1000)}` },
 
       // Maximum tags
       { tags: Array.from({ length: 50 }, (_, i) => `tag-${i}`) },
@@ -198,22 +198,24 @@ function test() {
       { tags: [] },
 
       // Very long slug
-      { slug: 'very-long-slug-with-many-hyphens-and-words-' + 'a'.repeat(200) },
+      { slug: `very-long-slug-with-many-hyphens-and-words-${'a'.repeat(200)}` },
 
       // Complex custom meta
-      { customMeta: {
-        nested: {
-          level1: {
-            level2: {
-              deep: 'value'
-            }
-          }
+      {
+        customMeta: {
+          nested: {
+            level1: {
+              level2: {
+                deep: 'value',
+              },
+            },
+          },
+          array: [1, 2, 3, 'mixed'],
+          boolean: true,
+          nullValue: null,
+          number: 42,
         },
-        array: [1, 2, 3, 'mixed'],
-        boolean: true,
-        nullValue: null,
-        number: 42
-      }},
+      },
 
       // Unicode content
       { content: '# Unicode Content\n\n🌟 星星 emoji 🚀 Rocket\n中文内容\n🎉 Celebration' },
@@ -222,7 +224,7 @@ function test() {
       { createdAt: new Date(Date.now() + 86400000).toISOString() },
 
       // Past date
-      { createdAt: new Date(Date.now() - 31536000000).toISOString() }
+      { createdAt: new Date(Date.now() - 31536000000).toISOString() },
     ]
   }
 }
@@ -235,7 +237,7 @@ export class ConfigFactory {
     const user = overrides.author || {
       id: `config-author-${counter}`,
       name: `Config Author ${counter}`,
-      email: `config.author${counter}@example.com`
+      email: `config.author${counter}@example.com`,
     }
 
     const config: TestSiteConfig = {
@@ -250,30 +252,30 @@ export class ConfigFactory {
         seo: {
           title: `${overrides.name || `Test Site ${counter}`} - SEO Optimized`,
           description: `SEO description for test site ${counter}`,
-          keywords: ['test', 'site', `site-${counter}`]
+          keywords: ['test', 'site', `site-${counter}`],
         },
         social: {
           twitter: `@testsite${counter}`,
           github: `testsite${counter}`,
-          linkedin: `testsite${counter}`
+          linkedin: `testsite${counter}`,
         },
         analytics: {
           googleAnalytics: `UA-TEST-${counter}`,
-          bingAnalytics: `TEST-${counter}`
+          bingAnalytics: `TEST-${counter}`,
         },
         comments: {
           enabled: true,
           provider: 'disqus',
-          siteId: `testsite-${counter}`
+          siteId: `testsite-${counter}`,
         },
         search: {
           enabled: true,
           provider: 'algolia',
           appId: `TEST${counter}`,
           apiKey: `test-api-key-${counter}`,
-          indexName: `test-site-${counter}`
-        }
-      }
+          indexName: `test-site-${counter}`,
+        },
+      },
     }
 
     return config
@@ -313,7 +315,7 @@ export class ConfigFactory {
       { theme: undefined },
       { language: undefined },
       { author: undefined },
-      { postsPerPage: undefined }
+      { postsPerPage: undefined },
     ]
   }
 
@@ -335,24 +337,26 @@ export class ConfigFactory {
       { domain: 'subdomain.subdomain2.example-domain.co.uk' },
 
       // Complex custom config
-      { customConfig: {
-        nested: {
-          level1: {
-            level2: {
-              deep: 'value'
-            }
-          }
+      {
+        customConfig: {
+          nested: {
+            level1: {
+              level2: {
+                deep: 'value',
+              },
+            },
+          },
+          array: [1, 2, 3, 'mixed'],
+          boolean: true,
+          nullValue: null,
+          number: 42,
         },
-        array: [1, 2, 3, 'mixed'],
-        boolean: true,
-        nullValue: null,
-        number: 42
-      }},
+      },
 
       // Unicode content
       {
         name: 'Unicode 站点 🌟',
-        description: 'Unicode 描述 with emoji 🚀 and 中文'
+        description: 'Unicode 描述 with emoji 🚀 and 中文',
       },
 
       // All supported languages
@@ -361,7 +365,7 @@ export class ConfigFactory {
       { language: 'zh-TW' },
       { language: 'ja-JP' },
       { language: 'fr-FR' },
-      { language: 'ru' }
+      { language: 'ru' },
     ]
   }
 }
@@ -374,7 +378,7 @@ export class WebhookPayloadFactory {
       event: 'article.created',
       data: article,
       timestamp: new Date().toISOString(),
-      signature: this.generateSignature(JSON.stringify({ event: 'article.created', data: article }))
+      signature: this.generateSignature(JSON.stringify({ event: 'article.created', data: article })),
     }
   }
 
@@ -384,10 +388,10 @@ export class WebhookPayloadFactory {
       data: {
         article,
         changes,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       timestamp: new Date().toISOString(),
-      signature: this.generateSignature(JSON.stringify({ event: 'article.updated', data: { article, changes } }))
+      signature: this.generateSignature(JSON.stringify({ event: 'article.updated', data: { article, changes } })),
     }
   }
 
@@ -396,10 +400,10 @@ export class WebhookPayloadFactory {
       event: 'article.deleted',
       data: {
         article,
-        deletedAt: new Date().toISOString()
+        deletedAt: new Date().toISOString(),
       },
       timestamp: new Date().toISOString(),
-      signature: this.generateSignature(JSON.stringify({ event: 'article.deleted', data: { article } }))
+      signature: this.generateSignature(JSON.stringify({ event: 'article.deleted', data: { article } })),
     }
   }
 
@@ -409,10 +413,10 @@ export class WebhookPayloadFactory {
       data: {
         config,
         changes,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       timestamp: new Date().toISOString(),
-      signature: this.generateSignature(JSON.stringify({ event: 'config.updated', data: { config, changes } }))
+      signature: this.generateSignature(JSON.stringify({ event: 'config.updated', data: { config, changes } })),
     }
   }
 
@@ -422,10 +426,10 @@ export class WebhookPayloadFactory {
       data: {
         deploymentId,
         startedAt: new Date().toISOString(),
-        status: 'started'
+        status: 'started',
       },
       timestamp: new Date().toISOString(),
-      signature: this.generateSignature(JSON.stringify({ event: 'deployment.started', data: { deploymentId } }))
+      signature: this.generateSignature(JSON.stringify({ event: 'deployment.started', data: { deploymentId } })),
     }
   }
 
@@ -436,10 +440,10 @@ export class WebhookPayloadFactory {
         deploymentId,
         completedAt: new Date().toISOString(),
         status: success ? 'success' : 'failed',
-        success
+        success,
       },
       timestamp: new Date().toISOString(),
-      signature: this.generateSignature(JSON.stringify({ event: 'deployment.completed', data: { deploymentId, success } }))
+      signature: this.generateSignature(JSON.stringify({ event: 'deployment.completed', data: { deploymentId, success } })),
     }
   }
 
@@ -448,7 +452,7 @@ export class WebhookPayloadFactory {
       event: eventType,
       data,
       timestamp: new Date().toISOString(),
-      signature: this.generateSignature(JSON.stringify({ event: eventType, data }))
+      signature: this.generateSignature(JSON.stringify({ event: eventType, data })),
     }
   }
 
@@ -463,5 +467,5 @@ export class WebhookPayloadFactory {
 
 export {
   ArticleFactoryOptions,
-  ConfigFactoryOptions
+  ConfigFactoryOptions,
 }

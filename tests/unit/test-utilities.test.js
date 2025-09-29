@@ -9,7 +9,7 @@ const {
   createWebhookPayload,
   generateTestSignature,
   testDataManager,
-  setupJestMocks
+  setupJestMocks,
 } = require('../helpers/test-utils.js')
 
 // Set up Jest mocks
@@ -28,19 +28,19 @@ describe('Test Utilities for Gridea REST API', () => {
       expect(user).toMatchObject({
         id: expect.stringContaining('user-'),
         name: 'Test User',
-        email: 'test@example.com'
+        email: 'test@example.com',
       })
     })
 
     test('should create a user with custom values', () => {
       const user = testDataManager.createUser({
         name: 'Custom User',
-        email: 'custom@example.com'
+        email: 'custom@example.com',
       })
 
       expect(user).toMatchObject({
         name: 'Custom User',
-        email: 'custom@example.com'
+        email: 'custom@example.com',
       })
     })
 
@@ -53,7 +53,7 @@ describe('Test Utilities for Gridea REST API', () => {
         content: expect.stringContaining('# Test Content'),
         tags: ['test', 'article'],
         published: false,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -67,7 +67,7 @@ describe('Test Utilities for Gridea REST API', () => {
         theme: 'default',
         language: 'zh-CN',
         postsPerPage: 10,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -78,7 +78,7 @@ describe('Test Utilities for Gridea REST API', () => {
         headers: {},
         body: createWebhookPayload('test.event', { data: 'test' }),
         method: 'POST',
-        url: '/webhook'
+        url: '/webhook',
       }
 
       testDataManager.addWebhookRequest(webhookRequest)
@@ -110,7 +110,7 @@ describe('Test Utilities for Gridea REST API', () => {
         content: expect.stringContaining('# Test Article'),
         tags: expect.arrayContaining(['test', 'article']),
         published: false,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -157,7 +157,7 @@ describe('Test Utilities for Gridea REST API', () => {
         theme: 'default',
         language: 'zh-CN',
         postsPerPage: 10,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -178,7 +178,7 @@ describe('Test Utilities for Gridea REST API', () => {
         event: 'article.created',
         data: article,
         timestamp: expect.any(String),
-        signature: expect.any(String)
+        signature: expect.any(String),
       })
     })
 
@@ -192,8 +192,8 @@ describe('Test Utilities for Gridea REST API', () => {
         data: {
           article,
           changes: { title: 'Updated Title' },
-          updatedAt: expect.any(String)
-        }
+          updatedAt: expect.any(String),
+        },
       })
     })
 
@@ -242,7 +242,7 @@ describe('Test Utilities for Gridea REST API', () => {
     })
 
     test('should timeout waiting for condition', async () => {
-      let conditionMet = false
+      const conditionMet = false
 
       await expect(MockHelpers.waitFor(() => conditionMet, 200, 50))
         .rejects.toThrow('Condition not met within 200ms')
@@ -259,7 +259,7 @@ describe('Test Utilities for Gridea REST API', () => {
     test('should create custom test config', () => {
       const customConfig = {
         timeout: 60000,
-        apiUrl: 'http://localhost:3000'
+        apiUrl: 'http://localhost:3000',
       }
       const config = createTestConfig(customConfig)
 
@@ -275,7 +275,7 @@ describe('Test Utilities for Gridea REST API', () => {
         event: 'article.created',
         data: { id: '123' },
         timestamp: expect.any(String),
-        signature: 'test-signature'
+        signature: 'test-signature',
       })
     })
 
@@ -310,7 +310,7 @@ describe('Test Utilities for Gridea REST API', () => {
 
       // Create webhook request
       const webhookRequest = MockHelpers.createMockRequest({
-        body: payload
+        body: payload,
       })
 
       // Add to test data manager
@@ -332,25 +332,21 @@ describe('Test Utilities for Gridea REST API', () => {
       const users = [
         testDataManager.createUser({ name: 'User 1' }),
         testDataManager.createUser({ name: 'User 2' }),
-        testDataManager.createUser({ name: 'User 3' })
+        testDataManager.createUser({ name: 'User 3' }),
       ]
 
       // Create multiple articles with different authors
-      const articles = users.map((user, index) =>
-        ArticleFactory.create({
-          author: user,
-          title: `Article ${index + 1}`,
-          published: index % 2 === 0 // Every other article is published
-        })
-      )
+      const articles = users.map((user, index) => ArticleFactory.create({
+        author: user,
+        title: `Article ${index + 1}`,
+        published: index % 2 === 0, // Every other article is published
+      }))
 
       // Create multiple configs
-      const configs = users.map(user =>
-        ConfigFactory.create({
-          author: user,
-          name: `${user.name}'s Site`
-        })
-      )
+      const configs = users.map(user => ConfigFactory.create({
+        author: user,
+        name: `${user.name}'s Site`,
+      }))
 
       // Verify data relationships
       expect(users).toHaveLength(3)
@@ -375,9 +371,7 @@ describe('Test Utilities for Gridea REST API', () => {
       const invalidData = testDataManager.generateInvalidArticleData()
 
       expect(invalidData).toHaveLength(6)
-      expect(invalidData.every(item =>
-        typeof item === 'object' && item !== null
-      )).toBe(true)
+      expect(invalidData.every(item => typeof item === 'object' && item !== null)).toBe(true)
     })
 
     test('should handle invalid user data generation', () => {
@@ -402,14 +396,14 @@ describe('Test Utilities for Gridea REST API', () => {
       const customUser = {
         name: 'Custom User',
         email: 'custom@example.com',
-        id: 'custom-user-id'
+        id: 'custom-user-id',
       }
 
       const article = ArticleFactory.create({
         author: customUser,
         title: 'Custom Title',
         published: true,
-        tags: ['custom', 'test']
+        tags: ['custom', 'test'],
       })
 
       expect(article.author.id).toBe('custom-user-id')

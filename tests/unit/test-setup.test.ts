@@ -15,7 +15,7 @@ import {
   createWebhookPayload,
   generateTestSignature,
   setupTestEnvironment,
-  teardownTestEnvironment
+  teardownTestEnvironment,
 } from '../helpers/test-setup'
 
 import {
@@ -23,14 +23,14 @@ import {
   ConfigFactory,
   WebhookPayloadFactory,
   ArticleFactoryOptions,
-  ConfigFactoryOptions
+  ConfigFactoryOptions,
 } from '../factories/article.factory'
 
 import {
   WebhookMockServer,
   WebhookServerOptions,
   WebhookServerStats,
-  WebhookEvent
+  WebhookEvent,
 } from '../mocks/webhook.server'
 
 describe('Test Setup and Utilities', () => {
@@ -47,19 +47,19 @@ describe('Test Setup and Utilities', () => {
       expect(user).toMatchObject({
         id: expect.stringContaining('user-'),
         name: 'Test User',
-        email: 'test@example.com'
+        email: 'test@example.com',
       })
     })
 
     test('should create a user with custom values', () => {
       const user = testDataManager.createUser({
         name: 'Custom User',
-        email: 'custom@example.com'
+        email: 'custom@example.com',
       })
 
       expect(user).toMatchObject({
         name: 'Custom User',
-        email: 'custom@example.com'
+        email: 'custom@example.com',
       })
     })
 
@@ -72,19 +72,19 @@ describe('Test Setup and Utilities', () => {
         content: expect.stringContaining('# Test Content'),
         tags: ['test', 'article'],
         published: false,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
     test('should create an article with custom values', () => {
       const article = testDataManager.createArticle({
         title: 'Custom Article',
-        published: true
+        published: true,
       })
 
       expect(article).toMatchObject({
         title: 'Custom Article',
-        published: true
+        published: true,
       })
     })
 
@@ -98,7 +98,7 @@ describe('Test Setup and Utilities', () => {
         theme: 'default',
         language: 'zh-CN',
         postsPerPage: 10,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -117,7 +117,7 @@ describe('Test Setup and Utilities', () => {
         headers: {},
         body: createWebhookPayload('test.event', { data: 'test' }),
         method: 'POST',
-        url: '/webhook'
+        url: '/webhook',
       }
 
       testDataManager.addWebhookRequest(webhookRequest)
@@ -141,7 +141,7 @@ describe('Test Setup and Utilities', () => {
     test('should create custom test config', () => {
       const customConfig = {
         timeout: 60000,
-        apiUrl: 'http://localhost:3000'
+        apiUrl: 'http://localhost:3000',
       }
       const config = createTestConfig(customConfig)
 
@@ -157,7 +157,7 @@ describe('Test Setup and Utilities', () => {
         event: 'article.created',
         data: { id: '123' },
         timestamp: expect.any(String),
-        signature: 'test-signature'
+        signature: 'test-signature',
       })
     })
 
@@ -179,7 +179,7 @@ describe('Test Setup and Utilities', () => {
         content: expect.stringContaining('# Test Article'),
         tags: expect.arrayContaining(['test', 'article']),
         published: false,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -222,7 +222,7 @@ describe('Test Setup and Utilities', () => {
         theme: 'default',
         language: 'zh-CN',
         postsPerPage: 10,
-        author: expect.any(Object)
+        author: expect.any(Object),
       })
     })
 
@@ -234,7 +234,7 @@ describe('Test Setup and Utilities', () => {
         event: 'article.created',
         data: article,
         timestamp: expect.any(String),
-        signature: expect.any(String)
+        signature: expect.any(String),
       })
     })
 
@@ -248,8 +248,8 @@ describe('Test Setup and Utilities', () => {
         data: {
           article,
           changes: { title: 'Updated Title' },
-          updatedAt: expect.any(String)
-        }
+          updatedAt: expect.any(String),
+        },
       })
     })
 
@@ -276,7 +276,7 @@ describe('Test Setup and Utilities', () => {
         enableLogging: false,
         validateSignatures: false,
         delay: 0,
-        simulateErrors: false
+        simulateErrors: false,
       })
     })
 
@@ -301,9 +301,9 @@ describe('Test Setup and Utilities', () => {
       const response = await fetch(`${server.getUrl()}/webhook`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       })
 
       expect(response.ok).toBe(true)
@@ -324,9 +324,9 @@ describe('Test Setup and Utilities', () => {
         await fetch(`${server.getUrl()}/webhook`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
         })
       }
 
@@ -348,9 +348,9 @@ describe('Test Setup and Utilities', () => {
         await fetch(`${server.getUrl()}/webhook`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
         })
       }, 100)
 
@@ -364,7 +364,7 @@ describe('Test Setup and Utilities', () => {
       const server = new WebhookMockServer({
         port: 0,
         enableLogging: false,
-        validateSignatures: false
+        validateSignatures: false,
       })
 
       try {
@@ -373,7 +373,7 @@ describe('Test Setup and Utilities', () => {
         // Create test data
         const article = testDataManager.createArticle({
           title: 'Integration Test Article',
-          published: true
+          published: true,
         })
 
         // Create webhook payload
@@ -383,9 +383,9 @@ describe('Test Setup and Utilities', () => {
         const response = await fetch(`${server.getUrl()}/webhook`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
         })
 
         expect(response.ok).toBe(true)
@@ -400,7 +400,6 @@ describe('Test Setup and Utilities', () => {
         const stats = server.getStats()
         expect(stats.totalRequests).toBe(1)
         expect(stats.successfulRequests).toBe(1)
-
       } finally {
         if (server.isServerRunning()) {
           await server.stop()
@@ -415,7 +414,7 @@ describe('Test Setup and Utilities', () => {
       const user: TestUserData = {
         id: 'test-user',
         name: 'Test User',
-        email: 'test@example.com'
+        email: 'test@example.com',
       }
 
       // TestArticleData type safety
@@ -428,7 +427,7 @@ describe('Test Setup and Utilities', () => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         author: user,
-        slug: 'test-article'
+        slug: 'test-article',
       }
 
       expect(user.id).toBe('test-user')

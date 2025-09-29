@@ -71,22 +71,22 @@ if (typeof window !== 'undefined') {
               getPath: () => '/tmp',
             },
             getCurrentWindow: () => ({
-                setTitle: jest.fn(),
-                on: jest.fn(),
-                webContents: {
-                  send: jest.fn(),
-                },
-              }),
-            },
-            shell: {
-              openExternal: jest.fn(),
-            },
-          }
+              setTitle: jest.fn(),
+              on: jest.fn(),
+              webContents: {
+                send: jest.fn(),
+              },
+            }),
+          },
+          shell: {
+            openExternal: jest.fn(),
+          },
         }
-        return {}
-      }),
-    })
-  }
+      }
+      return {}
+    }),
+  })
+}
 
 // Set up test timeout
 jest.setTimeout(30000)
