@@ -344,7 +344,7 @@ export class WebhookMockServer {
       payload: {
         error: message,
         statusCode,
-        details: error?.message
+        details: error && error.message
       },
       headers: {},
       responseCode: statusCode,

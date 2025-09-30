@@ -10,8 +10,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `yarn electron:build` - Build the application for production
 - `yarn lint` - Run ESLint to check code quality
 
+### Testing Commands
+- `yarn test` - Run Jest unit tests via Vue CLI
+- `yarn test:watch` - Run Jest tests in watch mode
+- `yarn test:coverage` - Run Jest tests with coverage report
+- `yarn test:run` - Run Jest tests directly
+- `yarn test:run:watch` - Run Jest tests in watch mode directly
+- `yarn test:run:coverage` - Run Jest tests with coverage report directly
+- `yarn test:unit` - Run Vitest unit tests
+- `yarn test:watch:unit` - Run Vitest unit tests in watch mode
+- `yarn test:coverage:unit` - Run Vitest unit tests with coverage
+- `yarn test:api` - Run API-specific tests
+- `yarn test:api:watch` - Run API tests in watch mode
+
 ### Requirements
-- Node.js version > v10.0.0 required
+- Node.js version >= v10.0.0 required
 - Use yarn for package management (npm may work but yarn is preferred)
 
 ## Architecture Overview
@@ -57,6 +70,7 @@ The Express server (`src/server/`) handles:
 - **Deployment**: Multiple deployment targets including Git-based and SFTP
 - **Internationalization**: Vue I18n with support for multiple languages
 - **Local Storage**: LowDB for lightweight database needs
+- **REST API**: Experimental REST API server for external article publishing (in development)
 
 ## Code Style and Conventions
 
@@ -103,6 +117,13 @@ The Express server (`src/server/`) handles:
 - Use absolute imports with `@/` alias
 - Follow the existing directory structure for consistency
 
+### Testing Strategy
+- **Unit Tests**: Use Jest for utility functions and business logic
+- **Component Tests**: Vue component testing with @vue/test-utils
+- **Integration Tests**: API server integration and IPC communication
+- **E2E Tests**: Complete workflow testing (planned)
+- **Test Structure**: Tests organized in `tests/` directory with subdirectories for unit, integration, and e2e
+
 ## Platform-Specific Considerations
 
 ### Electron Builder Configuration
@@ -115,3 +136,26 @@ The Express server (`src/server/`) handles:
 - Node integration enabled in Electron
 - Web security disabled for local resource access
 - Remote module enabled for Electron API access
+
+## Development Workflow
+
+### Current Branch Context
+- **Active Branch**: `REST-API` - Implementing REST API functionality for external article publishing
+- **Base Branch**: `master` - Stable production code
+- **Testing Approach**: Test-Driven Development (TDD) with comprehensive test coverage
+- **API Features**: Article publishing, Markdown validation, auto-deployment, webhook support
+
+### Adding New Features
+1. Create TypeScript interfaces in `src/interfaces/` for new data structures
+2. Add server logic in appropriate `src/server/` modules
+3. Create Vue components following existing patterns
+4. Update routing in `src/router.ts` if needed
+5. Add translations in `src/assets/locales.ts`
+6. Write comprehensive tests following TDD principles
+
+### Building and Testing
+- Use `yarn electron:serve` for development with hot reload
+- Lint code with `yarn lint` before committing
+- Run tests with `yarn test:run` or `yarn test:unit`
+- Build production version with `yarn electron:build`
+- For API development: use `yarn test:api` for API-specific tests
