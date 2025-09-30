@@ -2,6 +2,7 @@ import { createServer, Server as HTTPServer } from 'http'
 import { AddressInfo } from 'net'
 import express, { Application, Request, Response, NextFunction } from 'express'
 import initServer from '@/server'
+import { beforeAll, afterAll, describe, test, expect, vi } from 'vitest'
 
 // Test interfaces
 interface ServerHealthResponse {
@@ -67,8 +68,8 @@ describe('API Server Architecture Tests', () => {
     // Mock console to prevent noise during tests
     originalConsoleLog = console.log
     originalConsoleError = console.error
-    console.log = jest.fn()
-    console.error = jest.fn()
+    console.log = vi.fn()
+    console.error = vi.fn()
 
     // Initialize test server configuration
     const testConfig = TEST_CONFIG

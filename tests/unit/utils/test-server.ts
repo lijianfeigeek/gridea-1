@@ -1,22 +1,25 @@
-import express from 'express'
-import { createServer } from 'http'
-import bodyParser from 'body-parser'
+import { vi } from 'vitest'
+
+// Using global mocks from setup.ts
 
 export interface TestServer {
-  app: express.Application
+  app: any
   server: any
   port: number
   close: () => Promise<void>
 }
 
 // 模拟中间件函数
-function configureMiddleware(app: express.Application) {
+function configureMiddleware(app: any) {
+  // 加载body-parser模块以确保mock生效
+  const bodyParser = require('body-parser')
+
   // 配置body-parser限制来测试大请求体
   app.use(bodyParser.json({ limit: '1mb' }))
   app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }))
 
   // 错误处理中间件 - JSON解析错误
-  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  app.use((err: any, req: any, res: any, next: any) => {
     if (err instanceof SyntaxError && err.message.includes('JSON')) {
       return res.status(400).json({
         success: false,
@@ -258,6 +261,11 @@ function setupRoutes(app: express.Application) {
 }
 
 export async function createTestServer(): Promise<TestServer> {
+  // Load modules inside the function to ensure mocks are applied
+  const express = require('express')
+  const { createServer } = require('http')
+  const bodyParser = require('body-parser')
+
   const app = express()
   const server = createServer(app)
 
@@ -268,14 +276,29 @@ export async function createTestServer(): Promise<TestServer> {
   setupRoutes(app)
 
   return new Promise((resolve, reject) => {
+    // 设置更快的启动超时
+    const startupTimeout = setTimeout(() => {
+      reject(new Error('Test server startup timeout'))
+    }, 3000)
+
     server.listen(0, () => {
+      clearTimeout(startupTimeout)
       const { port } = server.address()
       resolve({
         app,
         server,
         port,
         close: () => new Promise((resolveCallback) => {
-          server.close(resolveCallback)
+          // 设置快速关闭超时
+          const closeTimeout = setTimeout(() => {
+            console.warn('Server close timeout, forcing cleanup')
+            resolveCallback()
+          }, 2000)
+
+          server.close(() => {
+            clearTimeout(closeTimeout)
+            resolveCallback()
+          })
         }),
       })
     })
@@ -283,6 +306,10 @@ export async function createTestServer(): Promise<TestServer> {
 }
 
 export async function createTestServerWithConfig(config: any = {}): Promise<TestServer> {
+  // Load modules inside the function to ensure mocks are applied
+  const express = require('express')
+  const { createServer } = require('http')
+
   const app = express()
   const server = createServer(app)
 

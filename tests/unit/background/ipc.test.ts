@@ -1,33 +1,10 @@
+// Import mocked Electron modules
 import {
   ipcMain, BrowserWindow, ipcRenderer, IpcMainEvent, IpcRendererEvent,
 } from 'electron'
 
-// Now import the mocked modules
-import { APIServer } from '../../../src/server/api/index'
-import { ConfigManager } from '../../../src/server/api/config'
-import { APIServerConfig, HealthStatus } from '../../../src/server/api/types'
-
-// Mock server modules before importing them
-jest.mock('../../../src/server/api/index', () => ({
-  APIServer: jest.fn().mockImplementation(() => ({
-    start: jest.fn(),
-    stop: jest.fn(),
-    isServerRunning: jest.fn(),
-    getHealthStatus: jest.fn(),
-    getConfig: jest.fn(),
-    updateConfig: jest.fn(),
-  })),
-}))
-
-jest.mock('../../../src/server/api/config', () => ({
-  ConfigManager: jest.fn().mockImplementation(() => ({
-    validateConfig: jest.fn(),
-    getEnvironmentConfig: jest.fn(),
-    updateConfig: jest.fn(),
-    saveConfig: jest.fn(),
-    getConfig: jest.fn(),
-  })),
-}))
+// Note: APIServer and ConfigManager are mocked globally in setup-jest.js
+// The global mocks provide proper Jest mock methods including mockResolvedValue
 
 jest.mock('../../../src/server/api/types', () => ({
   APIServerConfig: {},
@@ -40,69 +17,64 @@ jest.mock('../../../src/server/api/types', () => ({
 describe('Background IPC Handler', () => {
   let mockApiServer: jest.Mocked<APIServer>
   let mockConfigManager: jest.Mocked<ConfigManager>
-  let mockIpcMain: jest.Mocked<typeof ipcMain>
-  let mockIpcRenderer: jest.Mocked<typeof ipcRenderer>
   let mockEvent: any
 
   beforeEach(() => {
     jest.clearAllMocks()
 
-    // Create mock instances using mocked constructors
-    const MockAPIServer = APIServer as jest.MockedClass<typeof APIServer>
-    const MockConfigManager = ConfigManager as jest.MockedClass<typeof ConfigManager>
+    // Create mock instances directly using jest.fn()
+    mockApiServer = {
+      start: jest.fn().mockResolvedValue(undefined),
+      stop: jest.fn().mockResolvedValue(undefined),
+      isServerRunning: jest.fn().mockReturnValue(false),
+      getHealthStatus: jest.fn().mockResolvedValue({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: 0,
+        version: '1.0.0',
+        memory: {
+          heapUsed: 1024 * 1024,
+          heapTotal: 2048 * 1024,
+          rss: 4096 * 1024,
+        },
+        api: {
+          endpoints: 1,
+          requests: 0,
+        },
+      }),
+      getConfig: jest.fn().mockReturnValue({
+        port: 3000,
+        host: 'localhost',
+        auth: { enabled: false, secretKey: '' },
+        cors: { enabled: true, origins: ['*'] },
+        autoDeploy: false,
+      }),
+      updateConfig: jest.fn().mockResolvedValue(undefined),
+      restart: jest.fn().mockResolvedValue(undefined),
+    } as any
 
-    mockApiServer = new MockAPIServer() as jest.Mocked<APIServer>
-    mockConfigManager = new MockConfigManager() as jest.Mocked<ConfigManager>
-
-    // Get mocked modules from setup
-    mockIpcMain = ipcMain as jest.Mocked<typeof ipcMain>
-    mockIpcRenderer = ipcRenderer as jest.Mocked<typeof ipcRenderer>
+    mockConfigManager = {
+      validateConfig: jest.fn().mockReturnValue({ valid: true, errors: [] }),
+      getEnvironmentConfig: jest.fn().mockReturnValue({
+        port: 3000,
+        host: 'localhost',
+        auth: { enabled: false, secretKey: '' },
+        cors: { enabled: true, origins: ['*'] },
+        autoDeploy: false,
+      }),
+      updateConfig: jest.fn().mockResolvedValue(undefined),
+      saveConfig: jest.fn().mockResolvedValue(undefined),
+      getConfig: jest.fn().mockReturnValue({
+        port: 3000,
+        host: 'localhost',
+        auth: { enabled: false, secretKey: '' },
+        cors: { enabled: true, origins: ['*'] },
+        autoDeploy: false,
+      }),
+    } as any
 
     // Create mock event object
     mockEvent = createMockEvent()
-
-    // Setup default mock implementations
-    mockApiServer.start.mockResolvedValue()
-    mockApiServer.stop.mockResolvedValue()
-    mockApiServer.isServerRunning.mockReturnValue(false)
-    mockApiServer.getConfig.mockReturnValue({
-      port: 3000,
-      host: 'localhost',
-      auth: { enabled: false, secretKey: '' },
-      cors: { enabled: true, origins: ['*'] },
-      autoDeploy: false,
-    })
-    mockApiServer.getHealthStatus.mockResolvedValue({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      uptime: 0,
-      version: '1.0.0',
-      memory: {
-        heapUsed: 1024 * 1024,
-        heapTotal: 2048 * 1024,
-        rss: 4096 * 1024,
-      },
-      api: {
-        endpoints: 1,
-        requests: 0,
-      },
-    })
-
-    mockConfigManager.validateConfig.mockReturnValue({
-      valid: true,
-      errors: [],
-    })
-    mockConfigManager.getEnvironmentConfig.mockReturnValue({
-      port: 3000,
-      host: 'localhost',
-      auth: { enabled: false, secretKey: '' },
-      cors: { enabled: true, origins: ['*'] },
-      autoDeploy: false,
-    })
-
-    // Reset module mocks
-    jest.mocked(APIServer).mockClear()
-    jest.mocked(ConfigManager).mockClear()
   })
 
   afterEach(() => {
@@ -111,6 +83,12 @@ describe('Background IPC Handler', () => {
 
   describe('IPC Handler Registration', () => {
     test('should register all required IPC handlers', () => {
+      // Get the global mocked ipcMain from setup first to check its state
+      const { ipcMain: globalIpcMain } = require('electron')
+
+      // Clear previous calls to have clean state
+      globalIpcMain.handle.mockClear()
+
       // Import the IPC handler module
       const { initializeIPCHandlers } = require('../../../src/background/ipc-handlers')
 
@@ -118,23 +96,29 @@ describe('Background IPC Handler', () => {
       initializeIPCHandlers()
 
       // Verify that all handlers were registered
-      expect(mockIpcMain.handle).toHaveBeenCalledWith('start-api-server', expect.any(Function))
-      expect(mockIpcMain.handle).toHaveBeenCalledWith('stop-api-server', expect.any(Function))
-      expect(mockIpcMain.handle).toHaveBeenCalledWith('get-api-server-status', expect.any(Function))
-      expect(mockIpcMain.handle).toHaveBeenCalledWith('save-api-settings', expect.any(Function))
-      expect(mockIpcMain.handle).toHaveBeenCalledWith('test-webhook', expect.any(Function))
+      expect(globalIpcMain.handle).toHaveBeenCalledWith('start-api-server', expect.any(Function))
+      expect(globalIpcMain.handle).toHaveBeenCalledWith('stop-api-server', expect.any(Function))
+      expect(globalIpcMain.handle).toHaveBeenCalledWith('get-api-server-status', expect.any(Function))
+      expect(globalIpcMain.handle).toHaveBeenCalledWith('save-api-settings', expect.any(Function))
+      expect(globalIpcMain.handle).toHaveBeenCalledWith('test-webhook', expect.any(Function))
     })
 
     test('should register IPC event listeners', () => {
+      // Get the global mocked ipcMain from setup first to check its state
+      const { ipcMain: globalIpcMain } = require('electron')
+
+      // Clear previous calls to have clean state
+      globalIpcMain.on.mockClear()
+
       // Import and initialize handlers
       const { initializeIPCHandlers } = require('../../../src/background/ipc-handlers')
       initializeIPCHandlers()
 
       // Verify event listeners are registered
-      expect(mockIpcMain.on).toHaveBeenCalledWith('api-server-status-changed', expect.any(Function))
-      expect(mockIpcMain.on).toHaveBeenCalledWith('api-server-started', expect.any(Function))
-      expect(mockIpcMain.on).toHaveBeenCalledWith('api-server-stopped', expect.any(Function))
-      expect(mockIpcMain.on).toHaveBeenCalledWith('api-server-error', expect.any(Function))
+      expect(globalIpcMain.on).toHaveBeenCalledWith('api-server-status-changed', expect.any(Function))
+      expect(globalIpcMain.on).toHaveBeenCalledWith('api-server-started', expect.any(Function))
+      expect(globalIpcMain.on).toHaveBeenCalledWith('api-server-stopped', expect.any(Function))
+      expect(globalIpcMain.on).toHaveBeenCalledWith('api-server-error', expect.any(Function))
     })
 
     test('should handle multiple handler registrations without conflicts', () => {
@@ -149,12 +133,18 @@ describe('Background IPC Handler', () => {
     })
 
     test('should provide correct handler names and signatures', () => {
+      // Get the global mocked ipcMain from setup first to check its state
+      const { ipcMain: globalIpcMain } = require('electron')
+
+      // Clear previous calls to have clean state
+      globalIpcMain.handle.mockClear()
+
       // Initialize handlers first
       const { initializeIPCHandlers } = require('../../../src/background/ipc-handlers')
       initializeIPCHandlers()
 
       // Get the handler registrations
-      const handlerCalls = mockIpcMain.handle.mock.calls
+      const handlerCalls = globalIpcMain.handle.mock.calls
 
       // Verify handler names
       const handlerNames = handlerCalls.map(call => call[0])
@@ -644,13 +634,16 @@ describe('Background IPC Handler', () => {
     test('should prevent memory leaks by cleaning up event listeners', () => {
       const mockListener = jest.fn()
 
+      // Get the global mocked ipcMain from setup
+      const { ipcMain: globalIpcMain } = require('electron')
+
       // Add listener
-      mockIpcMain.on('test-event', mockListener)
+      globalIpcMain.on('test-event', mockListener)
 
       // Remove listener
-      mockIpcMain.removeAllListeners('test-event')
+      globalIpcMain.removeAllListeners('test-event')
 
-      expect(mockIpcMain.removeAllListeners).toHaveBeenCalledWith('test-event')
+      expect(globalIpcMain.removeAllListeners).toHaveBeenCalledWith('test-event')
     })
 
     test('should handle graceful shutdown with timeout', async () => {

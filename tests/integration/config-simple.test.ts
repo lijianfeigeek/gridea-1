@@ -10,21 +10,24 @@ import {
 import { ConfigManager } from '@/server/api/config'
 import { APIServerConfig } from '@/server/api/types'
 
-// Mock file system operations
-vi.mock('fs-extra', () => ({
-  pathExistsSync: vi.fn().mockReturnValue(false),
-  readJsonSync: vi.fn().mockReturnValue({}),
-  writeJsonSync: vi.fn().mockReturnValue(true),
-  ensureDirSync: vi.fn().mockReturnValue(true),
-  removeSync: vi.fn().mockReturnValue(true),
-  copySync: vi.fn().mockReturnValue(true),
-}))
+// Import mocked modules for testing
+import * as fse from 'fs-extra'
 
 describe('Configuration Integration Tests', () => {
   let configManager: ConfigManager
   let testConfig: APIServerConfig
 
   beforeEach(() => {
+    // Reset all mocks to ensure clean state
+    vi.clearAllMocks()
+    vi.mocked(fse.pathExistsSync).mockReturnValue(false)
+    vi.mocked(fse.readJsonSync).mockReturnValue({})
+    vi.mocked(fse.writeJsonSync).mockReturnValue(true)
+    vi.mocked(fse.ensureDirSync).mockReturnValue(true)
+    vi.mocked(fse.removeSync).mockReturnValue(true)
+    vi.mocked(fse.copySync).mockReturnValue(true)
+    vi.mocked(fse.writeFileSync).mockReturnValue(true)
+
     // Test configuration
     testConfig = {
       port: 3002,
@@ -208,10 +211,9 @@ describe('Configuration Integration Tests', () => {
 
   describe('Configuration Persistence', () => {
     it('should save configuration to file', () => {
-      const mockFs = require('fs-extra')
       configManager.saveConfig()
 
-      expect(mockFs.writeJsonSync).toHaveBeenCalledWith(
+      expect(fse.writeJsonSync).toHaveBeenCalledWith(
         '/tmp/test-api-config.json',
         testConfig,
         { spaces: 2 },
@@ -219,15 +221,14 @@ describe('Configuration Integration Tests', () => {
     })
 
     it('should load configuration from file', () => {
-      const mockFs = require('fs-extra')
       const savedConfig = {
         ...testConfig,
         port: 3006,
         auth: { enabled: true, secretKey: 'loaded-secret', tokenExpiry: '48h' },
       }
 
-      mockFs.pathExistsSync.mockReturnValue(true)
-      mockFs.readJsonSync.mockReturnValue(savedConfig)
+      vi.mocked(fse.pathExistsSync).mockReturnValue(true)
+      vi.mocked(fse.readJsonSync).mockReturnValue(savedConfig)
 
       const newConfigManager = new ConfigManager('/tmp/load-test-config.json')
       const loadedConfig = newConfigManager.getConfig()
@@ -239,8 +240,7 @@ describe('Configuration Integration Tests', () => {
     })
 
     it('should use default configuration when file does not exist', () => {
-      const mockFs = require('fs-extra')
-      mockFs.pathExistsSync.mockReturnValue(false)
+      vi.mocked(fse.pathExistsSync).mockReturnValue(false)
 
       const newConfigManager = new ConfigManager('/tmp/nonexistent-config.json')
       const defaultConfig = newConfigManager.getConfig()
@@ -250,9 +250,8 @@ describe('Configuration Integration Tests', () => {
     })
 
     it('should handle file system errors gracefully', () => {
-      const mockFs = require('fs-extra')
-      mockFs.pathExistsSync.mockReturnValue(true)
-      mockFs.readJsonSync.mockImplementation(() => {
+      vi.mocked(fse.pathExistsSync).mockReturnValue(true)
+      vi.mocked(fse.readJsonSync).mockImplementation(() => {
         throw new Error('File read error')
       })
 
@@ -263,8 +262,7 @@ describe('Configuration Integration Tests', () => {
     })
 
     it('should handle write errors', () => {
-      const mockFs = require('fs-extra')
-      mockFs.writeJsonSync.mockImplementation(() => {
+      vi.mocked(fse.writeJsonSync).mockImplementation(() => {
         throw new Error('Permission denied')
       })
 
@@ -276,15 +274,14 @@ describe('Configuration Integration Tests', () => {
 
   describe('Configuration Migration', () => {
     it('should handle configuration with missing fields', () => {
-      const mockFs = require('fs-extra')
       const partialConfig = {
         port: 3007,
         host: 'localhost',
         // Missing other fields
       }
 
-      mockFs.pathExistsSync.mockReturnValue(true)
-      mockFs.readJsonSync.mockReturnValue(partialConfig)
+      vi.mocked(fse.pathExistsSync).mockReturnValue(true)
+      vi.mocked(fse.readJsonSync).mockReturnValue(partialConfig)
 
       const migrationConfigManager = new ConfigManager('/tmp/migration-config.json')
       const migratedConfig = migrationConfigManager.getConfig()
@@ -298,7 +295,6 @@ describe('Configuration Integration Tests', () => {
     })
 
     it('should handle configuration with unknown fields', () => {
-      const mockFs = require('fs-extra')
       const futureConfig = {
         ...testConfig,
         port: 3008,
@@ -308,8 +304,8 @@ describe('Configuration Integration Tests', () => {
         },
       }
 
-      mockFs.pathExistsSync.mockReturnValue(true)
-      mockFs.readJsonSync.mockReturnValue(futureConfig)
+      vi.mocked(fse.pathExistsSync).mockReturnValue(true)
+      vi.mocked(fse.readJsonSync).mockReturnValue(futureConfig)
 
       const futureConfigManager = new ConfigManager('/tmp/future-config.json')
       const config = futureConfigManager.getConfig()

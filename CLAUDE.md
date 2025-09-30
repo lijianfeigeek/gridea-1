@@ -41,6 +41,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `yarn test:api tests/integration/` - Run all integration tests
 - `yarn test:api tests/integration/config-simple.test.ts` - Run configuration integration tests
 - `yarn test:api tests/integration/api-integration-simple.test.ts` - Run API integration tests
+- `yarn test:api tests/integration/server-lifecycle.test.ts` - Run server lifecycle tests
+- `yarn test:api tests/integration/configuration-integration.test.ts` - Run configuration management tests
+- `yarn test:api tests/integration/webhook-article.test.ts` - Run webhook integration tests
 
 ### Requirements
 - Node.js version >= v10.0.0 required
@@ -151,7 +154,7 @@ The REST API implementation (`src/server/api/`) provides external article publis
 ## Testing Infrastructure
 
 ### Dual Testing Framework Architecture
-The project uses both Jest and Vitest in a complementary setup:
+The project uses both Jest and Vitest in a complementary setup with distinct responsibilities:
 
 **Jest Responsibilities:**
 - IPC handler testing (`tests/unit/background/`)
@@ -159,6 +162,7 @@ The project uses both Jest and Vitest in a complementary setup:
 - Electron-specific functionality
 - Node.js environment testing
 - Main process and renderer process communication
+- Legacy unit tests
 
 **Vitest Responsibilities:**
 - API server testing (`tests/unit/api/`)
@@ -166,6 +170,12 @@ The project uses both Jest and Vitest in a complementary setup:
 - Integration testing (`tests/integration/`)
 - Web API and HTTP testing
 - Server lifecycle and configuration management testing
+- Modern test framework with better performance and ES module support
+
+### Framework Selection Strategy
+- **Use Jest** for Electron-specific tests requiring complex Node.js mocking
+- **Use Vitest** for API server tests, integration tests, and new test development
+- **Both frameworks** share the same timeout settings (30 seconds) for consistency
 
 ### Test Structure
 ```
@@ -232,6 +242,14 @@ tests/
 - `server-lifecycle.test.ts`: Server lifecycle management (587 lines)
 - `configuration-integration.test.ts`: Configuration management (611 lines)
 - `config-simple.test.ts`: Core configuration tests (377 lines)
+- `webhook-article.test.ts`: Webhook integration tests
+- `background-ipc.test.ts`: IPC integration tests
+
+### Current Test Health Status
+- **Jest IPC Tests**: 93.8% pass rate (30/32 tests passing)
+- **Vitest Integration Tests**: ~63% pass rate (73/115 tests passing)
+- **Overall Test Infrastructure**: ~85% health rating
+- **Critical Issues**: Resolved mock configuration and linting errors
 
 ## Current Development Context
 
@@ -352,3 +370,24 @@ The API server communicates with the main process via these IPC channels:
 - **Performance**: Include performance testing for API endpoints
 - **Memory Management**: Test for memory leaks in long-running operations
 - **Concurrent Access**: Test API behavior under concurrent requests
+- **Test Framework Choice**: Use Vitest for new tests unless specifically testing Electron functionality
+- **Mock State Management**: Always clear mocks between tests to prevent state pollution
+- **ES Module Compatibility**: Ensure Vitest tests use ES imports and proper type exports
+
+## Known Issues and Solutions
+
+### Test Framework Compatibility
+The project uses both Jest and Vitest which can cause conflicts:
+- **Issue**: Mock state pollution between test frameworks
+- **Solution**: Use framework-specific mock configurations and clear state between tests
+- **Best Practice**: Run Jest and Vitest tests separately using their respective commands
+
+### Mock Configuration Challenges
+- **Issue**: Complex Express Router mocking causing integration test failures
+- **Solution**: Use factory pattern for mock creation and avoid state pollution
+- **Status**: Partially resolved - 42 integration tests still failing due to mock conflicts
+
+### TypeScript 3.2.2 Constraints
+- **Issue**: Limited TypeScript features affect test writing
+- **Solution**: Use type assertions instead of type annotations in catch clauses
+- **Example**: `catch (error) { console.log((error as Error).message) }`

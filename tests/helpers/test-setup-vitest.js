@@ -94,15 +94,6 @@ if (typeof window !== 'undefined') {
 // Set up test timeout
 vi.setConfig({ testTimeout: 30000 })
 
-// Export webhook types for tests (define locally for JS compatibility)
-export const WebhookRequest = {}
-export const WebhookPayload = {}
-
-// Export test data types for factories (define locally for JS compatibility)
-export const TestArticleData = {}
-export const TestUserData = {}
-export const TestSiteConfig = {}
-
 // Clean up after each test
 afterEach(() => {
   vi.clearAllMocks()

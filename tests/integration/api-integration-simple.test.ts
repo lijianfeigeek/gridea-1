@@ -9,40 +9,165 @@
 import {
   describe, it, expect, beforeEach, afterEach, vi,
 } from 'vitest'
+
+// Express mock should be handled by global setup.ts
+
+// Import after mocking is set up
 import { APIServer } from '@/server/api/index'
 import { ConfigManager } from '@/server/api/config'
 import { APIServerConfig, HealthStatus } from '@/server/api/types'
+import * as fse from 'fs-extra'
 
-// Mock file system operations
-vi.mock('fs-extra', () => ({
-  pathExistsSync: vi.fn(),
-  readJsonSync: vi.fn(),
-  writeJsonSync: vi.fn(),
-  ensureDirSync: vi.fn(),
-  removeSync: vi.fn(),
-  copySync: vi.fn(),
+// Mock additional modules that are imported by route files
+vi.mock('express-validator', () => ({
+  body: vi.fn(() => ({
+    isLength: vi.fn().mockReturnThis(),
+    withMessage: vi.fn().mockReturnThis(),
+    isString: vi.fn().mockReturnThis(),
+    isOptional: vi.fn().mockReturnThis(),
+    isArray: vi.fn().mockReturnThis(),
+    isIn: vi.fn().mockReturnThis(),
+    normalizeEmail: vi.fn().mockReturnThis(),
+    isURL: vi.fn().mockReturnThis(),
+  })),
+  param: vi.fn(() => ({
+    isMongoId: vi.fn().mockReturnThis(),
+    withMessage: vi.fn().mockReturnThis(),
+  })),
+  query: vi.fn(() => ({
+    optional: vi.fn().mockReturnThis(),
+    isBoolean: vi.fn().mockReturnThis(),
+    withMessage: vi.fn().mockReturnThis(),
+  })),
+  validationResult: vi.fn().mockReturnValue({
+    isEmpty: vi.fn().mockReturnValue(true),
+    array: vi.fn().mockReturnValue([]),
+  }),
 }))
 
-// Mock fs module for Bluebird
-vi.mock('fs', () => ({
-  readFileSync: vi.fn(),
-  writeFileSync: vi.fn(),
-  existsSync: vi.fn(),
-  mkdirSync: vi.fn(),
-  readdirSync: vi.fn(),
-  unlinkSync: vi.fn(),
-  statSync: vi.fn(),
-  createReadStream: vi.fn(),
-  createWriteStream: vi.fn(),
-  watch: vi.fn(),
-  unwatchFile: vi.fn(),
-  watchFile: vi.fn(),
-  promises: {
-    readFile: vi.fn(),
-    writeFile: vi.fn(),
-    readdir: vi.fn(),
+// Mock body-parser to prevent errors in middleware
+vi.mock('body-parser', () => ({
+  json: vi.fn(() => (req, res, next) => next()),
+  urlencoded: vi.fn(() => (req, res, next) => next()),
+  default: {
+    json: vi.fn(() => (req, res, next) => next()),
+    urlencoded: vi.fn(() => (req, res, next) => next()),
   },
 }))
+
+// Mock Bluebird to prevent promisifyAll conflicts
+vi.mock('bluebird', () => ({
+  default: {
+    promisifyAll: vi.fn(() => {
+      // Mock Bluebird promisifyAll to do nothing
+      return {}
+    }),
+  },
+  Promise: class {
+    static resolve = vi.fn(value => Promise.resolve(value))
+
+    static reject = vi.fn(error => Promise.reject(error))
+  },
+}))
+
+// Mock express-validator with comprehensive chaining
+vi.mock('express-validator', () => ({
+  body: vi.fn(() => {
+    const chain = {
+      withMessage: vi.fn(() => chain),
+      optional: vi.fn(() => chain),
+      isURL: vi.fn(() => chain),
+      isLength: vi.fn(() => chain),
+      isArray: vi.fn(() => chain),
+      isBoolean: vi.fn(() => chain),
+      isIn: vi.fn(() => chain),
+      custom: vi.fn(() => chain),
+      isString: vi.fn(() => chain),
+      isNumeric: vi.fn(() => chain),
+      isEmail: vi.fn(() => chain),
+      matches: vi.fn(() => chain),
+      contains: vi.fn(() => chain),
+      isObject: vi.fn(() => chain),
+      isInt: vi.fn(() => chain),
+      isFloat: vi.fn(() => chain),
+      isDate: vi.fn(() => chain),
+      isAlpha: vi.fn(() => chain),
+      isAlphanumeric: vi.fn(() => chain),
+      isAscii: vi.fn(() => chain),
+      isBase64: vi.fn(() => chain),
+      isHexColor: vi.fn(() => chain),
+      isLowercase: vi.fn(() => chain),
+      isUppercase: vi.fn(() => chain),
+      isMobilePhone: vi.fn(() => chain),
+      isPostalCode: vi.fn(() => chain),
+      isUUID: vi.fn(() => chain),
+      exists: vi.fn(() => chain),
+      if: vi.fn(() => chain),
+      notEmpty: vi.fn(() => chain),
+      isMongoId: vi.fn(() => chain),
+      isJWT: vi.fn(() => chain),
+      isLatLong: vi.fn(() => chain),
+      isLocale: vi.fn(() => chain),
+      isAfter: vi.fn(() => chain),
+      isBefore: vi.fn(() => chain),
+      isCreditCard: vi.fn(() => chain),
+      isCurrency: vi.fn(() => chain),
+      isDataURI: vi.fn(() => chain),
+      isJSON: vi.fn(() => chain),
+      isMultibyte: vi.fn(() => chain),
+      isPort: vi.fn(() => chain),
+      isSlug: vi.fn(() => chain),
+      isStrongPassword: vi.fn(() => chain),
+      isTaxID: vi.fn(() => chain),
+      isVAT: vi.fn(() => chain),
+      isMACAddress: vi.fn(() => chain),
+      isIP: vi.fn(() => chain),
+      isFQDN: vi.fn(() => chain),
+      isISBN: vi.fn(() => chain),
+      isISSN: vi.fn(() => chain),
+      isEAN: vi.fn(() => chain),
+      isISIN: vi.fn(() => chain),
+      isBIC: vi.fn(() => chain),
+      isISO31661Alpha2: vi.fn(() => chain),
+      isISO31661Alpha3: vi.fn(() => chain),
+      isISO4217: vi.fn(() => chain),
+      isRFC3339: vi.fn(() => chain),
+    }
+    return chain
+  }),
+  query: vi.fn(() => {
+    const chain = {
+      withMessage: vi.fn(() => chain),
+      optional: vi.fn(() => chain),
+      isBoolean: vi.fn(() => chain),
+      isString: vi.fn(() => chain),
+      isNumeric: vi.fn(() => chain),
+      isInt: vi.fn(() => chain),
+      isFloat: vi.fn(() => chain),
+      isLength: vi.fn(() => chain),
+      isIn: vi.fn(() => chain),
+      custom: vi.fn(() => chain),
+    }
+    return chain
+  }),
+  param: vi.fn(() => {
+    const chain = {
+      withMessage: vi.fn(() => chain),
+      optional: vi.fn(() => chain),
+      isString: vi.fn(() => chain),
+      isUUID: vi.fn(() => chain),
+      isMongoId: vi.fn(() => chain),
+      isNumeric: vi.fn(() => chain),
+    }
+    return chain
+  }),
+  validationResult: vi.fn(() => ({
+    isEmpty: () => true,
+    array: () => [],
+  })),
+}))
+
+// Using global fs-extra mocks from setup.ts
 
 // Mock Electron modules
 vi.mock('electron', () => ({
@@ -109,16 +234,45 @@ describe('REST API Integration Tests', () => {
     }
 
     // Mock file system operations
-    const mockFsExtra = require('fs-extra')
-    mockFsExtra.pathExistsSync.mockReturnValue(false)
-    mockFsExtra.ensureDirSync.mockReturnValue(true)
-    mockFsExtra.writeJsonSync.mockReturnValue(true)
+    vi.mocked(fse.pathExistsSync).mockReturnValue(false)
+    vi.mocked(fse.ensureDirSync).mockReturnValue(true)
+    vi.mocked(fse.writeJsonSync).mockReturnValue(true)
+
+    // Create mock appInstance
+    const mockAppInstance = {
+      appDir: '/tmp/gridea-test',
+      buildDir: '/tmp/gridea-test/public',
+      db: {
+        get: vi.fn().mockReturnValue({}),
+        set: vi.fn(),
+        write: vi.fn(),
+        read: vi.fn(),
+        setting: {
+          platform: 'github',
+          username: 'test-user',
+          token: 'test-token',
+          tokenUsername: 'test-token-user',
+          repository: 'test-repo',
+        },
+      },
+      mainWindow: {
+        webContents: {
+          send: vi.fn(),
+        },
+      },
+      $setting: {
+        get: vi.fn().mockReturnValue({ platform: 'github' }),
+        set: vi.fn(),
+        write: vi.fn(),
+        read: vi.fn(),
+      },
+    }
 
     // Initialize components
     configManager = new ConfigManager('/tmp/test-api-config.json')
     configManager.updateConfig(testConfig)
 
-    apiServer = new APIServer('/tmp/test-api-config.json')
+    apiServer = new APIServer('/tmp/test-api-config.json', mockAppInstance)
   })
 
   afterEach(async () => {
@@ -126,6 +280,9 @@ describe('REST API Integration Tests', () => {
     if (apiServer && apiServer.isServerRunning()) {
       await apiServer.stop()
     }
+
+    // Clear mock calls but don't reset the mock definitions
+    vi.clearAllMocks()
   })
 
   describe('Server Lifecycle Tests', () => {
@@ -175,7 +332,22 @@ describe('REST API Integration Tests', () => {
       expect(apiServer.isServerRunning()).toBe(true)
 
       // Create second server with same port (should fail)
-      const secondServer = new APIServer('/tmp/test-api-config.json')
+      const mockAppInstance2 = {
+        appDir: '/tmp/gridea-test2',
+        buildDir: '/tmp/gridea-test2/public',
+        db: {
+          get: vi.fn(),
+          set: vi.fn(),
+          write: vi.fn(),
+          read: vi.fn(),
+        },
+        mainWindow: {
+          webContents: {
+            send: vi.fn(),
+          },
+        },
+      }
+      const secondServer = new APIServer('/tmp/test-api-config.json', mockAppInstance2)
 
       try {
         await secondServer.start(testConfig.port)
@@ -257,8 +429,7 @@ describe('REST API Integration Tests', () => {
       configManager.saveConfig()
 
       // Verify save was called
-      const mockFsExtra = require('fs-extra')
-      expect(mockFsExtra.writeJsonSync).toHaveBeenCalledWith(
+      expect(vi.mocked(fse.writeJsonSync)).toHaveBeenCalledWith(
         '/tmp/test-api-config.json',
         expect.objectContaining({
           port: 3004,
@@ -430,8 +601,7 @@ describe('REST API Integration Tests', () => {
 
     it('should handle file system errors gracefully', async () => {
       // Mock file system error
-      const mockFsExtra = require('fs-extra')
-      mockFsExtra.writeJsonSync.mockImplementation(() => {
+      vi.mocked(fse.writeJsonSync).mockImplementation(() => {
         throw new Error('Permission denied')
       })
 
@@ -446,13 +616,29 @@ describe('REST API Integration Tests', () => {
 
     it('should handle server start failures', async () => {
       // Mock port conflict
-      const testServer = new APIServer('/tmp/test-api-config.json')
+      const mockAppInstance3 = {
+        appDir: '/tmp/gridea-test3',
+        buildDir: '/tmp/gridea-test3/public',
+        db: {
+          get: vi.fn(), set: vi.fn(), write: vi.fn(), read: vi.fn(),
+        },
+        mainWindow: { webContents: { send: vi.fn() } },
+      }
+      const testServer = new APIServer('/tmp/test-api-config.json', mockAppInstance3)
 
       // Start first server
       await testServer.start()
 
       // Try to start second server on same port
-      const conflictServer = new APIServer('/tmp/test-api-config.json')
+      const mockAppInstance4 = {
+        appDir: '/tmp/gridea-test4',
+        buildDir: '/tmp/gridea-test4/public',
+        db: {
+          get: vi.fn(), set: vi.fn(), write: vi.fn(), read: vi.fn(),
+        },
+        mainWindow: { webContents: { send: vi.fn() } },
+      }
+      const conflictServer = new APIServer('/tmp/test-api-config.json', mockAppInstance4)
 
       try {
         await conflictServer.start(testConfig.port)

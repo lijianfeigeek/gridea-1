@@ -173,3 +173,9 @@ export function authenticateRequest(req: AuthRequest, res: Response, next: NextF
   const defaultAuth = new AuthMiddleware({ enabled: false })
   return defaultAuth.authenticate()(req, res, next)
 }
+
+// Export a middleware factory function for easier usage
+export function createAuthenticateRequest(config: AuthConfig = { enabled: false }) {
+  const auth = new AuthMiddleware(config)
+  return auth.authenticate()
+}

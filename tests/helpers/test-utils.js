@@ -574,3 +574,6 @@ module.exports = {
     url: 'string'
   }
 }
+
+// Export the TestDataManager instance for test files
+export const testDataManager = new TestDataManager()

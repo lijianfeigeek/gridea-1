@@ -9,7 +9,7 @@ export default defineConfig({
     include: ['tests/**/*.test.ts'],
     exclude: [
       'tests/e2e/**/*',
-      'tests/unit/background/**', // Exclude Jest-specific tests
+      'tests/unit/background/ipc.test.ts', // Exclude old Jest-specific IPC test
     ],
     coverage: {
       provider: 'v8',

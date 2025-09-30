@@ -1,24 +1,46 @@
 import {
   describe, it, expect, beforeEach, afterEach, vi,
 } from 'vitest'
+
 import { createTestServer } from '../utils/test-server'
 import { ArticlePublishRequest, ArticlePublishResponse, ApiResponse } from '../../../src/server/api/types'
 import { IPost } from '../../../src/server/interfaces/post'
+// Using global mocks from setup.ts
 
 describe('文章发布API测试', () => {
   let server: any
   let baseUrl: string
   let testApiKey: string
 
+  // 设置较短的测试超时
+  vi.setConfig({ testTimeout: 8000, hookTimeout: 5000 })
+
   beforeEach(async () => {
-    server = await createTestServer()
+    // 增加超时保护
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Server startup timeout')), 5000)
+    })
+
+    server = await Promise.race([
+      createTestServer(),
+      timeoutPromise,
+    ]) as any
+
     baseUrl = `http://localhost:${server.port}`
     testApiKey = 'test-api-key-12345'
   })
 
   afterEach(async () => {
     if (server) {
-      await server.close()
+      // 增加关闭超时保护
+      const closePromise = server.close()
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Server close timeout')), 3000)
+      })
+
+      await Promise.race([closePromise, timeoutPromise]).catch(() => {
+        console.warn('Server close timeout, forcing cleanup')
+      })
     }
   })
 

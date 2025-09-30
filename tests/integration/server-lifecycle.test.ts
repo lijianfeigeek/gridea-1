@@ -151,9 +151,68 @@ describe('Server Lifecycle Integration Tests', () => {
     configManager = new ConfigManager('/tmp/test-api-config.json')
     configManager.updateConfig(testConfig)
 
-    // Create mock API server
+    // Create mock API server with proper initialization
     const { APIServer } = await import('@/server/api/index')
-    mockApiServer = new APIServer()
+
+    // Ensure all mock methods are properly initialized
+    mockApiServer = new APIServer() as any
+
+    // Set default return values for mock methods if not already set
+    if (typeof mockApiServer.start !== 'function') {
+      mockApiServer.start = vi.fn().mockResolvedValue(undefined)
+    }
+    if (typeof mockApiServer.stop !== 'function') {
+      mockApiServer.stop = vi.fn().mockResolvedValue(undefined)
+    }
+    if (typeof mockApiServer.restart !== 'function') {
+      mockApiServer.restart = vi.fn().mockResolvedValue(undefined)
+    }
+    if (typeof mockApiServer.isServerRunning !== 'function') {
+      mockApiServer.isServerRunning = vi.fn().mockReturnValue(false)
+    }
+    if (typeof mockApiServer.getHealthStatus !== 'function') {
+      mockApiServer.getHealthStatus = vi.fn().mockResolvedValue({
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        uptime: 0,
+        version: '1.0.0',
+        memory: {
+          heapUsed: 1024 * 1024,
+          heapTotal: 2 * 1024 * 1024,
+          rss: 3 * 1024 * 1024,
+        },
+        api: {
+          endpoints: 1,
+          requests: 0,
+        },
+      })
+    }
+    if (typeof mockApiServer.getStats !== 'function') {
+      mockApiServer.getStats = vi.fn().mockReturnValue({
+        uptime: 0,
+        requestCount: 0,
+        memoryUsage: {
+          heapUsed: 1024 * 1024,
+          heapTotal: 2 * 1024 * 1024,
+          rss: 3 * 1024 * 1024,
+          external: 0,
+          arrayBuffers: 0,
+        },
+        isRunning: false,
+      })
+    }
+    if (typeof mockApiServer.getConfig !== 'function') {
+      mockApiServer.getConfig = vi.fn().mockReturnValue(testConfig)
+    }
+    if (typeof mockApiServer.updateConfig !== 'function') {
+      mockApiServer.updateConfig = vi.fn()
+    }
+    if (typeof mockApiServer.getServer !== 'function') {
+      mockApiServer.getServer = vi.fn().mockReturnValue(null)
+    }
+    if (typeof mockApiServer.getApp !== 'function') {
+      mockApiServer.getApp = vi.fn().mockReturnValue({})
+    }
   })
 
   describe('Configuration Management Tests', () => {

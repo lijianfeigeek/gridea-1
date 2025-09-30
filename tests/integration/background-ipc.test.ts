@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { app, ipcMain, BrowserWindow } from 'electron'
 
 // Now import the mocked modules
@@ -6,48 +7,12 @@ import { APIServer } from '../../src/server/api/index'
 import { ConfigManager } from '../../src/server/api/config'
 
 // Mock server modules before importing them
-jest.mock('../../src/server/api/index', () => ({
-  APIServer: jest.fn().mockImplementation(() => ({
-    start: jest.fn(),
-    stop: jest.fn(),
-    isServerRunning: jest.fn(),
-    getHealthStatus: jest.fn(),
-    getConfig: jest.fn(),
-  })),
-}))
-
-jest.mock('../../src/server/api/config', () => ({
-  ConfigManager: jest.fn().mockImplementation(() => ({
-    validateConfig: jest.fn(),
-    getEnvironmentConfig: jest.fn(),
-    updateConfig: jest.fn(),
-    saveConfig: jest.fn(),
-  })),
-}))
-
-// Integration test for background process and IPC handlers
-describe('Background Process IPC Integration', () => {
-  let mockApiServer: jest.Mocked<APIServer>
-  let mockConfigManager: jest.Mocked<ConfigManager>
-  let mockWindow: jest.Mocked<BrowserWindow>
-
-  beforeEach(() => {
-    jest.clearAllMocks()
-
-    // Create mock instances
-    const MockAPIServer = APIServer as jest.MockedClass<typeof APIServer>
-    const MockConfigManager = ConfigManager as jest.MockedClass<typeof ConfigManager>
-    const MockBrowserWindow = BrowserWindow as jest.MockedClass<typeof BrowserWindow>
-
-    mockApiServer = new MockAPIServer() as jest.Mocked<APIServer>
-    mockConfigManager = new MockConfigManager() as jest.Mocked<ConfigManager>
-    mockWindow = new MockBrowserWindow() as jest.Mocked<BrowserWindow>
-
-    // Setup default implementations
-    mockApiServer.start.mockResolvedValue()
-    mockApiServer.stop.mockResolvedValue()
-    mockApiServer.isServerRunning.mockReturnValue(false)
-    mockApiServer.getHealthStatus.mockResolvedValue({
+vi.mock('../../src/server/api/index', () => ({
+  APIServer: vi.fn().mockImplementation(() => ({
+    start: vi.fn().mockResolvedValue(),
+    stop: vi.fn().mockResolvedValue(),
+    isServerRunning: vi.fn().mockReturnValue(false),
+    getHealthStatus: vi.fn().mockResolvedValue({
       status: 'healthy',
       timestamp: new Date().toISOString(),
       uptime: 0,
@@ -61,28 +26,49 @@ describe('Background Process IPC Integration', () => {
         endpoints: 1,
         requests: 0,
       },
-    })
+    }),
+    getConfig: vi.fn().mockReturnValue({}),
+  })),
+}))
 
-    mockConfigManager.validateConfig.mockReturnValue({
-      valid: true,
-      errors: [],
-    })
-    mockConfigManager.getEnvironmentConfig.mockReturnValue({
-      port: 3000,
-      host: 'localhost',
-      auth: { enabled: false, secretKey: '' },
-      cors: { enabled: true, origins: ['*'] },
-      autoDeploy: false,
-    })
+vi.mock('../../src/server/api/config', () => ({
+  ConfigManager: vi.fn().mockImplementation(() => ({
+    validateConfig: vi.fn().mockReturnValue({ valid: true, errors: [] }),
+    getEnvironmentConfig: vi.fn().mockReturnValue({}),
+    updateConfig: vi.fn(),
+    saveConfig: vi.fn().mockResolvedValue(true),
+  })),
+}))
+
+// Integration test for background process and IPC handlers
+describe('Background Process IPC Integration', () => {
+  let mockApiServer: any
+  let mockConfigManager: any
+  let mockWindow: any
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    // Create mock instances
+    const MockAPIServer = APIServer as any
+    const MockConfigManager = ConfigManager as any
+    const MockBrowserWindow = BrowserWindow as any
+
+    mockApiServer = new MockAPIServer()
+    mockConfigManager = new MockConfigManager()
+    mockWindow = new MockBrowserWindow()
+
+    // Ensure mock methods are available for dynamic modification during tests
+    // These methods are already defined in vi.mock but we need to ensure they're accessible
 
     // Mock window webContents
     mockWindow.webContents = {
-      send: jest.fn(),
+      send: vi.fn(),
     } as any
 
     // Mock app methods
-    jest.mocked(app).getPath.mockReturnValue('/tmp/gridea')
-    jest.mocked(app).getLocale.mockReturnValue('zh-CN')
+    (app as any).getPath = vi.fn().mockReturnValue('/tmp/gridea');
+    (app as any).getLocale = vi.fn().mockReturnValue('zh-CN')
   })
 
   afterEach(async () => {
@@ -92,7 +78,7 @@ describe('Background Process IPC Integration', () => {
     } catch (error) {
       // Ignore cleanup errors in tests
     }
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('IPC Handler Initialization', () => {
@@ -132,7 +118,7 @@ describe('Background Process IPC Integration', () => {
       initializeIPCHandlers()
 
       // Get the handler function
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const startHandlerObj = handleCalls.find(call => call[0] === 'start-api-server')
       const startHandler = startHandlerObj ? startHandlerObj[1] : undefined
 
@@ -170,7 +156,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle start-api-server invoke with invalid configuration', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const startHandlerObj = handleCalls.find(call => call[0] === 'start-api-server')
       const startHandler = startHandlerObj ? startHandlerObj[1] : undefined
 
@@ -203,7 +189,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle stop-api-server invoke successfully', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const stopHandlerObj = handleCalls.find(call => call[0] === 'stop-api-server')
       const stopHandler = stopHandlerObj ? stopHandlerObj[1] : undefined
 
@@ -226,7 +212,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle stop-api-server invoke with errors', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const stopHandlerObj = handleCalls.find(call => call[0] === 'stop-api-server')
       const stopHandler = stopHandlerObj ? stopHandlerObj[1] : undefined
 
@@ -257,7 +243,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle get-api-server-status invoke correctly', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const statusHandlerObj = handleCalls.find(call => call[0] === 'get-api-server-status')
       const statusHandler = statusHandlerObj ? statusHandlerObj[1] : undefined
 
@@ -290,7 +276,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle save-api-settings invoke with valid settings', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const saveHandlerObj = handleCalls.find(call => call[0] === 'save-api-settings')
       const saveHandler = saveHandlerObj ? saveHandlerObj[1] : undefined
 
@@ -325,7 +311,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle save-api-settings invoke with invalid settings', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const saveHandlerObj = handleCalls.find(call => call[0] === 'save-api-settings')
       const saveHandler = saveHandlerObj ? saveHandlerObj[1] : undefined
 
@@ -359,7 +345,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle test-webhook invoke correctly', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const webhookHandlerObj = handleCalls.find(call => call[0] === 'test-webhook')
       const webhookHandler = webhookHandlerObj ? webhookHandlerObj[1] : undefined
 
@@ -387,7 +373,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle test-webhook invoke with invalid URL', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const webhookHandlerObj = handleCalls.find(call => call[0] === 'test-webhook')
       const webhookHandler = webhookHandlerObj ? webhookHandlerObj[1] : undefined
 
@@ -420,7 +406,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle api-server-status-changed event', () => {
       initializeIPCHandlers()
 
-      const onCalls = (ipcMain.on as jest.Mock).mock.calls
+      const onCalls = (ipcMain.on as any).mock.calls
       const statusHandlerObj = onCalls.find(call => call[0] === 'api-server-status-changed')
       const statusHandler = statusHandlerObj ? statusHandlerObj[1] : undefined
 
@@ -447,7 +433,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle api-server-started event', () => {
       initializeIPCHandlers()
 
-      const onCalls = (ipcMain.on as jest.Mock).mock.calls
+      const onCalls = (ipcMain.on as any).mock.calls
       const startedHandlerObj = onCalls.find(call => call[0] === 'api-server-started')
       const startedHandler = startedHandlerObj ? startedHandlerObj[1] : undefined
 
@@ -472,7 +458,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle api-server-stopped event', () => {
       initializeIPCHandlers()
 
-      const onCalls = (ipcMain.on as jest.Mock).mock.calls
+      const onCalls = (ipcMain.on as any).mock.calls
       const stoppedHandlerObj = onCalls.find(call => call[0] === 'api-server-stopped')
       const stoppedHandler = stoppedHandlerObj ? stoppedHandlerObj[1] : undefined
 
@@ -492,7 +478,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle api-server-error event', () => {
       initializeIPCHandlers()
 
-      const onCalls = (ipcMain.on as jest.Mock).mock.calls
+      const onCalls = (ipcMain.on as any).mock.calls
       const errorHandlerObj = onCalls.find(call => call[0] === 'api-server-error')
       const errorHandler = errorHandlerObj ? errorHandlerObj[1] : undefined
 
@@ -558,7 +544,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle complete API server lifecycle', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const startHandlerObj = handleCalls.find(call => call[0] === 'start-api-server')
       const startHandler = startHandlerObj ? startHandlerObj[1] : undefined
       const stopHandlerObj = handleCalls.find(call => call[0] === 'stop-api-server')
@@ -611,7 +597,7 @@ describe('Background Process IPC Integration', () => {
     test('should handle concurrent operations safely', async () => {
       initializeIPCHandlers()
 
-      const handleCalls = (ipcMain.handle as jest.Mock).mock.calls
+      const handleCalls = (ipcMain.handle as any).mock.calls
       const startHandlerObj = handleCalls.find(call => call[0] === 'start-api-server')
       const startHandler = startHandlerObj ? startHandlerObj[1] : undefined
       const statusHandlerObj = handleCalls.find(call => call[0] === 'get-api-server-status')

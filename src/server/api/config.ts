@@ -53,7 +53,31 @@ export class ConfigManager {
   }
 
   public updateConfig(updates: Partial<APIServerConfig>): void {
-    this.config = { ...this.config, ...updates }
+    this.config = this.mergeDeep(this.config, updates)
+  }
+
+  private mergeDeep(target: any, source: any): any {
+    if (typeof target !== 'object' || target === null) {
+      return source
+    }
+
+    if (typeof source !== 'object' || source === null) {
+      return target
+    }
+
+    const output = { ...target }
+
+    for (const key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
+          output[key] = this.mergeDeep(target[key], source[key])
+        } else {
+          output[key] = source[key]
+        }
+      }
+    }
+
+    return output
   }
 
   public saveConfig(): void {

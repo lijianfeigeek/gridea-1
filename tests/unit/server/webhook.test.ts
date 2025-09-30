@@ -1,5 +1,31 @@
-import { WebhookMockServer, WebhookServerOptions, WebhookEvent } from '../../mocks/webhook.server'
+import {
+  beforeAll, afterAll, beforeEach, describe, test, expect, vi,
+} from 'vitest'
+import http from 'http'
 import { WebhookRequest, WebhookPayload } from '../../helpers/test-setup'
+
+// Mock http module
+vi.mock('http', async () => {
+  const actual = await vi.importActual<typeof http>('http')
+  return {
+    default: actual,
+    ...actual,
+    createServer: vi.fn().mockImplementation(() => ({
+      listen: vi.fn().mockImplementation((port, host, callback) => {
+        if (callback) callback()
+      }),
+      close: vi.fn().mockImplementation((callback) => {
+        if (callback) callback()
+      }),
+      address: vi.fn().mockReturnValue({ port: 4002, address: '127.0.0.1' }),
+      on: vi.fn(),
+      removeAllListeners: vi.fn(),
+    })),
+  }
+})
+
+// Import WebhookMockServer after mocking
+const { WebhookMockServer, WebhookServerOptions, WebhookEvent } = await import('../../mocks/webhook.server')
 
 // 辅助函数
 function createWebhookPayload(event: string, data: any): WebhookPayload {

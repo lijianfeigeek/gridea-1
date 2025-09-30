@@ -19,6 +19,7 @@ vi.mock('fs-extra', () => ({
   ensureDirSync: vi.fn(),
   removeSync: vi.fn(),
   copySync: vi.fn(),
+  writeFileSync: vi.fn(),
 }))
 
 describe('Configuration Integration Tests', () => {
@@ -220,7 +221,7 @@ describe('Configuration Integration Tests', () => {
 
   describe('Configuration Persistence Tests', () => {
     it('should save configuration to file', () => {
-      const mockFs = require('fs-extra')
+      const mockFs = mockFsExtra
       configManager.updateConfig(testConfig)
       configManager.saveConfig()
 
@@ -232,7 +233,7 @@ describe('Configuration Integration Tests', () => {
     })
 
     it('should load configuration from file when it exists', () => {
-      const mockFs = require('fs-extra')
+      const mockFs = mockFsExtra
       const savedConfig = {
         ...testConfig,
         port: 3003,
