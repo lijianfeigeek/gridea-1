@@ -52,6 +52,7 @@ export interface APIResponse<T = any> {
   success: boolean
   data?: T
   error?: APIError
+  message?: string
   timestamp: string
 }
 

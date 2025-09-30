@@ -2,7 +2,7 @@ import express, { Express } from 'express'
 import { createServer, Server as HTTPServer } from 'http'
 import { ConfigManager } from './config'
 import { MiddlewareManager } from './middleware'
-import { APIRoutes } from './routes'
+import { APIRoutes } from './routes/index'
 import { APIServerConfig, HealthStatus, APIResponse } from './types'
 
 export class APIServer {

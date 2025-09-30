@@ -167,3 +167,9 @@ export class AuthMiddleware {
     })
   }
 }
+
+// Helper function for direct authentication middleware usage
+export function authenticateRequest(req: AuthRequest, res: Response, next: NextFunction) {
+  const defaultAuth = new AuthMiddleware({ enabled: false })
+  return defaultAuth.authenticate()(req, res, next)
+}

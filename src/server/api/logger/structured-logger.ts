@@ -301,6 +301,7 @@ export class StructuredLogger {
 
 // Create default logger instance
 export const defaultLogger = new StructuredLogger()
+export const logger = defaultLogger
 
 // Request ID generation utility
 export function generateRequestId(): string {
@@ -309,14 +310,14 @@ export function generateRequestId(): string {
 
 // Logger middleware factory
 export function createLoggerMiddleware(config?: Partial<LoggerConfig>) {
-  const logger = new StructuredLogger(config)
+  const middlewareLogger = new StructuredLogger(config)
 
   return (req: any, res: any, next: any) => {
     const requestId = generateRequestId()
     const startTime = Date.now()
 
     // Create request-specific logger
-    const requestLogger = logger.withRequest(requestId, startTime)
+    const requestLogger = middlewareLogger.withRequest(requestId, startTime)
 
     // Attach logger to request object
     req.logger = requestLogger
