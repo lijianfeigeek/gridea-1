@@ -137,25 +137,73 @@ The Express server (`src/server/`) handles:
 - Web security disabled for local resource access
 - Remote module enabled for Electron API access
 
-## Development Workflow
+## Current Development Context
 
-### Current Branch Context
-- **Active Branch**: `REST-API` - Implementing REST API functionality for external article publishing
-- **Base Branch**: `master` - Stable production code
-- **Testing Approach**: Test-Driven Development (TDD) with comprehensive test coverage
-- **API Features**: Article publishing, Markdown validation, auto-deployment, webhook support
+### Active Branch: REST-API Implementation
+The `REST-API` branch implements a comprehensive REST API server for external article publishing with Test-Driven Development (TDD) methodology.
 
-### Adding New Features
-1. Create TypeScript interfaces in `src/interfaces/` for new data structures
-2. Add server logic in appropriate `src/server/` modules
-3. Create Vue components following existing patterns
-4. Update routing in `src/router.ts` if needed
-5. Add translations in `src/assets/locales.ts`
-6. Write comprehensive tests following TDD principles
+**Key Features:**
+- REST API server with configurable port (default: 3000)
+- Article publishing API endpoints
+- Markdown content validation
+- Optional Bearer Token authentication
+- Automatic deployment integration
+- Webhook notification system
+- CORS configuration support
+- Real-time API server status monitoring
 
-### Building and Testing
-- Use `yarn electron:serve` for development with hot reload
-- Lint code with `yarn lint` before committing
-- Run tests with `yarn test:run` or `yarn test:unit`
-- Build production version with `yarn electron:build`
-- For API development: use `yarn test:api` for API-specific tests
+**Implementation Files:**
+- API Server: `src/server/api/` - Core Express API server implementation
+- API Settings GUI: `src/views/setting/includes/APISetting.vue` - User interface for API configuration
+- IPC Handlers: Extended `src/background.ts` with API server management methods
+- Validators: `src/server/validators/` - Content validation and sanitization
+- Tests: `tests/unit/api/` - Comprehensive test suite following TDD principles
+
+**API Endpoints:**
+```
+GET  /api/health                    - Health check
+POST /api/v1/articles/publish        - Publish article
+GET  /api/v1/articles/:id/status   - Get article status
+POST /api/v1/validate/markdown      - Validate markdown
+GET  /api/v1/config                 - Get configuration
+POST /api/v1/webhook/test           - Test webhook
+```
+
+**TDD Development Process:**
+1. **Red Phase**: Write failing test cases
+2. **Green Phase**: Implement minimal functionality to pass tests
+3. **Refactor Phase**: Optimize code while maintaining test coverage
+4. **Integration**: Test component interactions and end-to-end workflows
+
+**Testing Commands:**
+- `yarn test:api` - Run API-specific tests
+- `yarn test:api:watch` - Run API tests in watch mode
+- `yarn test:unit` - Run all unit tests
+- `yarn test:coverage:unit` - Run tests with coverage report
+
+## Branch Context and Development Approach
+
+### When working on the REST-API branch:
+- Follow TDD methodology: write tests before implementation
+- Maintain comprehensive test coverage (>90% for unit tests)
+- Use the existing API server structure in `src/server/api/`
+- Extend the API settings GUI in `src/views/setting/includes/APISetting.vue`
+- Implement new endpoints following the established patterns
+- Ensure all new features have corresponding tests
+- Run `yarn lint` before committing changes
+- Use `yarn test:api` to verify API functionality
+
+### When working on the master branch:
+- Focus on stable production features
+- Maintain backward compatibility
+- Follow established coding patterns
+- Test new features thoroughly before merging
+
+### General Development Guidelines
+- Use absolute imports with `@/` alias
+- Create TypeScript interfaces for new data structures
+- Add translations in `src/assets/locales.ts` for user-facing features
+- Follow Vue Class Component patterns with TypeScript decorators
+- Implement proper error handling and user feedback
+- Use the existing state management patterns (minimal Vuex, local component state)
+- Follow the established file organization and naming conventions
