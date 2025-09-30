@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## TypeScript Compatibility
+
+**Important**: This project uses TypeScript 3.2.2. When working with this codebase:
+
+- Use type assertions `(value as Type)` instead of type annotations in catch clauses (`catch (error: any)`)
+- For browser APIs like `navigator.clipboard`, use type assertion: `(navigator as any).clipboard`
+- `ga.event()` requires exactly 3 arguments: `ga.event('Category', 'Action', { evLabel: 'label' })`
+- The project uses Vue Class Components with TypeScript decorators (experimentalDecorators enabled)
+
 ## Development Commands
 
 ### Essential Commands
@@ -153,21 +162,37 @@ The `REST-API` branch implements a comprehensive REST API server for external ar
 - Real-time API server status monitoring
 
 **Implementation Files:**
-- API Server: `src/server/api/` - Core Express API server implementation
-- API Settings GUI: `src/views/setting/includes/APISetting.vue` - User interface for API configuration
-- IPC Handlers: Extended `src/background.ts` with API server management methods
-- Validators: `src/server/validators/` - Content validation and sanitization
-- Tests: `tests/unit/api/` - Comprehensive test suite following TDD principles
+- **API Server Core**: `src/server/api/index.ts` - Main APIServer class with lifecycle management
+- **Configuration**: `src/server/api/config.ts` - ConfigManager for API server settings
+- **Middleware**: `src/server/api/middleware.ts` - Authentication, CORS, security, and rate limiting
+- **Routes**: `src/server/api/routes/` - API endpoint definitions (articles, webhooks)
+- **Controllers**: `src/server/api/controllers/` - Business logic handlers
+- **Validators**: `src/server/validators/` - Content validation and sanitization (markdown, webhook)
+- **API Settings GUI**: `src/views/setting/includes/APISetting.vue` - Complete Vue component for API configuration
+- **IPC Integration**: Extended `src/background.ts` with API server management methods
+- **Tests**: `tests/unit/api/` and `tests/unit/components/APISetting.test.ts` - Comprehensive test suite
 
 **API Endpoints:**
 ```
-GET  /api/health                    - Health check
-POST /api/v1/articles/publish        - Publish article
-GET  /api/v1/articles/:id/status   - Get article status
-POST /api/v1/validate/markdown      - Validate markdown
-GET  /api/v1/config                 - Get configuration
-POST /api/v1/webhook/test           - Test webhook
+GET  /api/health                    - Health check and server status
+GET  /api/articles/publish          - Article publishing endpoint
+GET  /api/articles/:id/status       - Get article processing status
+POST /api/articles/publish          - Publish article with markdown content
+POST /api/validate/markdown         - Validate markdown content
+GET  /api/config                    - Get current API configuration
+POST /api/webhooks/test             - Test webhook functionality
 ```
+
+**IPC Communication:**
+The API server communicates with the main process via these IPC channels:
+- `start-api-server` - Start the API server with configuration
+- `stop-api-server` - Stop the running API server
+- `get-api-server-status` - Get current server status
+- `save-api-settings` - Persist API configuration to file
+- `api-server-status-changed` - Event fired when server status changes
+- `api-server-started` - Event fired when server starts successfully
+- `api-server-stopped` - Event fired when server stops
+- `api-server-error` - Event fired when server encounters errors
 
 **TDD Development Process:**
 1. **Red Phase**: Write failing test cases
@@ -207,3 +232,12 @@ POST /api/v1/webhook/test           - Test webhook
 - Implement proper error handling and user feedback
 - Use the existing state management patterns (minimal Vuex, local component state)
 - Follow the established file organization and naming conventions
+
+### API Development Specifics
+- All new API endpoints must have corresponding tests before implementation
+- Use the existing ConfigManager pattern for configuration management
+- Implement proper input validation using express-validator
+- Follow the established error handling patterns in middleware/errorHandler.ts
+- Use the APIServer class lifecycle methods (start/stop/restart) for server management
+- Implement proper CORS configuration for development and production environments
+- Use structured logging for API operations and debugging
