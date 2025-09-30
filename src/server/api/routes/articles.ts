@@ -4,83 +4,87 @@ import { AuthMiddleware } from '../middleware/auth'
 import { LoggerMiddleware } from '../logger/middleware'
 import { ArticlePublishRequest, ArticlePublishResponse } from '../types'
 
-const router = Router()
+export function createArticlesRouter(appInstance: any, authConfig?: any): Router {
+  const router = Router()
 
-// Note: This is a simplified version for compatibility with the routes index.
-// The full ArticlesRoutes class is still available for the integration.ts file.
-const articlesController = new ArticlesController(null) // appInstance will be set by integration
-const authMiddleware = new AuthMiddleware({ enabled: false }) // authConfig will be set by integration
-const loggerMiddleware = new LoggerMiddleware()
+  // Create controller with appInstance
+  const articlesController = new ArticlesController(appInstance)
+  const authMiddleware = new AuthMiddleware(authConfig || { enabled: false })
+  const loggerMiddleware = new LoggerMiddleware()
 
-// Validation middleware
-function validatePublishRequest(req: any, res: any, next: any): void {
-  const { title, content, tags } = req.body
+  // Validation middleware
+  function validatePublishRequest(req: any, res: any, next: any): void {
+    const { title, content, tags } = req.body
 
-  const errors: string[] = []
+    const errors: string[] = []
 
-  if (!title || typeof title !== 'string' || title.trim().length === 0) {
-    errors.push('Title is required and must be a non-empty string')
-  }
+    if (!title || typeof title !== 'string' || title.trim().length === 0) {
+      errors.push('Title is required and must be a non-empty string')
+    }
 
-  if (!content || typeof content !== 'string' || content.trim().length === 0) {
-    errors.push('Content is required and must be a non-empty string')
-  }
+    if (!content || typeof content !== 'string' || content.trim().length === 0) {
+      errors.push('Content is required and must be a non-empty string')
+    }
 
-  if (title && title.length > 200) {
-    errors.push('Title must be less than 200 characters')
-  }
+    if (title && title.length > 200) {
+      errors.push('Title must be less than 200 characters')
+    }
 
-  if (tags !== undefined) {
-    if (!Array.isArray(tags)) {
-      errors.push('Tags must be an array')
-    } else {
-      const invalidTags = tags.filter((tag: any) => typeof tag !== 'string' || tag.trim().length === 0)
-      if (invalidTags.length > 0) {
-        errors.push('All tags must be non-empty strings')
-      }
+    if (tags !== undefined) {
+      if (!Array.isArray(tags)) {
+        errors.push('Tags must be an array')
+      } else {
+        const invalidTags = tags.filter((tag: any) => typeof tag !== 'string' || tag.trim().length === 0)
+        if (invalidTags.length > 0) {
+          errors.push('All tags must be non-empty strings')
+        }
 
-      if (tags.length > 10) {
-        errors.push('Maximum 10 tags allowed')
+        if (tags.length > 10) {
+          errors.push('Maximum 10 tags allowed')
+        }
       }
     }
-  }
 
-  if (errors.length > 0) {
-    return res.status(400).json({
-      success: false,
-      error: {
-        message: 'Invalid request data',
-        statusCode: 400,
-        error: 'BadRequest',
-        details: errors,
+    if (errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: 'Invalid request data',
+          statusCode: 400,
+          error: 'BadRequest',
+          details: errors,
+          timestamp: new Date().toISOString(),
+        },
         timestamp: new Date().toISOString(),
-      },
-      timestamp: new Date().toISOString(),
-    })
+      })
+    }
+
+    next()
   }
 
-  next()
+  router.post(
+    '/publish',
+    loggerMiddleware.middleware(),
+    authMiddleware.authenticate(),
+    validatePublishRequest,
+    (req, res) => articlesController.publishArticle(req as any, res),
+  )
+
+  router.get(
+    '/health',
+    (req, res) => {
+      res.json({
+        success: true,
+        message: 'Articles API is healthy',
+        timestamp: new Date().toISOString(),
+      })
+    },
+  )
+
+  return router
 }
 
-router.post(
-  '/publish',
-  loggerMiddleware.middleware(),
-  authMiddleware.authenticate(),
-  validatePublishRequest,
-  (req, res) => articlesController.publishArticle(req as any, res),
-)
-
-router.get(
-  '/health',
-  (req, res) => {
-    res.json({
-      success: true,
-      message: 'Articles API is healthy',
-      timestamp: new Date().toISOString(),
-    })
-  },
-)
-
+// The ArticlesRoutes class is kept for backward compatibility with integration.ts
 export class ArticlesRoutes {
   private router: Router
 
@@ -103,7 +107,54 @@ export class ArticlesRoutes {
       '/publish',
       this.loggerMiddleware.middleware(),
       this.authMiddleware.authenticate(),
-      validatePublishRequest,
+      (req, res, next) => {
+        const { title, content, tags } = req.body
+
+        const errors: string[] = []
+
+        if (!title || typeof title !== 'string' || title.trim().length === 0) {
+          errors.push('Title is required and must be a non-empty string')
+        }
+
+        if (!content || typeof content !== 'string' || content.trim().length === 0) {
+          errors.push('Content is required and must be a non-empty string')
+        }
+
+        if (title && title.length > 200) {
+          errors.push('Title must be less than 200 characters')
+        }
+
+        if (tags !== undefined) {
+          if (!Array.isArray(tags)) {
+            errors.push('Tags must be an array')
+          } else {
+            const invalidTags = tags.filter((tag: any) => typeof tag !== 'string' || tag.trim().length === 0)
+            if (invalidTags.length > 0) {
+              errors.push('All tags must be non-empty strings')
+            }
+
+            if (tags.length > 10) {
+              errors.push('Maximum 10 tags allowed')
+            }
+          }
+        }
+
+        if (errors.length > 0) {
+          return res.status(400).json({
+            success: false,
+            error: {
+              message: 'Invalid request data',
+              statusCode: 400,
+              error: 'BadRequest',
+              details: errors,
+              timestamp: new Date().toISOString(),
+            },
+            timestamp: new Date().toISOString(),
+          })
+        }
+
+        next()
+      },
       (req, res) => this.controller.publishArticle(req as any, res),
     )
 
@@ -123,5 +174,3 @@ export class ArticlesRoutes {
     return this.router
   }
 }
-
-export default router

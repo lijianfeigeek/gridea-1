@@ -39,7 +39,7 @@
         />
         <a-button
           v-if="apiServerStatus.running"
-          type="link"
+          type="default"
           @click="copyApiUrl"
           style="margin-left: 8px;"
         >
@@ -63,7 +63,7 @@
         />
         <a-button
           v-if="authEnabled"
-          type="link"
+          type="default"
           @click="generateApiKey"
           :disabled="apiServerStatus.running"
           style="margin-left: 8px;"
@@ -219,19 +219,9 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import { State } from 'vuex-class'
 import FooterBox from '../../../components/FooterBox/Index.vue'
 import ga from '../../../helpers/analytics'
+import { IAPISetting } from '../../../interfaces/setting'
 
-interface APIConfig {
-  enabled: boolean
-  port: number
-  auth: {
-    enabled: boolean
-    apiKey: string
-  }
-  cors: {
-    enabled: boolean
-    origins: string[]
-  }
-  autoDeploy: boolean
+interface APIConfig extends IAPISetting {
 }
 
 interface APIServerStatus {
@@ -248,6 +238,8 @@ interface APIServerStatus {
 })
 export default class APISetting extends Vue {
   @State('site') site!: any
+
+  form: any = {}
 
   formLayout = {
     label: { span: 6 },
@@ -324,14 +316,37 @@ export default class APISetting extends Vue {
 
   // 数据加载
   loadApiSettings() {
-    const { api } = this.site
-    this.enabled = api.enabled || false
-    this.port = api.port || 3000
-    this.authEnabled = api.auth.enabled || false
-    this.apiKey = api.auth.apiKey || ''
-    this.corsEnabled = api.cors.enabled !== false
-    this.corsOrigins = api.cors.origins || ['*']
-    this.autoDeploy = api.autoDeploy || false
+    // 检查site是否存在，如果不存在则使用默认值
+    if (!this.site) {
+      this.enabled = false
+      this.port = 3000
+      this.authEnabled = false
+      this.apiKey = ''
+      this.corsEnabled = true
+      this.corsOrigins = ['*']
+      this.autoDeploy = false
+    } else {
+      const { api } = this.site
+
+      // 检查api是否存在，如果不存在则使用默认值
+      if (!api) {
+        this.enabled = false
+        this.port = 3000
+        this.authEnabled = false
+        this.apiKey = ''
+        this.corsEnabled = true
+        this.corsOrigins = ['*']
+        this.autoDeploy = false
+      } else {
+        this.enabled = api.enabled || false
+        this.port = api.port || 3000
+        this.authEnabled = (api.auth && api.auth.enabled) || false
+        this.apiKey = (api.auth && api.auth.apiKey) || ''
+        this.corsEnabled = (api.cors && api.cors.enabled) !== false
+        this.corsOrigins = (api.cors && api.cors.origins) || ['*']
+        this.autoDeploy = api.autoDeploy || false
+      }
+    }
 
     // 保存原始配置用于变更检测
     this.originalConfig = {
@@ -540,7 +555,7 @@ export default class APISetting extends Vue {
       autoDeploy: this.autoDeploy,
     }
 
-    this.$store.dispatch('updateApiSettings', settings)
+    this.$store.dispatch('site/updateApiSettings', settings)
   }
 
   async saveSettings() {
@@ -647,13 +662,6 @@ export default class APISetting extends Vue {
   justify-content: flex-end;
 }
 
-// 响应式设计
-@media (max-width: 768px) {
-  .formLayout {
-    label: { span: 8 },
-    wrapper: { span: 16 },
-  }
-}
 
 // 主题适配
 [data-theme='dark'] {

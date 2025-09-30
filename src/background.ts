@@ -21,6 +21,7 @@ let win: BrowserWindow | null = null
 let menu: Menu
 let httpServer: any
 let mainWindow: BrowserWindow | null = null
+let appInstance: any = null
 
 // API Server Management
 interface APIServerConfig {
@@ -301,7 +302,7 @@ function createWindow() {
   }
 
   // Init app
-  const appInstance = new App(setting)
+  appInstance = new App(setting)
   console.log('Main process runing...', appInstance.appDir) // DELETE ME
 }
 
@@ -348,9 +349,15 @@ app.on('ready', async () => {
     console.warn('Sentry initialization failed:', error)
   }
 
-  // 初始化 IPC 处理器
+  // if (isDevelopment && !process.env.IS_TEST) {
+  //   // Install Vue Devtools
+  //   await installVueDevtools()
+  // }
+  createWindow()
+
+  // 初始化 IPC 处理器 (需要在 createWindow 之后，因为需要 appInstance)
   try {
-    initializeIPCHandlers()
+    initializeIPCHandlers(appInstance)
     console.log('IPC handlers initialized successfully')
   } catch (error) {
     console.warn('IPC handlers initialization failed:', error)
@@ -363,12 +370,6 @@ app.on('ready', async () => {
   } catch (error) {
     console.warn('API server IPC handlers registration failed:', error)
   }
-
-  // if (isDevelopment && !process.env.IS_TEST) {
-  //   // Install Vue Devtools
-  //   await installVueDevtools()
-  // }
-  createWindow()
 })
 
 // Exit cleanly on request from parent process in development mode.

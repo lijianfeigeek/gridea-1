@@ -3,7 +3,7 @@ import { IPost } from '../../interfaces/post'
 import { ITag } from '../../interfaces/tag'
 import { ITheme } from '../../interfaces/theme'
 import { IMenu } from '../../interfaces/menu'
-import { ISetting, ICommentSetting } from '../../interfaces/setting'
+import { ISetting, ICommentSetting, IAPISetting } from '../../interfaces/setting'
 import {
   DEFAULT_POST_PAGE_SIZE, DEFAULT_ARCHIVES_PAGE_SIZE, DEFAULT_FEED_COUNT, DEFAULT_ARCHIVES_PATH, DEFAULT_POST_PATH, DEFAULT_TAG_PATH,
 } from '../../helpers/constants'
@@ -20,6 +20,7 @@ export interface Site {
   themes: string[]
   setting: ISetting
   commentSetting: ICommentSetting
+  api: IAPISetting
 }
 const siteState: Site = {
   appDir: '',
@@ -83,6 +84,19 @@ const siteState: Site = {
       shortname: '',
     },
   },
+  api: {
+    enabled: false,
+    port: 3000,
+    auth: {
+      enabled: false,
+      apiKey: '',
+    },
+    cors: {
+      enabled: true,
+      origins: ['*'],
+    },
+    autoDeploy: false,
+  },
 }
 
 const mutations: MutationTree<Site> = {
@@ -104,8 +118,12 @@ const mutations: MutationTree<Site> = {
     state.themes = siteData.themes
     state.setting = siteData.setting
     state.commentSetting = siteData.commentSetting
+    state.api = siteData.api
     state.themeCustomConfig = siteData.themeCustomConfig
     state.currentThemeConfig = siteData.currentThemeConfig
+  },
+  updateApiSettings(state, apiSettings: IAPISetting) {
+    state.api = apiSettings
   },
   updatePosts(state, posts: IPost[]) {
     state.posts = posts
@@ -119,6 +137,9 @@ const actions: ActionTree<Site, any> = {
   updateSite({ commit }, siteData: Site) {
     console.log('siteData:', siteData)
     commit('updateSite', siteData)
+  },
+  updateApiSettings({ commit }, apiSettings: IAPISetting) {
+    commit('updateApiSettings', apiSettings)
   },
 }
 

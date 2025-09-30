@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { HealthStatus, APIResponse } from '../types'
-import articlesRouter from './articles'
-import webhookRouter from './webhook'
+import { createArticlesRouter } from './articles'
+import { createWebhookRouter } from './webhook'
 
 export class APIRoutes {
   private router: Router
@@ -10,7 +10,10 @@ export class APIRoutes {
 
   private startTime: number = Date.now()
 
-  constructor() {
+  private appInstance: any
+
+  constructor(appInstance?: any) {
+    this.appInstance = appInstance
     this.router = Router()
     this.setupRoutes()
   }
@@ -19,9 +22,9 @@ export class APIRoutes {
     // Health check route
     this.router.get('/health', this.healthCheck.bind(this))
 
-    // API routes
-    this.router.use('/articles', articlesRouter)
-    this.router.use('/webhooks', webhookRouter)
+    // API routes - pass appInstance to route creators
+    this.router.use('/articles', createArticlesRouter(this.appInstance))
+    this.router.use('/webhooks', createWebhookRouter(this.appInstance))
   }
 
   private healthCheck(req: any, res: any) {

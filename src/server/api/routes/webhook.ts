@@ -4,13 +4,14 @@ import { WebhookController } from '../controllers/webhook'
 import { authenticateRequest } from '../middleware/auth'
 import { validateWebhookCreate, validateWebhookUpdate, validateEventSubscription } from '../validators/webhook'
 
-const router = Router()
-const webhookController = new WebhookController()
+export function createWebhookRouter(appInstance?: any): Router {
+  const router = Router()
+  const webhookController = new WebhookController()
 
-// Apply authentication middleware to all routes
-router.use(authenticateRequest)
+  // Apply authentication middleware to all routes
+  router.use(authenticateRequest)
 
-/**
+  /**
  * @swagger
  * /api/webhooks:
  *   post:
@@ -76,13 +77,13 @@ router.use(authenticateRequest)
  *       500:
  *         description: Internal server error
  */
-router.post(
-  '/',
-  validateWebhookCreate,
-  webhookController.createWebhook,
-)
+  router.post(
+    '/',
+    validateWebhookCreate,
+    webhookController.createWebhook,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks:
  *   get:
@@ -104,13 +105,13 @@ router.post(
  *       500:
  *         description: Internal server error
  */
-router.get(
-  '/',
-  query('enabled').optional().isBoolean().withMessage('Enabled must be a boolean'),
-  webhookController.getWebhooks,
-)
+  router.get(
+    '/',
+    query('enabled').optional().isBoolean().withMessage('Enabled must be a boolean'),
+    webhookController.getWebhooks,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}:
  *   get:
@@ -135,13 +136,13 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.get(
-  '/:id',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  webhookController.getWebhook,
-)
+  router.get(
+    '/:id',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    webhookController.getWebhook,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}:
  *   put:
@@ -194,14 +195,14 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.put(
-  '/:id',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  validateWebhookUpdate,
-  webhookController.updateWebhook,
-)
+  router.put(
+    '/:id',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    validateWebhookUpdate,
+    webhookController.updateWebhook,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}:
  *   delete:
@@ -226,13 +227,13 @@ router.put(
  *       500:
  *         description: Internal server error
  */
-router.delete(
-  '/:id',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  webhookController.deleteWebhook,
-)
+  router.delete(
+    '/:id',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    webhookController.deleteWebhook,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}/test:
  *   post:
@@ -257,13 +258,13 @@ router.delete(
  *       500:
  *         description: Internal server error
  */
-router.post(
-  '/:id/test',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  webhookController.testWebhook,
-)
+  router.post(
+    '/:id/test',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    webhookController.testWebhook,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}/enable:
  *   post:
@@ -288,13 +289,13 @@ router.post(
  *       500:
  *         description: Internal server error
  */
-router.post(
-  '/:id/enable',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  webhookController.enableWebhook,
-)
+  router.post(
+    '/:id/enable',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    webhookController.enableWebhook,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}/disable:
  *   post:
@@ -319,13 +320,13 @@ router.post(
  *       500:
  *         description: Internal server error
  */
-router.post(
-  '/:id/disable',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  webhookController.disableWebhook,
-)
+  router.post(
+    '/:id/disable',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    webhookController.disableWebhook,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}/subscriptions:
  *   post:
@@ -377,14 +378,14 @@ router.post(
  *       500:
  *         description: Internal server error
  */
-router.post(
-  '/:id/subscriptions',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  validateEventSubscription,
-  webhookController.subscribeToEvent,
-)
+  router.post(
+    '/:id/subscriptions',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    validateEventSubscription,
+    webhookController.subscribeToEvent,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}/subscriptions:
  *   get:
@@ -407,13 +408,13 @@ router.post(
  *       500:
  *         description: Internal server error
  */
-router.get(
-  '/:id/subscriptions',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  webhookController.getSubscriptions,
-)
+  router.get(
+    '/:id/subscriptions',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    webhookController.getSubscriptions,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}/subscriptions/{subscriptionId}:
  *   delete:
@@ -444,14 +445,14 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.delete(
-  '/:id/subscriptions/:subscriptionId',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  param('subscriptionId').isUUID().withMessage('Invalid subscription ID'),
-  webhookController.unsubscribeFromEvent,
-)
+  router.delete(
+    '/:id/subscriptions/:subscriptionId',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    param('subscriptionId').isUUID().withMessage('Invalid subscription ID'),
+    webhookController.unsubscribeFromEvent,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/{id}/deliveries:
  *   get:
@@ -495,20 +496,20 @@ router.delete(
  *       500:
  *         description: Internal server error
  */
-router.get(
-  '/:id/deliveries',
-  param('id').isUUID().withMessage('Invalid webhook ID'),
-  query('status').optional().custom((value) => {
-    if (!value) return true
-    const validStatuses = ['pending', 'delivered', 'failed', 'retrying']
-    return validStatuses.includes(value) || Promise.reject(new Error('Invalid status'))
-  }),
-  query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
-  query('offset').optional().isInt({ min: 0 }).withMessage('Offset must be a positive integer'),
-  webhookController.getDeliveries,
-)
+  router.get(
+    '/:id/deliveries',
+    param('id').isUUID().withMessage('Invalid webhook ID'),
+    query('status').optional().custom((value) => {
+      if (!value) return true
+      const validStatuses = ['pending', 'delivered', 'failed', 'retrying']
+      return validStatuses.includes(value) || Promise.reject(new Error('Invalid status'))
+    }),
+    query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
+    query('offset').optional().isInt({ min: 0 }).withMessage('Offset must be a positive integer'),
+    webhookController.getDeliveries,
+  )
 
-/**
+  /**
  * @swagger
  * /api/webhooks/stats:
  *   get:
@@ -524,9 +525,10 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.get(
-  '/stats',
-  webhookController.getStats,
-)
+  router.get(
+    '/stats',
+    webhookController.getStats,
+  )
 
-export default router
+  return router
+}

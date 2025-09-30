@@ -3,6 +3,7 @@ import { ipcMain, IpcMainInvokeEvent } from 'electron'
 // Global API server instance
 let apiServer: any = null
 let configManager: any = null
+let appInstance: any = null
 
 // Lazy load server modules
 let APIServer: any = null
@@ -41,7 +42,7 @@ async function handleStartAPIServer(
 
     // Initialize API server if not exists
     if (!apiServer) {
-      apiServer = new APIServer()
+      apiServer = new APIServer(undefined, appInstance)
     }
 
     // Initialize config manager if not exists
@@ -317,7 +318,11 @@ function handleServerError(event: IpcMainInvokeEvent, error: any): void {
 /**
  * Initialize IPC handlers for API server management
  */
-export function initializeIPCHandlers(): void {
+export function initializeIPCHandlers(appInstanceParam?: any): void {
+  // Store the appInstance for use by API server
+  if (appInstanceParam) {
+    appInstance = appInstanceParam
+  }
   // Remove existing handlers to prevent duplicates (if method exists)
   if (typeof ipcMain.removeHandler === 'function') {
     try {

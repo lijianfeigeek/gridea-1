@@ -20,11 +20,14 @@ export class APIServer {
 
   private startTime: number = 0
 
-  constructor(configPath?: string) {
+  private appInstance: any
+
+  constructor(configPath?: string, appInstance?: any) {
+    this.appInstance = appInstance
     this.configManager = new ConfigManager(configPath)
     const config = this.configManager.getConfig()
     this.middlewareManager = new MiddlewareManager(config)
-    this.routes = new APIRoutes()
+    this.routes = new APIRoutes(appInstance)
     this.app = express()
     this.setupMiddleware()
     this.setupRoutes()

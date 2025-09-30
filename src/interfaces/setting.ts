@@ -33,6 +33,20 @@ export interface IGitalkSetting {
   owner: string
 }
 
+export interface IAPISetting {
+  enabled: boolean
+  port: number
+  auth: {
+    enabled: boolean
+    apiKey: string
+  }
+  cors: {
+    enabled: boolean
+    origins: string[]
+  }
+  autoDeploy: boolean
+}
+
 export interface ICommentSetting {
   commentPlatform: string
   showComment: boolean
