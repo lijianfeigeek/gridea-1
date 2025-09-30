@@ -10,21 +10,46 @@ module.exports = {
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@test/(.*)$': '<rootDir>/tests/$1',
   },
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.{js}',
+    'src/**/*.{js,ts}',
     '!src/main.ts',
     '!src/background.ts',
-    '!src/**/*.ts',
     '!src/server/**/*.ts',
+    '!src/**/*.d.ts',
     '!node_modules/**',
+    '!tests/**',
+    '!dist/**',
+    '!coverage/**',
   ],
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: [
     'text',
     'lcov',
     'clover',
+    'html',
   ],
   verbose: true,
+  setupFilesAfterEnv: ['<rootDir>/tests/setup-jest.js'],
+  globals: {
+    'ts-jest': {
+      tsconfig: {
+        target: 'es2017',
+        module: 'commonjs',
+        strict: true,
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        experimentalDecorators: true,
+        emitDecoratorMetadata: true,
+      },
+    },
+  },
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/coverage/',
+    '/tests/e2e/',
+  ],
 }

@@ -9,6 +9,7 @@ import { init } from '@sentry/electron/dist/main'
 import App from './server/app'
 import messages from './assets/locales-menu'
 import initServer from './server'
+import { initializeIPCHandlers, cleanupAPIServer } from './background/ipc-handlers'
 
 // Sentry 初始化将在 app ready 事件中处理
 
@@ -123,8 +124,17 @@ function createWindow() {
 }
 
 // Quit when all windows are closed.
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
+  // 清理 API 服务器
+  try {
+    await cleanupAPIServer()
+  } catch (error) {
+    console.warn('API server cleanup failed:', error)
+  }
+
+  // 关闭 HTTP 服务器
   httpServer && httpServer.close()
+
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
@@ -156,6 +166,14 @@ app.on('ready', async () => {
     console.warn('Sentry initialization failed:', error)
   }
 
+  // 初始化 IPC 处理器
+  try {
+    initializeIPCHandlers()
+    console.log('IPC handlers initialized successfully')
+  } catch (error) {
+    console.warn('IPC handlers initialization failed:', error)
+  }
+
   // if (isDevelopment && !process.env.IS_TEST) {
   //   // Install Vue Devtools
   //   await installVueDevtools()
@@ -166,17 +184,28 @@ app.on('ready', async () => {
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
-    process.on('message', (data) => {
+    process.on('message', async (data) => {
       if (data === 'graceful-exit') {
+        await cleanupAPIServer()
         app.quit()
       }
     })
   } else {
-    process.on('SIGTERM', () => {
+    process.on('SIGTERM', async () => {
+      await cleanupAPIServer()
       app.quit()
     })
   }
 }
+
+// 应用退出前清理
+app.on('before-quit', async () => {
+  try {
+    await cleanupAPIServer()
+  } catch (error) {
+    console.warn('API server cleanup failed on app quit:', error)
+  }
+})
 
 // ipcMain.on('min-window', () => {
 //   if (win) {

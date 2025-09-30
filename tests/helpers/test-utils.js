@@ -366,7 +366,7 @@ async function waitForServer(url, timeout = 30000, interval = 1000) {
     try {
       const response = await fetch(url, {
         method: 'GET',
-        signal: AbortSignal?.timeout?.(interval) || undefined
+        signal: (AbortSignal && AbortSignal.timeout ? AbortSignal.timeout(interval) : undefined) || undefined
       })
       if (response.ok) {
         return

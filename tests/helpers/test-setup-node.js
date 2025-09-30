@@ -116,7 +116,7 @@ class NodeTestHelpers {
       try {
         const response = await fetch(url, {
           method: 'GET',
-          signal: AbortSignal?.timeout?.(interval) || undefined
+          signal: (AbortSignal && AbortSignal.timeout ? AbortSignal.timeout(interval) : undefined) || undefined
         })
         if (response.ok) {
           return

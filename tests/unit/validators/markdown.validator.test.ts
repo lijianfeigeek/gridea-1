@@ -11,14 +11,14 @@ describe('Markdown Validator - 基础验证测试', () => {
 
   describe('空内容验证', () => {
     it('应该拒绝空字符串', () => {
-      const result = validator?.validate('')
+      const result = validator.validate('')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('内容不能为空')
     })
 
     it('应该拒绝 null 或 undefined', () => {
-      const nullResult = validator?.validate(null)
-      const undefinedResult = validator?.validate(undefined)
+      const nullResult = validator.validate(null)
+      const undefinedResult = validator.validate(undefined)
 
       expect(nullResult.isValid).toBe(false)
       expect(undefinedResult.isValid).toBe(false)
@@ -28,19 +28,19 @@ describe('Markdown Validator - 基础验证测试', () => {
 
   describe('仅包含空格的内容验证', () => {
     it('应该拒绝仅包含空格的内容', () => {
-      const result = validator?.validate('   \n  \t  \n   ')
+      const result = validator.validate('   \n  \t  \n   ')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('内容不能只包含空白字符')
     })
 
     it('应该拒绝仅包含换行符的内容', () => {
-      const result = validator?.validate('\n\n\n\n\n')
+      const result = validator.validate('\n\n\n\n\n')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('内容不能只包含空白字符')
     })
 
     it('应该拒绝仅包含制表符的内容', () => {
-      const result = validator?.validate('\t\t\t\t\t')
+      const result = validator.validate('\t\t\t\t\t')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('内容不能只包含空白字符')
     })
@@ -48,13 +48,13 @@ describe('Markdown Validator - 基础验证测试', () => {
 
   describe('有效markdown内容验证', () => {
     it('应该接受简单的标题', () => {
-      const result = validator?.validate('# Hello World')
+      const result = validator.validate('# Hello World')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受段落文本', () => {
-      const result = validator?.validate('这是一个简单的段落。')
+      const result = validator.validate('这是一个简单的段落。')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -76,13 +76,13 @@ function test() {
 }
 \`\`\`
 `
-      const result = validator?.validate(markdown)
+      const result = validator.validate(markdown)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受单个字符的内容', () => {
-      const result = validator?.validate('A')
+      const result = validator.validate('A')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -104,25 +104,25 @@ describe('Markdown Validator - 链接验证测试', () => {
     })
 
     it('应该接受有效的HTTPS链接', () => {
-      const result = validator?.validate('[GitHub](https://github.com)')
+      const result = validator.validate('[GitHub](https://github.com)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受有效的相对路径链接', () => {
-      const result = validator?.validate('[内部链接](/path/to/page)')
+      const result = validator.validate('[内部链接](/path/to/page)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受mailto链接', () => {
-      const result = validator?.validate('[邮箱](mailto:test@example.com)')
+      const result = validator.validate('[邮箱](mailto:test@example.com)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受锚点链接', () => {
-      const result = validator?.validate('[跳转到标题](#section-title)')
+      const result = validator.validate('[跳转到标题](#section-title)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -130,31 +130,31 @@ describe('Markdown Validator - 链接验证测试', () => {
 
   describe('无效URL格式验证', () => {
     it('应该拒绝javascript协议链接', () => {
-      const result = validator?.validate('[恶意链接](javascript:alert("xss"))')
+      const result = validator.validate('[恶意链接](javascript:alert("xss"))')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('检测到不安全的链接协议')
     })
 
     it('应该拒绝vbscript协议链接', () => {
-      const result = validator?.validate('[恶意链接](vbscript:msgbox("xss"))')
+      const result = validator.validate('[恶意链接](vbscript:msgbox("xss"))')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('检测到不安全的链接协议')
     })
 
     it('应该拒绝data协议链接（除图片外）', () => {
-      const result = validator?.validate('[恶意链接](data:text/html,<script>alert("xss")</script>)')
+      const result = validator.validate('[恶意链接](data:text/html,<script>alert("xss")</script>)')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('检测到不安全的链接协议')
     })
 
     it('应该拒绝包含空格的URL', () => {
-      const result = validator?.validate('[链接](https://example.com/ path with spaces)')
+      const result = validator.validate('[链接](https://example.com/ path with spaces)')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('URL格式不正确')
     })
 
     it('应该拒绝格式错误的URL', () => {
-      const result = validator?.validate('[链接](https://example.com/path[invalid]')
+      const result = validator.validate('[链接](https://example.com/path[invalid]')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('链接格式不正确')
     })
@@ -162,19 +162,19 @@ describe('Markdown Validator - 链接验证测试', () => {
 
   describe('缺失链接地址验证', () => {
     it('应该拒绝空的链接地址', () => {
-      const result = validator?.validate('[链接]()')
+      const result = validator.validate('[链接]()')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('链接地址不能为空')
     })
 
     it('应该拒绝仅包含空格的链接地址', () => {
-      const result = validator?.validate('[链接](   )')
+      const result = validator.validate('[链接](   )')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('链接地址不能为空')
     })
 
     it('应该拒绝缺失链接地址的链接', () => {
-      const result = validator?.validate('[链接]')
+      const result = validator.validate('[链接]')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('链接格式不正确')
     })
@@ -190,31 +190,31 @@ describe('Markdown Validator - 图片链接验证测试', () => {
 
   describe('有效图片链接验证', () => {
     it('应该接受有效的HTTP图片链接', () => {
-      const result = validator?.validate('![图片](https://example.com/image.jpg)')
+      const result = validator.validate('![图片](https://example.com/image.jpg)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受有效的HTTPS图片链接', () => {
-      const result = validator?.validate('![图片](https://example.com/image.png)')
+      const result = validator.validate('![图片](https://example.com/image.png)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受有效的相对路径图片链接', () => {
-      const result = validator?.validate('![图片](/images/logo.png)')
+      const result = validator.validate('![图片](/images/logo.png)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受data URI图片链接', () => {
-      const result = validator?.validate('![图片](data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==)')
+      const result = validator.validate('![图片](data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受带尺寸的图片链接', () => {
-      const result = validator?.validate('![图片](https://example.com/image.jpg =100x50)')
+      const result = validator.validate('![图片](https://example.com/image.jpg =100x50)')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -222,25 +222,25 @@ describe('Markdown Validator - 图片链接验证测试', () => {
 
   describe('无效图片链接验证', () => {
     it('应该拒绝javascript协议图片链接', () => {
-      const result = validator?.validate('![图片](javascript:alert("xss"))')
+      const result = validator.validate('![图片](javascript:alert("xss"))')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('检测到不安全的图片链接')
     })
 
     it('应该拒绝vbscript协议图片链接', () => {
-      const result = validator?.validate('![图片](vbscript:msgbox("xss"))')
+      const result = validator.validate('![图片](vbscript:msgbox("xss"))')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('检测到不安全的图片链接')
     })
 
     it('应该拒绝不支持的文件格式', () => {
-      const result = validator?.validate('![图片](https://example.com/script.exe)')
+      const result = validator.validate('![图片](https://example.com/script.exe)')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('不支持的图片格式')
     })
 
     it('应该拒绝格式错误的图片URL', () => {
-      const result = validator?.validate('![图片](https://example.com/image.jpg[invalid])')
+      const result = validator.validate('![图片](https://example.com/image.jpg[invalid])')
       expect(result.isValid).toBe(false)
       expect(result.errors.some(error => error.includes('图片链接格式不正确') || error.includes('不支持的图片格式'))).toBe(true)
     })
@@ -248,19 +248,19 @@ describe('Markdown Validator - 图片链接验证测试', () => {
 
   describe('缺失图片地址验证', () => {
     it('应该拒绝空的图片地址', () => {
-      const result = validator?.validate('![图片]()')
+      const result = validator.validate('![图片]()')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('图片地址不能为空')
     })
 
     it('应该拒绝仅包含空格的图片地址', () => {
-      const result = validator?.validate('![图片](   )')
+      const result = validator.validate('![图片](   )')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('图片地址不能为空')
     })
 
     it('应该拒绝缺失图片地址的图片', () => {
-      const result = validator?.validate('![图片]')
+      const result = validator.validate('![图片]')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('图片链接格式不正确')
     })
@@ -282,7 +282,7 @@ describe('Markdown Validator - 内容结构验证测试', () => {
 #### 四级标题
 ##### 五级标题
 ###### 六级标题`
-      const result = validator?.validate(markdown)
+      const result = validator.validate(markdown)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -290,19 +290,19 @@ describe('Markdown Validator - 内容结构验证测试', () => {
     it('应该拒绝跳级的标题层级', () => {
       const markdown = `# 一级标题
 ### 三级标题`
-      const result = validator?.validate(markdown)
+      const result = validator.validate(markdown)
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('标题层级不能跳级')
     })
 
     it('应该拒绝超过6级的标题', () => {
-      const result = validator?.validate('####### 七级标题')
+      const result = validator.validate('####### 七级标题')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('标题层级不能超过6级')
     })
 
     it('应该拒绝空标题', () => {
-      const result = validator?.validate('# ')
+      const result = validator.validate('# ')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('标题不能为空')
     })
@@ -310,25 +310,25 @@ describe('Markdown Validator - 内容结构验证测试', () => {
 
   describe('代码块验证', () => {
     it('应该接受有效的代码块', () => {
-      const result = validator?.validate('```javascript\nconsole.log("Hello");\n```')
+      const result = validator.validate('```javascript\nconsole.log("Hello");\n```')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该接受未指定语言的代码块', () => {
-      const result = validator?.validate('```\nconsole.log("Hello");\n```')
+      const result = validator.validate('```\nconsole.log("Hello");\n```')
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该拒绝未闭合的代码块', () => {
-      const result = validator?.validate('```javascript\nconsole.log("Hello");')
+      const result = validator.validate('```javascript\nconsole.log("Hello");')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('代码块未闭合')
     })
 
     it('应该拒绝格式错误的代码块', () => {
-      const result = validator?.validate('````javascript\nconsole.log("Hello");\n```')
+      const result = validator.validate('````javascript\nconsole.log("Hello");\n```')
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('代码块格式错误')
     })
@@ -340,7 +340,7 @@ describe('Markdown Validator - 内容结构验证测试', () => {
 |-----|-----|-----|
 | 数据1 | 数据2 | 数据3 |
 | 数据4 | 数据5 | 数据6 |`
-      const result = validator?.validate(markdown)
+      const result = validator.validate(markdown)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -348,7 +348,7 @@ describe('Markdown Validator - 内容结构验证测试', () => {
     it('应该拒绝缺少分隔行的表格', () => {
       const markdown = `| 列1 | 列2 | 列3 |
 | 数据1 | 数据2 | 数据3 |`
-      const result = validator?.validate(markdown)
+      const result = validator.validate(markdown)
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('表格缺少分隔行')
     })
@@ -358,7 +358,7 @@ describe('Markdown Validator - 内容结构验证测试', () => {
 |-----|-----|-----|
 | 数据1 | 数据2 |
 | 数据4 | 数据5 | 数据6 |`
-      const result = validator?.validate(markdown)
+      const result = validator.validate(markdown)
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('表格列数不一致')
     })
@@ -367,7 +367,7 @@ describe('Markdown Validator - 内容结构验证测试', () => {
       const markdown = `| 列1 | 列2 | 列3 |
 | 列1 | 列2 | 列3 |
 | 数据1 | 数据2 | 数据3 |`
-      const result = validator?.validate(markdown)
+      const result = validator.validate(markdown)
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('表格分隔行格式错误')
     })
@@ -384,21 +384,21 @@ describe('Markdown Validator - 边界情况测试', () => {
   describe('超长内容处理', () => {
     it('应该拒绝超过长度限制的内容', () => {
       const longText = 'A'.repeat(100001) // 假设限制为100,000字符
-      const result = validator?.validate(longText)
+      const result = validator.validate(longText)
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('内容长度超过限制')
     })
 
     it('应该接受刚好在长度限制内的内容', () => {
       const longText = 'A'.repeat(100000) // 假设限制为100,000字符
-      const result = validator?.validate(longText)
+      const result = validator.validate(longText)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
 
     it('应该处理超长的行', () => {
       const longLine = 'A'.repeat(10001)
-      const result = validator?.validate(longLine)
+      const result = validator.validate(longLine)
       expect(result.isValid).toBe(true)
       expect(result.warnings).toContain('建议将长行分割成多行')
     })
@@ -419,7 +419,7 @@ describe('Markdown Validator - 边界情况测试', () => {
 
 HTML实体：&amp; &lt; &gt; &quot; &apos;
 `
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -432,7 +432,7 @@ HTML实体：&amp; &lt; &gt; &quot; &apos;
         '\\\\` 不是代码 \\\\`\n' +
         '\\\\[ 不是链接 [\\\\]\n' +
         '\\\\\\\\ 反斜杠\n'
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -441,7 +441,7 @@ HTML实体：&amp; &lt; &gt; &quot; &apos;
       const maliciousContent = `<script>alert('XSS')</script>
 <img src=x onerror=alert('XSS')>
 <a href="javascript:alert('XSS')">点击</a>`
-      const result = validator?.validate(maliciousContent)
+      const result = validator.validate(maliciousContent)
       expect(result.isValid).toBe(false)
       expect(result.errors.some(error => error.includes('安全') || error.includes('HTML'))).toBe(true)
     })
@@ -457,7 +457,7 @@ HTML实体：&amp; &lt; &gt; &quot; &apos;
 *斜体中文*
 \`代码中文\`
 `
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -474,7 +474,7 @@ HTML实体：&amp; &lt; &gt; &quot; &apos;
 
 Mixed content: Hello 世界! 🌍
 `
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -492,7 +492,7 @@ Español: ¡Hola Mundo!
 Français: Bonjour le monde!
 Deutsch: Hallo Welt!
 `
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -506,7 +506,7 @@ Deutsch: Hallo Welt!
 几何符号：■ □ ● ◆ ◇ ★ ☆
 其他符号：™ © ® § ¶ † ‡
 `
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -518,7 +518,7 @@ Deutsch: Hallo Welt!
       for (let i = 0; i < 1000; i++) {
         content += `[链接${i}](https://example.com/page${i})\n`
       }
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -529,7 +529,7 @@ Deutsch: Hallo Welt!
         const level = (i % 6) + 1
         content += `${'#'.repeat(level)} 标题${i}\n\n`
       }
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -554,7 +554,7 @@ Deutsch: Hallo Welt!
 2. 列表项包含*斜体*
 3. 列表项包含\`代码\`
 `
-      const result = validator?.validate(content)
+      const result = validator.validate(content)
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })

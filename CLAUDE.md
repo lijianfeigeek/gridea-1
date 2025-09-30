@@ -29,8 +29,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `yarn test:unit` - Run Vitest unit tests
 - `yarn test:watch:unit` - Run Vitest unit tests in watch mode
 - `yarn test:coverage:unit` - Run Vitest unit tests with coverage
-- `yarn test:api` - Run API-specific tests
-- `yarn test:api:watch` - Run API tests in watch mode
+- `yarn test:api` - Run API-specific tests (Vitest)
+- `yarn test:api:watch` - Run API tests in watch mode (Vitest)
+
+### Single Test Commands
+- `yarn test tests/unit/background/ipc.test.ts` - Run specific Jest test file
+- `yarn test:unit tests/unit/api/articles.test.ts` - Run specific Vitest test file
 
 ### Requirements
 - Node.js version >= v10.0.0 required
@@ -94,6 +98,7 @@ The Express server (`src/server/`) handles:
 - Console statements allowed in development
 - Max line length: 1500 characters (very permissive)
 - Vue-specific rules configured
+- Husky pre-commit hooks enabled for automatic linting
 
 ### Styling
 - Tailwind CSS for utility classes
@@ -127,24 +132,38 @@ The Express server (`src/server/`) handles:
 - Follow the existing directory structure for consistency
 
 ### Testing Strategy
-- **Unit Tests**: Use Jest for utility functions and business logic
+- **Dual Testing Framework**: The project uses both Jest and Vitest
+  - **Jest**: Used for IPC handlers and background process tests
+  - **Vitest**: Used for API server and unit tests
 - **Component Tests**: Vue component testing with @vue/test-utils
 - **Integration Tests**: API server integration and IPC communication
 - **E2E Tests**: Complete workflow testing (planned)
-- **Test Structure**: Tests organized in `tests/` directory with subdirectories for unit, integration, and e2e
+- **Test Structure**: Tests organized in `tests/` directory with subdirectories
 
-## Platform-Specific Considerations
+## Testing Infrastructure
 
-### Electron Builder Configuration
-- Multi-platform builds (Windows, macOS, Linux)
-- Auto-update functionality enabled
-- Platform-specific icons and packaging
-- GitHub releases integration
+### Jest Configuration
+- Test environment: Node.js
+- Timeout: 30 seconds
+- Coverage collection enabled
+- Mock setup in `tests/setup-jest.js` with comprehensive Electron and Express mocking
+- Path aliases: `@/*` → `src/*`, `@test/*` → `tests/*`
 
-### Development Environment
-- Node integration enabled in Electron
-- Web security disabled for local resource access
-- Remote module enabled for Electron API access
+### Vitest Configuration
+- Test environment: Node.js
+- Coverage provider: V8
+- Global test functions enabled
+- Exclude patterns for Jest-specific tests
+- Compatible with Jest timeout settings
+
+### Key Mock Patterns
+The Jest setup includes comprehensive mocking for:
+- Electron modules (app, ipcMain, BrowserWindow, etc.)
+- Express server with both default and named imports
+- File system operations (fs, path)
+- Database operations (LowDB)
+- Server modules and middleware
+- Internationalization and locales
 
 ## Current Development Context
 
@@ -169,8 +188,8 @@ The `REST-API` branch implements a comprehensive REST API server for external ar
 - **Controllers**: `src/server/api/controllers/` - Business logic handlers
 - **Validators**: `src/server/validators/` - Content validation and sanitization (markdown, webhook)
 - **API Settings GUI**: `src/views/setting/includes/APISetting.vue` - Complete Vue component for API configuration
-- **IPC Integration**: Extended `src/background.ts` with API server management methods
-- **Tests**: `tests/unit/api/` and `tests/unit/components/APISetting.test.ts` - Comprehensive test suite
+- **IPC Integration**: Extended `src/background/ipc-handlers.ts` with API server management methods
+- **Tests**: Comprehensive test suite in `tests/unit/api/` and `tests/unit/background/`
 
 **API Endpoints:**
 ```
@@ -194,6 +213,12 @@ The API server communicates with the main process via these IPC channels:
 - `api-server-stopped` - Event fired when server stops
 - `api-server-error` - Event fired when server encounters errors
 
+**Critical Implementation Details:**
+- **Lazy Loading**: Server modules are loaded dynamically to prevent runtime instantiation errors
+- **Express Mocking**: Jest setup includes comprehensive Express mocking to handle both default and named imports
+- **TypeScript Compatibility**: All code must work with TypeScript 3.2.2 constraints
+- **Error Handling**: Structured error handling with proper type assertions
+
 **TDD Development Process:**
 1. **Red Phase**: Write failing test cases
 2. **Green Phase**: Implement minimal functionality to pass tests
@@ -201,9 +226,10 @@ The API server communicates with the main process via these IPC channels:
 4. **Integration**: Test component interactions and end-to-end workflows
 
 **Testing Commands:**
-- `yarn test:api` - Run API-specific tests
-- `yarn test:api:watch` - Run API tests in watch mode
-- `yarn test:unit` - Run all unit tests
+- `yarn test:api` - Run API-specific tests (Vitest)
+- `yarn test:api:watch` - Run API tests in watch mode (Vitest)
+- `yarn test` - Run Jest tests (IPC handlers)
+- `yarn test:unit` - Run Vitest unit tests
 - `yarn test:coverage:unit` - Run tests with coverage report
 
 ## Branch Context and Development Approach
@@ -217,6 +243,7 @@ The API server communicates with the main process via these IPC channels:
 - Ensure all new features have corresponding tests
 - Run `yarn lint` before committing changes
 - Use `yarn test:api` to verify API functionality
+- Handle TypeScript 3.2.2 limitations with type assertions
 
 ### When working on the master branch:
 - Focus on stable production features
@@ -241,3 +268,4 @@ The API server communicates with the main process via these IPC channels:
 - Use the APIServer class lifecycle methods (start/stop/restart) for server management
 - Implement proper CORS configuration for development and production environments
 - Use structured logging for API operations and debugging
+- Use lazy loading patterns for server modules to avoid runtime errors
