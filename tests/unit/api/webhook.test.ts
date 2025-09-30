@@ -1,27 +1,48 @@
 import {
-  describe, it, expect, beforeEach, afterEach,
+  describe, it, expect, beforeEach, afterEach, vi,
 } from 'vitest'
 import request from 'supertest'
 import express from 'express'
-import { WebhookController } from '../../../src/server/api/controllers/webhook'
-import { WebhookService } from '../../../src/server/services/webhook'
-import { authenticateRequest } from '../../../src/server/api/middleware/auth'
-import { logger } from '../../../src/server/api/logger/structured-logger'
 
-// Mock dependencies
+// Mock all dependencies before importing
 vi.mock('uuid', () => ({
   v4: () => `test-uuid-${Math.random().toString(36).substr(2, 9)}`,
 }))
 
-// Simple mock for authenticateRequest
+vi.mock('axios', () => ({
+  default: vi.fn().mockResolvedValue({
+    status: 200,
+    data: { success: true },
+    headers: {},
+  }),
+}))
+
+vi.mock('crypto', () => ({
+  createHmac: vi.fn().mockReturnValue({
+    update: vi.fn().mockReturnThis(),
+    digest: vi.fn().mockReturnValue('mock-signature'),
+  }),
+}))
+
+vi.mock('express-validator', () => ({
+  validationResult: vi.fn().mockReturnValue({
+    isEmpty: () => true,
+    array: () => [],
+  }),
+}))
+
+vi.mock('../../../src/server/api/middleware/auth', () => ({
+  authenticateRequest: vi.fn((req, res, next) => {
+    req.user = { id: 'test-user', role: 'admin' }
+    next()
+  }),
+}))
+
+// Create mock authenticate request function
 const mockAuthenticateRequest = vi.fn((req, res, next) => {
   req.user = { id: 'test-user', role: 'admin' }
   next()
 })
-
-vi.mock('../../../src/server/api/middleware/auth', () => ({
-  authenticateRequest: () => mockAuthenticateRequest,
-}))
 
 vi.mock('../../../src/server/api/logger/structured-logger', () => ({
   logger: {
@@ -30,6 +51,23 @@ vi.mock('../../../src/server/api/logger/structured-logger', () => ({
     warn: vi.fn(),
   },
 }))
+
+vi.mock('../../../src/server/api/helpers/response', () => ({
+  createSuccessResponse: vi.fn((data, message) => ({
+    success: true,
+    data,
+    message,
+  })),
+  createErrorResponse: vi.fn((message, errors) => ({
+    success: false,
+    message,
+    errors,
+  })),
+}))
+
+// Now import after mocking
+const { WebhookController } = await import('../../../src/server/api/controllers/webhook')
+const { WebhookService } = await import('../../../src/server/services/webhook')
 
 describe('Webhook API', () => {
   let app: express.Application

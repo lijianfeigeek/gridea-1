@@ -38,15 +38,65 @@ vi.mock('electron', () => ({
   }))
 }))
 
-// 模拟文件系统
-vi.mock('fs', () => ({
-  existsSync: vi.fn(),
-  readFileSync: vi.fn(),
-  writeFileSync: vi.fn(),
-  mkdirSync: vi.fn(),
-  readdirSync: vi.fn(),
-  unlinkSync: vi.fn()
-}))
+// 模拟文件系统，支持 Bluebird.promisifyAll
+vi.mock('fs', () => {
+  const mockFs = {
+    existsSync: vi.fn(),
+    readFileSync: vi.fn(),
+    writeFileSync: vi.fn(),
+    mkdirSync: vi.fn(),
+    readdirSync: vi.fn(),
+    unlinkSync: vi.fn(),
+    statSync: vi.fn(),
+    readFile: vi.fn(),
+    writeFile: vi.fn(),
+    appendFile: vi.fn(),
+    access: vi.fn(),
+    copyFile: vi.fn(),
+    rename: vi.fn(),
+    rmdir: vi.fn(),
+    createReadStream: vi.fn(),
+    createWriteStream: vi.fn(),
+    watch: vi.fn(),
+    unwatchFile: vi.fn(),
+    watchFile: vi.fn(),
+    promises: {
+      readFile: vi.fn(),
+      writeFile: vi.fn(),
+      readdir: vi.fn(),
+      mkdir: vi.fn(),
+      rmdir: vi.fn(),
+      unlink: vi.fn(),
+      stat: vi.fn(),
+      access: vi.fn(),
+      copyFile: vi.fn(),
+      rename: vi.fn(),
+    }
+  }
+
+  // 添加 promisified 方法以支持 Bluebird.promisifyAll
+  const promisifiedMethods = {}
+  Object.keys(mockFs).forEach(key => {
+    if (typeof mockFs[key] === 'function' && !key.startsWith('promises')) {
+      promisifiedMethods[`${key}Async`] = vi.fn()
+    }
+  })
+
+  return {
+    ...mockFs,
+    ...promisifiedMethods,
+    // Bluebird 可能期望的额外方法
+    open: vi.fn(),
+    close: vi.fn(),
+    read: vi.fn(),
+    write: vi.fn(),
+    fstat: vi.fn(),
+    ftruncate: vi.fn(),
+    futimes: vi.fn(),
+    fsync: vi.fn(),
+    fdatasync: vi.fn(),
+  }
+})
 
 // 模拟LowDB
 vi.mock('lowdb', () => ({

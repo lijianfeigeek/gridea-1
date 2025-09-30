@@ -82,16 +82,65 @@ jest.mock('@sentry/electron/dist/main', () => ({
   init: jest.fn(),
 }))
 
-// Mock file system
-jest.mock('fs', () => ({
-  existsSync: jest.fn(),
-  readFileSync: jest.fn(),
-  writeFileSync: jest.fn(),
-  mkdirSync: jest.fn(),
-  readdirSync: jest.fn(),
-  unlinkSync: jest.fn(),
-  statSync: jest.fn(),
-}))
+// Mock file system with Bluebird.promisifyAll support
+jest.mock('fs', () => {
+  const mockFs = {
+    existsSync: jest.fn(),
+    readFileSync: jest.fn(),
+    writeFileSync: jest.fn(),
+    mkdirSync: jest.fn(),
+    readdirSync: jest.fn(),
+    unlinkSync: jest.fn(),
+    statSync: jest.fn(),
+    readFile: jest.fn(),
+    writeFile: jest.fn(),
+    appendFile: jest.fn(),
+    access: jest.fn(),
+    copyFile: jest.fn(),
+    rename: jest.fn(),
+    rmdir: jest.fn(),
+    createReadStream: jest.fn(),
+    createWriteStream: jest.fn(),
+    watch: jest.fn(),
+    unwatchFile: jest.fn(),
+    watchFile: jest.fn(),
+    promises: {
+      readFile: jest.fn(),
+      writeFile: jest.fn(),
+      readdir: jest.fn(),
+      mkdir: jest.fn(),
+      rmdir: jest.fn(),
+      unlink: jest.fn(),
+      stat: jest.fn(),
+      access: jest.fn(),
+      copyFile: jest.fn(),
+      rename: jest.fn(),
+    },
+  }
+
+  // Add promisified methods for Bluebird.promisifyAll
+  const promisifiedMethods = {}
+  Object.keys(mockFs).forEach((key) => {
+    if (typeof mockFs[key] === 'function' && !key.startsWith('promises')) {
+      promisifiedMethods[`${key}Async`] = jest.fn()
+    }
+  })
+
+  return {
+    ...mockFs,
+    ...promisifiedMethods,
+    // Additional methods that Bluebird might expect
+    open: jest.fn(),
+    close: jest.fn(),
+    read: jest.fn(),
+    write: jest.fn(),
+    fstat: jest.fn(),
+    ftruncate: jest.fn(),
+    futimes: jest.fn(),
+    fsync: jest.fn(),
+    fdatasync: jest.fn(),
+  }
+})
 
 // Mock path
 jest.mock('path', () => ({
