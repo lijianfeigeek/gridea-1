@@ -158,12 +158,14 @@ The project uses both Jest and Vitest in a complementary setup:
 - Background process testing
 - Electron-specific functionality
 - Node.js environment testing
+- Main process and renderer process communication
 
 **Vitest Responsibilities:**
 - API server testing (`tests/unit/api/`)
 - General unit testing
 - Integration testing (`tests/integration/`)
 - Web API and HTTP testing
+- Server lifecycle and configuration management testing
 
 ### Test Structure
 ```
@@ -238,13 +240,14 @@ The `REST-API` branch implements a comprehensive REST API server for external ar
 
 **Key Features:**
 - REST API server with configurable port (default: 3000)
-- Article publishing API endpoints
-- Markdown content validation
-- Optional Bearer Token authentication
-- Automatic deployment integration
-- Webhook notification system
-- CORS configuration support
-- Real-time API server status monitoring
+- Article publishing API endpoints with markdown content validation
+- Optional Bearer Token authentication with secret key management
+- Automatic deployment integration with static site generation
+- Webhook notification system with event subscriptions
+- CORS configuration support for cross-origin requests
+- Real-time API server status monitoring via IPC
+- Comprehensive error handling and structured logging
+- Health check endpoints for monitoring
 
 **Implementation Files:**
 - **API Server Core**: `src/server/api/index.ts` - Main APIServer class with lifecycle management
@@ -256,6 +259,12 @@ The `REST-API` branch implements a comprehensive REST API server for external ar
 - **API Settings GUI**: `src/views/setting/includes/APISetting.vue` - Complete Vue component for API configuration
 - **IPC Integration**: Extended `src/background/ipc-handlers.ts` with API server management methods
 - **Tests**: Comprehensive test suite in `tests/unit/api/`, `tests/unit/background/`, and `tests/integration/`
+
+**Critical Architecture Dependencies:**
+- **appInstance Injection**: API server requires Gridea app instance for file operations and deployment
+- **IPC Communication**: Main process and renderer process coordination for server management
+- **Lazy Loading**: Server modules loaded dynamically to prevent runtime instantiation errors
+- **Express.js Middleware Stack**: Security, CORS, authentication, rate limiting, and error handling
 
 **API Endpoints:**
 ```
@@ -314,11 +323,14 @@ The API server communicates with the main process via these IPC channels:
 ### General Development Guidelines
 - Use absolute imports with `@/` alias
 - Create TypeScript interfaces for new data structures
-- Add translations in `src/assets/locales.ts` for user-facing features
+- Add translations in `src/assets/locales.ts` for user-facing features (all 6 language variants: zhHans, zh_TW, en, fr_FR, ru, ja_JP)
 - Follow Vue Class Component patterns with TypeScript decorators
 - Implement proper error handling and user feedback
 - Use the existing state management patterns (minimal Vuex, local component state)
 - Follow the established file organization and naming conventions
+- **Vuex Actions**: Use namespaced actions (e.g., `this.$store.dispatch('site/updateApiSettings', settings)`)
+- **Null Safety**: Always implement comprehensive null checking for site state and API configuration
+- **Internationalization**: Ensure all user-facing strings have translations in all supported languages
 
 ### API Development Specifics
 - All new API endpoints must have corresponding tests before implementation
@@ -329,6 +341,9 @@ The API server communicates with the main process via these IPC channels:
 - Implement proper CORS configuration for development and production environments
 - Use structured logging for API operations and debugging
 - Use lazy loading patterns for server modules to avoid runtime errors
+- **Critical**: Always pass appInstance to API server constructor for file operations
+- **Vue Component Integration**: Use global component registration pattern for settings components
+- **TypeScript 3.2.2 Constraints**: Use type assertions instead of type annotations in catch clauses
 
 ### Testing Best Practices
 - **Mock Setup**: Use existing mock patterns in `tests/setup-jest.js` for Jest tests
