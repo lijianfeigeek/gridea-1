@@ -1047,9 +1047,9 @@ afterEach(() => {
   // Clear Electron mock callbacks - disable ESLint for internal method
   const { ipcMain } = require('electron')
   // eslint-disable-next-line no-underscore-dangle
-  if (ipcMain && (ipcMain as any)._clearCallbacks) {
+  if (ipcMain && ipcMain._clearCallbacks) {
     // eslint-disable-next-line no-underscore-dangle
-    (ipcMain as any)._clearCallbacks()
+    ipcMain._clearCallbacks()
   }
   // Clear all BrowserWindow instances and mocks
   jest.clearAllMocks()
