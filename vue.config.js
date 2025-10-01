@@ -18,6 +18,9 @@ module.exports = {
       Buffer: ['buffer', 'Buffer'],
     }])
 
+    // 禁用TypeScript类型检查以解决Node.js 23.x兼容性问题
+    config.plugins.delete('fork-ts-checker')
+
     // Suppress webpack warnings
     config.performance.hints(false)
   },
@@ -38,8 +41,16 @@ module.exports = {
               comments: false,
             },
           },
+          parallel: false, // 禁用并行处理以避免Node.js 23.x的问题
+          extractComments: false,
         }),
       ],
+    },
+    node: {
+      buffer: false,
+      stream: false,
+      crypto: false,
+      process: false,
     },
     // Suppress warnings about problematic modules
     stats: {
@@ -83,6 +94,7 @@ module.exports = {
         },
         mac: {
           icon: './public/app-icons/gridea.icns',
+          identity: null, // 禁用代码签名
         },
         linux: {
           icon: './public/app-icons/gridea.png',

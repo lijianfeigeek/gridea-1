@@ -1,0 +1,10 @@
+Checking for update
+instance sftp deploy
+Main process runing... /Users/lijianfei/Documents/Gridea
+IPC handlers initialized successfully
+API server IPC handlers registration checked
+Preview server is running on port : 4000
+Preview server: Static dir change to /Users/lijianfei/.gridea/output
+instance sftp deploy
+Update for version 0.9.3 is not available (latest version: 0.9.3, downgrade is disallowed).
+checkForUpdatesAndNotify called, downloadPromise is null

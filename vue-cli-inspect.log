@@ -1,0 +1,81 @@
+2025-10-01T04:42:58.146Z vue:env /Users/lijianfei/Desktop/gridea/.env.production.local {
+  error: Error: ENOENT: no such file or directory, open '/Users/lijianfei/Desktop/gridea/.env.production.local'
+      at Object.readFileSync (node:fs:443:20)
+      at Object.config (/Users/lijianfei/Desktop/gridea/node_modules/dotenv/lib/main.js:95:29)
+      at load (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:102:28)
+      at Service.loadEnv (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:113:5)
+      at Service.init (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:69:12)
+      at Service.run (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:221:10)
+      at Object.<anonymous> (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/bin/vue-cli-service.js:37:9)
+      at Module._compile (node:internal/modules/cjs/loader:1739:14)
+      at Object..js (node:internal/modules/cjs/loader:1904:10)
+      at Module.load (node:internal/modules/cjs/loader:1473:32) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/Users/lijianfei/Desktop/gridea/.env.production.local'
+  }
+}
+[dotenv][DEBUG] "NODE_OPTIONS" is already defined in `process.env` and will not be overwritten
+2025-10-01T04:42:58.147Z vue:env /Users/lijianfei/Desktop/gridea/.env.production {
+  parsed: {
+    NODE_OPTIONS: '--openssl-legacy-provider --trace-warnings --max-old-space-size=4096',
+    VUE_CLI_BABEL_TARGET_NODE: 'true',
+    VUE_CLI_BABEL_TRANSPILE_MODULES: 'true'
+  }
+}
+2025-10-01T04:42:58.148Z vue:env /Users/lijianfei/Desktop/gridea/.env.local {
+  error: Error: ENOENT: no such file or directory, open '/Users/lijianfei/Desktop/gridea/.env.local'
+      at Object.readFileSync (node:fs:443:20)
+      at Object.config (/Users/lijianfei/Desktop/gridea/node_modules/dotenv/lib/main.js:95:29)
+      at load (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:102:28)
+      at Service.loadEnv (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:113:5)
+      at Service.init (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:72:10)
+      at Service.run (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:221:10)
+      at Object.<anonymous> (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/bin/vue-cli-service.js:37:9)
+      at Module._compile (node:internal/modules/cjs/loader:1739:14)
+      at Object..js (node:internal/modules/cjs/loader:1904:10)
+      at Module.load (node:internal/modules/cjs/loader:1473:32) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/Users/lijianfei/Desktop/gridea/.env.local'
+  }
+}
+2025-10-01T04:42:58.148Z vue:env /Users/lijianfei/Desktop/gridea/.env {
+  error: Error: ENOENT: no such file or directory, open '/Users/lijianfei/Desktop/gridea/.env'
+      at Object.readFileSync (node:fs:443:20)
+      at Object.config (/Users/lijianfei/Desktop/gridea/node_modules/dotenv/lib/main.js:95:29)
+      at load (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:102:28)
+      at Service.loadEnv (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:114:5)
+      at Service.init (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:72:10)
+      at Service.run (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:221:10)
+      at Object.<anonymous> (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/bin/vue-cli-service.js:37:9)
+      at Module._compile (node:internal/modules/cjs/loader:1739:14)
+      at Object..js (node:internal/modules/cjs/loader:1904:10)
+      at Module.load (node:internal/modules/cjs/loader:1473:32) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/Users/lijianfei/Desktop/gridea/.env'
+  }
+}
+ ERROR  Error loading vue.config.js:
+ ERROR  Error: Cannot find module './vue.config.js'
+Require stack:
+- /Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js
+- /Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/bin/vue-cli-service.js
+Error: Cannot find module './vue.config.js'
+Require stack:
+- /Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js
+- /Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/bin/vue-cli-service.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1409:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1060:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1065:22)
+    at Function._load (node:internal/modules/cjs/loader:1214:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:234:24)
+    at Module.require (node:internal/modules/cjs/loader:1495:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Service.loadUserOptions (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:316:22)
+    at Service.init (/Users/lijianfei/Desktop/gridea/node_modules/@vue/cli-service/lib/Service.js:75:30)
