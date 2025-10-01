@@ -9,6 +9,189 @@ let appInstance: any = null
 let APIServer: any = null
 let ConfigManager: any = null
 
+// Log management
+const logBuffer: Array<{
+  timestamp: number
+  level: 'info' | 'warn' | 'error' | 'debug'
+  message: string
+  details?: string
+}> = []
+const maxLogBuffer = 1000
+
+// Original console methods to capture logs
+const originalConsole = {
+  log: console.log,
+  info: console.info,
+  warn: console.warn,
+  error: console.error,
+  debug: console.debug,
+}
+
+// Enable/disable log capture
+let logCaptureEnabled = false
+
+/**
+ * Add log entry to buffer
+ */
+function addLogEntry(level: 'info' | 'warn' | 'error' | 'debug', message: string, details?: string): void {
+  const logEntry = {
+    timestamp: Date.now(),
+    level,
+    message,
+    details,
+  }
+
+  logBuffer.push(logEntry)
+
+  // Maintain buffer size
+  if (logBuffer.length > maxLogBuffer) {
+    logBuffer.splice(0, logBuffer.length - maxLogBuffer)
+  }
+
+  // Send log to all renderer processes
+  const allWindows = require('electron').BrowserWindow.getAllWindows()
+  allWindows.forEach((window: any) => {
+    if (window && !window.isDestroyed()) {
+      window.webContents.send('api-log-message', logEntry)
+    }
+  })
+}
+
+/**
+ * Enhanced console methods with log capture
+ */
+const enhancedConsole = {
+  log: (...args: any[]) => {
+    originalConsole.log(...args)
+    addLogEntry('info', args.join(' '))
+  },
+  info: (...args: any[]) => {
+    originalConsole.info(...args)
+    addLogEntry('info', args.join(' '))
+  },
+  warn: (...args: any[]) => {
+    originalConsole.warn(...args)
+    addLogEntry('warn', args.join(' '))
+  },
+  error: (...args: any[]) => {
+    originalConsole.error(...args)
+    addLogEntry('error', args.join(' '))
+  },
+  debug: (...args: any[]) => {
+    originalConsole.debug(...args)
+    addLogEntry('debug', args.join(' '))
+  },
+}
+
+/**
+ * Get API server logs
+ */
+async function handleGetAPIServerLogs(
+  event: IpcMainInvokeEvent,
+  options: { limit?: number; level?: string } = {},
+): Promise<{ success: boolean; logs?: any[]; error?: string }> {
+  try {
+    let logs = [...logBuffer]
+
+    // Filter by level if specified
+    if (options.level && options.level !== 'all') {
+      logs = logs.filter(log => log.level === options.level)
+    }
+
+    // Limit results if specified
+    if (options.limit && options.limit > 0) {
+      logs = logs.slice(-options.limit)
+    }
+
+    return { success: true, logs }
+  } catch (error) {
+    console.error('Failed to get API server logs:', error)
+    return {
+      success: false,
+      error: error.message || 'Failed to get logs',
+      code: error.code || 'GET_LOGS_FAILED',
+    }
+  }
+}
+
+/**
+ * Clear API server logs
+ */
+async function handleClearAPIServerLogs(
+  event: IpcMainInvokeEvent,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    logBuffer.length = 0
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to clear API server logs:', error)
+    return {
+      success: false,
+      error: error.message || 'Failed to clear logs',
+      code: error.code || 'CLEAR_LOGS_FAILED',
+    }
+  }
+}
+
+/**
+ * Set log capture
+ */
+async function handleSetLogCapture(
+  event: IpcMainInvokeEvent,
+  enabled: boolean,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (enabled && !logCaptureEnabled) {
+      // Enable log capture
+      Object.assign(console, enhancedConsole)
+      logCaptureEnabled = true
+      addLogEntry('info', 'Log capture enabled for API server')
+    } else if (!enabled && logCaptureEnabled) {
+      // Disable log capture
+      Object.assign(console, originalConsole)
+      logCaptureEnabled = false
+      originalConsole.info('Log capture disabled for API server')
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to set log capture:', error)
+    return {
+      success: false,
+      error: error.message || 'Failed to set log capture',
+      code: error.code || 'SET_LOG_CAPTURE_FAILED',
+    }
+  }
+}
+
+/**
+ * Test log functionality
+ */
+async function handleTestLog(
+  event: IpcMainInvokeEvent,
+  message: string = 'Test log message',
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (logCaptureEnabled) {
+      addLogEntry('info', `Test log: ${message}`)
+      console.log(`Test log from enhanced console: ${message}`)
+      console.warn(`Test warning: ${message}`)
+      console.error(`Test error: ${message}`)
+    } else {
+      originalConsole.log(`Test log from original console: ${message}`)
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to test log:', error)
+    return {
+      success: false,
+      error: error.message || 'Failed to test log',
+      code: error.code || 'TEST_LOG_FAILED',
+    }
+  }
+}
+
 async function loadServerModules() {
   if (!APIServer) {
     const { APIServer: ImportedAPIServer } = await import('../server/api/index')
@@ -73,6 +256,7 @@ async function handleStartAPIServer(
     await apiServer.start(port)
 
     const url = host === '0.0.0.0' ? `http://localhost:${port}` : `http://${host}:${port}`
+    addLogEntry('info', `API server started successfully on ${url}`)
 
     // Notify renderer process
     if (event.sender) {
@@ -328,6 +512,14 @@ export function initializeIPCHandlers(appInstanceParam?: any): void {
   if (appInstanceParam) {
     appInstance = appInstanceParam
   }
+
+  // Enable log capture immediately during initialization
+  if (!logCaptureEnabled) {
+    Object.assign(console, enhancedConsole)
+    logCaptureEnabled = true
+    addLogEntry('info', 'Log capture enabled during IPC handlers initialization')
+  }
+
   // Remove existing handlers to prevent duplicates (if method exists)
   if (typeof ipcMain.removeHandler === 'function') {
     try {
@@ -336,6 +528,10 @@ export function initializeIPCHandlers(appInstanceParam?: any): void {
       ipcMain.removeHandler('get-api-server-status')
       ipcMain.removeHandler('save-api-settings')
       ipcMain.removeHandler('test-webhook')
+      ipcMain.removeHandler('get-api-server-logs')
+      ipcMain.removeHandler('clear-api-server-logs')
+      ipcMain.removeHandler('set-log-capture')
+      ipcMain.removeHandler('test-log')
     } catch (error) {
       // Ignore errors when removing non-existent handlers
     }
@@ -347,6 +543,10 @@ export function initializeIPCHandlers(appInstanceParam?: any): void {
   ipcMain.handle('get-api-server-status', handleGetAPIServerStatus)
   ipcMain.handle('save-api-settings', handleSaveAPISettings)
   ipcMain.handle('test-webhook', handleTestWebhook)
+  ipcMain.handle('get-api-server-logs', handleGetAPIServerLogs)
+  ipcMain.handle('clear-api-server-logs', handleClearAPIServerLogs)
+  ipcMain.handle('set-log-capture', handleSetLogCapture)
+  ipcMain.handle('test-log', handleTestLog)
 
   // Register event listeners for bidirectional communication
   ipcMain.on('api-server-status-changed', handleServerStatusChanged)
@@ -414,6 +614,7 @@ export function setAPIServerInstance(instance: any): void {
   apiServer = instance
 }
 
+
 /**
  * Set config manager instance (for testing)
  */
@@ -451,6 +652,10 @@ export function clearIPCHandlers(): void {
       ipcMain.removeHandler('get-api-server-status')
       ipcMain.removeHandler('save-api-settings')
       ipcMain.removeHandler('test-webhook')
+      ipcMain.removeHandler('get-api-server-logs')
+      ipcMain.removeHandler('clear-api-server-logs')
+      ipcMain.removeHandler('set-log-capture')
+      ipcMain.removeHandler('test-log')
     } catch (error) {
       // Ignore errors when removing non-existent handlers
     }
@@ -461,4 +666,5 @@ export function clearIPCHandlers(): void {
   ipcMain.removeAllListeners('api-server-started')
   ipcMain.removeAllListeners('api-server-stopped')
   ipcMain.removeAllListeners('api-server-error')
+  ipcMain.removeAllListeners('api-log-message')
 }

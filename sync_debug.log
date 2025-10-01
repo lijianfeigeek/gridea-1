@@ -1,0 +1,196 @@
+Checking for update
+instance sftp deploy
+Main process runing... /Users/lijianfei/Documents/Gridea
+IPC handlers initialized successfully
+API server IPC handlers registration checked
+Preview server is running on port : 4000
+2025-10-01 13:25:53.003 Gridea[51868:303820] +[IMKClient subclass]: chose IMKClient_Modern
+2025-10-01 13:25:53.003 Gridea[51868:303820] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+Update for version 0.9.3 is not available (latest version: 0.9.3, downgrade is disallowed).
+checkForUpdatesAndNotify called, downloadPromise is null
+Preview server: Static dir change to /Users/lijianfei/.gridea/output
+instance sftp deploy
+github
+🚀 Starting renderAll process
+📁 Step 1: Clearing output folder
+📊 Step 2: Formatting data for render
+🎨 Step 3: Building CSS
+result 
+      .post-container .post .post-title {
+        text-align: left;
+      }
+      .post-container .post .post-info {
+        text-align: left;
+      }
+      .post-detail .post .post-title {
+        text-align: left;
+      }
+      .post-detail .post .post-info {
+        text-align: left;
+      }
+    
+      body {
+        font-family: -apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang SC','Hiragino Sans GB','Droid Sans Fallback','Microsoft YaHei',sans-serif;
+      }
+    
+      .main {
+        background: #FFFFFF;
+      }
+    
+      body {
+        background: #FFFFFF;
+      }
+    
+      body {
+        color: #1D1F23;
+      }
+    
+      a {
+        color: #1D1F23;
+      }
+    
+      a:hover {
+        color: #F15406;
+      }
+    
+📄 Step 4: Rendering post list page (index)
+👏  PostList Page: /Users/lijianfei/.gridea/output/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/2/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/3/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/4/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/5/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/6/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/7/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/8/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/9/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/10/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/11/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/12/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/13/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/14/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/15/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/16/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/17/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/18/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/19/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/20/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/21/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/22/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/23/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/24/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/page/25/index.html
+📑 Step 5: Rendering archives page
+👏  PostList Page: /Users/lijianfei/.gridea/output/archives/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/archives/page/2/index.html
+👏  PostList Page: /Users/lijianfei/.gridea/output/archives/page/3/index.html
+🏷️  Step 6: Rendering tag list page
+👏  Tags Page: /Users/lijianfei/.gridea/output/tags/index.html
+📝 Step 7: Rendering post detail pages
+🏷️  Step 8: Rendering tag detail pages
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/yuan-ma-yue-du/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/claude-code/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai-ide/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/context-engineering/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mcp/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mcp/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/security/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai-agent/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai-agent/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/manus/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/tesla/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/DeepSeek/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/Cryptocurrency/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/docker/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/operations/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/seo/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/wwdc/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/cloudflare/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/git/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/nas/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/stock/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/stock/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/how/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swiftui/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swiftui/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/page/3/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/page/4/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/page/5/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ algorithm/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/how-to-do-it-in-singapore/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/why/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/principles.design/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/web/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/web/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/web/page/3/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mac-app/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mac-app/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mac-app/page/3/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/objc/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/objc/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/study-notes/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swift/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swift/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swift/page/3/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/original/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/original/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/translate/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/xcode/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/xcode/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/record_golden_sentence/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/record_golden_sentence/page/2/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/Windows/index.html
+👏  Tag Page: /Users/lijianfei/.gridea/output/tag/good-image/index.html
+📁 Step 9: Copying static files
+🎨 Step 10: Rendering custom pages
+🌐 Step 11: Building CNAME
+📡 Step 12: Building RSS feed
+✅ renderAll completed successfully in 2261ms
+Not a repo Could not find HEAD.
+info {
+  capabilities: [
+    'multi_ack',
+    'thin-pack',
+    'side-band',
+    'side-band-64k',
+    'ofs-delta',
+    'shallow',
+    'deepen-since',
+    'deepen-not',
+    'deepen-relative',
+    'no-progress',
+    'include-tag',
+    'multi_ack_detailed',
+    'allow-tip-sha1-in-want',
+    'allow-reachable-sha1-in-want',
+    'no-done',
+    'symref=HEAD:refs/heads/master',
+    'filter',
+    'object-format=sha1',
+    'agent=git/github-91d20c657fe1-Linux'
+  ],
+  HEAD: 'refs/heads/master',
+  refs: { heads: { master: '31394162939e439ab55b088f2a12d90139d80db8' } }
+}
+common push
+statusSummary *added
+pushRes {
+  ok: true,
+  refs: { 'refs/heads/master': { ok: true, error: '' } },
+  headers: {
+    server: 'GitHub-Babel/3.0',
+    'content-type': 'application/x-git-receive-pack-result',
+    'content-security-policy': "default-src 'none'; sandbox",
+    expires: 'Fri, 01 Jan 1980 00:00:00 GMT',
+    pragma: 'no-cache',
+    'cache-control': 'no-cache, max-age=0, must-revalidate',
+    vary: 'Accept-Encoding',
+    'transfer-encoding': 'chunked',
+    date: 'Wed, 01 Oct 2025 05:29:32 GMT',
+    'x-frame-options': 'DENY',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-github-request-id': 'D348:CD807:3DDB67:499FD4:68DCBC23',
+    connection: 'close'
+  }
+}

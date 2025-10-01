@@ -43,10 +43,23 @@ export class ArticlesController {
   }
 
   public async publishArticle(req: RequestWithLogger, res: Response): Promise<void> {
+    console.log('🚀 [ARTICLE_PUBLISH] Starting article publish process')
+    console.log(`📝 [ARTICLE_PUBLISH] Request received at: ${new Date().toISOString()}`)
+
     try {
       const {
         title, content, tags = [], autoDeploy = false,
       }: ArticlePublishRequest = req.body
+
+      console.log('📋 [ARTICLE_PUBLISH] Article publish request details:', {
+        title,
+        tags,
+        autoDeploy,
+        contentLength: (content && content.length) || 0,
+        hasContent: !!content,
+        tagsCount: tags ? tags.length : 0,
+        requestId: req.requestId,
+      })
 
       // Log article publish attempt
       req.logger.info('Article publish attempt', {
@@ -57,7 +70,16 @@ export class ArticlesController {
       })
 
       const validation = this.validatePublishRequest(title, content, tags)
+      console.log('🔍 [ARTICLE_PUBLISH] Validation result:', {
+        isValid: validation.isValid,
+        errorsCount: validation.errors.length,
+        warningsCount: validation.warnings.length,
+        errors: validation.errors,
+        warnings: validation.warnings,
+      })
+
       if (!validation.isValid) {
+        console.log('❌ [ARTICLE_PUBLISH] Validation failed, returning error response')
         // Log validation errors
         validation.errors.forEach((error) => {
           req.logger.logValidationFailure('general', null, error)
@@ -79,8 +101,19 @@ export class ArticlesController {
         return
       }
 
+      console.log('✅ [ARTICLE_PUBLISH] Basic validation passed')
+
       const markdownValidation = this.validator.validate(content)
+      console.log('📝 [ARTICLE_PUBLISH] Markdown validation result:', {
+        isValid: markdownValidation.isValid,
+        errorsCount: markdownValidation.errors.length,
+        warningsCount: markdownValidation.warnings.length,
+        errors: markdownValidation.errors,
+        warnings: markdownValidation.warnings,
+      })
+
       if (!markdownValidation.isValid) {
+        console.log('❌ [ARTICLE_PUBLISH] Markdown validation failed, returning error response')
         // Log markdown validation errors
         markdownValidation.errors.forEach((error) => {
           req.logger.logValidationFailure('content', content.substring(0, 100), error)
@@ -102,11 +135,33 @@ export class ArticlesController {
         return
       }
 
-      const fileName = this.generateFileName(title)
-      const articleData = this.createArticleData(title, content, tags, fileName)
+      console.log('✅ [ARTICLE_PUBLISH] Markdown validation passed')
 
+      const fileName = this.generateFileName(title)
+      console.log(`📂 [ARTICLE_PUBLISH] Generated filename: ${fileName}`)
+
+      const articleData = this.createArticleData(title, content, tags, fileName)
+      console.log('📋 [ARTICLE_PUBLISH] Article data created:', {
+        fileName: articleData.fileName,
+        title: articleData.title,
+        tags: articleData.tags,
+        date: articleData.date,
+        published: articleData.published,
+        contentLength: articleData.content.length,
+      })
+
+      console.log('💾 [ARTICLE_PUBLISH] Starting to save article...')
+      const saveStartTime = Date.now()
       const saveResult = await this.saveArticle(articleData)
+      const saveDuration = Date.now() - saveStartTime
+
+      console.log(`📊 [ARTICLE_PUBLISH] Article save process completed in ${saveDuration}ms`, {
+        success: saveResult,
+        fileName: articleData.fileName,
+      })
+
       if (!saveResult) {
+        console.log('❌ [ARTICLE_PUBLISH] Failed to save article, returning error response')
         req.logger.error('Failed to save article', {
           fileName,
           articleData: {
@@ -131,46 +186,108 @@ export class ArticlesController {
         return
       }
 
+      console.log('✅ [ARTICLE_PUBLISH] Article saved successfully to file and database')
+
       let deploymentStatus: 'pending' | 'started' | 'completed' | 'failed' | 'network_error' = 'pending'
       let deployUrl: string | null = null
       let deploymentError: string | null = null
       let deployedAt: string | null = null
 
-      if (autoDeploy) {
-        try {
+      try {
+        console.log('🔄 [SYNCHRONIZATION] Starting synchronization process')
+
+        // Force reload posts database to ensure latest article is included
+        console.log(`📊 [SYNCHRONIZATION] Current renderer posts count: ${this.renderer.db.posts.length}`)
+        req.logger.info('Reloading posts database before rendering', {
+          fileName,
+          currentPostsCount: this.renderer.db.posts.length,
+        })
+
+        console.log('📚 [SYNCHRONIZATION] Step 1: Reloading posts database to include latest article...')
+        const reloadStartTime = Date.now()
+
+        // Reload posts to ensure the latest article is included and capture the return value
+        const reloadedPosts = await this.posts.reloadPosts()
+
+        const reloadDuration = Date.now() - reloadStartTime
+        console.log(`📊 [SYNCHRONIZATION] Database reload completed in ${reloadDuration}ms`)
+
+        // Update renderer database reference using the returned array
+        console.log('🔄 [SYNCHRONIZATION] Step 2: Updating renderer database reference...')
+        const oldPostsCount = this.renderer.db.posts.length
+
+        // CRITICAL FIX: Use the returned reloadedPosts array to ensure synchronization
+        this.renderer.db.posts = reloadedPosts
+        this.posts.db.posts = reloadedPosts // Also update posts.db.posts for consistency
+        this.renderer.db.themeConfig.domain = this.renderer.db.setting.domain
+        const newPostsCount = this.renderer.db.posts.length
+
+        console.log('📊 [SYNCHRONIZATION] Renderer database updated:', {
+          oldPostsCount,
+          newPostsCount,
+          postsAdded: newPostsCount - oldPostsCount,
+          domain: this.renderer.db.themeConfig.domain,
+          newPostsArrayLength: reloadedPosts.length,
+          rendererDbPostsLength: this.renderer.db.posts.length,
+          postsDbPostsLength: this.posts.db.posts.length,
+        })
+
+        // Verify synchronization by checking if the latest article is in the array
+        const latestArticle = reloadedPosts.find((post: any) => post.fileName === fileName)
+        console.log('🔍 [SYNCHRONIZATION] Latest article verification:', {
+          fileName,
+          found: !!latestArticle,
+          title: (latestArticle && latestArticle.data && latestArticle.data.title) || 'Not found',
+          published: (latestArticle && latestArticle.data && latestArticle.data.published) || false,
+        })
+
+        req.logger.info('Posts database reloaded', {
+          fileName,
+          newPostsCount: this.renderer.db.posts.length,
+        })
+
+        // Always generate static website to ensure article is visible
+        console.log('🌐 [SYNCHRONIZATION] Step 3: Starting website generation process...')
+        req.logger.info('Starting website generation process', {
+          fileName,
+          autoDeploy,
+          outputDir: this.renderer.outputDir,
+          themePath: this.renderer.themePath,
+          postsCount: this.renderer.db.posts.length,
+        })
+
+        // Set domain for rendering
+        console.log(`🌐 [SYNCHRONIZATION] Domain configured for rendering: ${this.renderer.db.themeConfig.domain}`)
+        req.logger.info('Domain set for rendering', {
+          domain: this.renderer.db.themeConfig.domain,
+        })
+
+        console.log('🎨 [SYNCHRONIZATION] Step 4: Calling renderAll() method to generate static website...')
+        req.logger.info('Calling renderAll() method', {
+          method: 'renderAll',
+          timeout: 60000, // 60 second timeout expectation
+          autoDeploy,
+        })
+
+        const renderStartTime = Date.now()
+        await this.renderer.renderAll()
+        const renderDuration = Date.now() - renderStartTime
+
+        console.log(`🎉 [SYNCHRONIZATION] Static website generated successfully in ${renderDuration}ms`)
+        req.logger.info('Static website generated successfully', {
+          fileName,
+          autoDeploy,
+          renderDuration,
+          outputDir: this.renderer.outputDir,
+        })
+
+        console.log(`📋 [SYNCHRONIZATION] Final posts count in database: ${this.renderer.db.posts.length}`)
+
+        if (autoDeploy) {
+          // Step 2: Deploy to remote (only if autoDeploy is enabled)
           req.logger.logDeploymentStart(fileName, true)
           deploymentStatus = 'started'
 
-          // Step 1: Generate static website
-          req.logger.info('Starting website generation process', {
-            fileName,
-            outputDir: this.renderer.outputDir,
-            themePath: this.renderer.themePath,
-            postsCount: this.renderer.db.posts.length,
-          })
-
-          // Set domain for rendering
-          this.renderer.db.themeConfig.domain = this.renderer.db.setting.domain
-          req.logger.info('Domain set for rendering', {
-            domain: this.renderer.db.themeConfig.domain,
-          })
-
-          req.logger.info('Calling renderAll() method', {
-            method: 'renderAll',
-            timeout: 60000, // 60 second timeout expectation
-          })
-
-          const renderStartTime = Date.now()
-          await this.renderer.renderAll()
-          const renderDuration = Date.now() - renderStartTime
-
-          req.logger.info('Static website generated successfully', {
-            fileName,
-            renderDuration,
-            outputDir: this.renderer.outputDir,
-          })
-
-          // Step 2: Deploy to remote
           req.logger.info('Starting deployment process', { fileName })
           const deployStartTime = Date.now()
           const deployResult = await this.deploy.publish()
@@ -186,20 +303,27 @@ export class ArticlesController {
             deploymentError = deployResult.message || 'Deployment failed'
             req.logger.logDeploymentFailure(fileName, deploymentError, deployDuration)
           }
-        } catch (error) {
-          const deployDuration = Date.now() - (req.startTime || Date.now())
-          deploymentStatus = 'network_error'
-          deploymentError = error instanceof Error ? error.message : 'Unknown deployment error'
-
-          req.logger.error('Website generation and deployment failed', error instanceof Error ? error : new Error(String(error)), {
+        } else {
+          deploymentStatus = 'pending'
+          req.logger.info('Article saved and website generated without deployment', {
             fileName,
-            deploymentStatus,
-            deployDuration,
-            errorType: typeof error,
-            errorMessage: error instanceof Error ? error.message : String(error),
-            errorStack: error instanceof Error ? error.stack : undefined,
+            renderDuration,
           })
         }
+      } catch (error) {
+        const deployDuration = Date.now() - (req.startTime || Date.now())
+        deploymentStatus = 'network_error'
+        deploymentError = error instanceof Error ? error.message : 'Unknown website generation error'
+
+        req.logger.error('Website generation failed', error instanceof Error ? error : new Error(String(error)), {
+          fileName,
+          autoDeploy,
+          deploymentStatus,
+          deployDuration,
+          errorType: typeof error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorStack: error instanceof Error ? error.stack : undefined,
+        })
       }
 
       const response: ArticlePublishResponse = {
@@ -214,6 +338,16 @@ export class ArticlesController {
         deployedAt,
         deploymentError,
       }
+
+      console.log('🎉 [ARTICLE_PUBLISH] Article publish process completed successfully!', {
+        articleId: fileName,
+        title: articleData.title,
+        deploymentStatus,
+        autoDeploy,
+        deployUrl,
+        tags,
+        totalDuration: Date.now() - (req.startTime || Date.now()),
+      })
 
       const apiResponse: APIResponse<ArticlePublishResponse> = {
         success: true,
@@ -231,6 +365,7 @@ export class ArticlesController {
         responseTime: Date.now() - (req.startTime || Date.now()),
       })
 
+      console.log('📤 [ARTICLE_PUBLISH] Sending success response to client')
       res.json(apiResponse)
     } catch (error) {
       this.handleError(error, res, req)
@@ -277,14 +412,43 @@ export class ArticlesController {
 
   private generateFileName(title: string): string {
     const timestamp = moment().format('YYYY-MM-DD-HH-mm-ss')
-    const slug = title
+
+    // Create a slug that works for both English and Chinese titles
+    let slug = title
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[^a-z0-9\s\u4e00-\u9fff-]/g, '') // Allow alphanumeric, spaces, Chinese characters, and hyphens
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .trim()
 
+    // If slug is empty after processing, use a default
+    if (!slug) {
+      slug = 'untitled'
+    }
+
+    // For Chinese titles, use a hash of the title to create a short, unique identifier
+    // This avoids long URL-encoded filenames while ensuring uniqueness
+    if (/[\u4e00-\u9fff]/.test(slug)) {
+      // Contains Chinese characters
+      const hash = this.createSimpleHash(title)
+      const englishPart = slug.replace(/[\u4e00-\u9fff]/g, '').replace(/-+/g, '-').trim()
+      if (englishPart) {
+        slug = `${englishPart}-${hash}`
+      } else {
+        slug = `chinese-${hash}`
+      }
+    }
+
     return `${timestamp}-${slug}`
+  }
+
+  private createSimpleHash(str: string): string {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i)
+      hash = (hash * 31 + char) // Alternative to ((hash << 5) - hash)
+    }
+    return Math.abs(hash).toString(36).substring(0, 6)
   }
 
   private createArticleData(title: string, content: string, tags: string[], fileName: string): any {
@@ -311,23 +475,58 @@ export class ArticlesController {
   }
 
   private async saveArticle(articleData: any): Promise<boolean> {
-    try {
-      const result = await this.posts.savePostToFile(articleData)
-      if (result !== null) {
-        // Update database after saving article file
-        console.log('🔄 Updating posts database after saving article:', articleData.fileName)
-        const updateResult = await this.posts.savePosts()
-        console.log('✅ Database update result:', updateResult)
+    console.log('💾 [SAVE_ARTICLE] Starting save article process')
+    console.log('📋 [SAVE_ARTICLE] Article data:', {
+      fileName: articleData.fileName,
+      title: articleData.title,
+      tags: articleData.tags,
+      published: articleData.published,
+      date: articleData.date,
+    })
 
-        // Regenerate entire website after database update
-        console.log('🔄 Starting website regeneration after article save')
-        this.renderer.db.themeConfig.domain = this.renderer.db.setting.domain
-        await this.renderer.renderAll()
-        console.log('✅ Website regeneration completed')
+    try {
+      console.log('📝 [SAVE_ARTICLE] Step 1: Saving article to file...')
+      const fileSaveStartTime = Date.now()
+      const result = await this.posts.savePostToFile(articleData)
+      const fileSaveDuration = Date.now() - fileSaveStartTime
+
+      console.log(`📊 [SAVE_ARTICLE] File save completed in ${fileSaveDuration}ms`, {
+        success: result !== null,
+        fileName: articleData.fileName,
+      })
+
+      if (result !== null) {
+        console.log('🗄️ [SAVE_ARTICLE] Step 2: Updating posts database...')
+        const dbUpdateStartTime = Date.now()
+
+        // Update database after saving article file
+        console.log('🔄 [SAVE_ARTICLE] Updating posts database after saving article:', articleData.fileName)
+        const updateResult = await this.posts.savePosts()
+        const dbUpdateDuration = Date.now() - dbUpdateStartTime
+
+        console.log(`📊 [SAVE_ARTICLE] Database update completed in ${dbUpdateDuration}ms`, {
+          success: updateResult,
+          fileName: articleData.fileName,
+        })
+        console.log('✅ [SAVE_ARTICLE] Database update result:', updateResult)
+
+        console.log('🎉 [SAVE_ARTICLE] Article saved successfully!')
+        // Note: Website rendering is now handled in publishArticle method to avoid
+        // double rendering and race conditions. Each article should only be rendered
+        // once after successful save to ensure the correct content is published.
+      } else {
+        console.log('❌ [SAVE_ARTICLE] Failed to save article to file')
       }
+
       return result !== null
     } catch (error) {
-      console.error('Error saving article:', error)
+      console.error('❌ [SAVE_ARTICLE] Error saving article:', error)
+      console.error('❌ [SAVE_ARTICLE] Error details:', {
+        fileName: articleData.fileName,
+        title: articleData.title,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        errorStack: error instanceof Error ? error.stack : undefined,
+      })
       return false
     }
   }

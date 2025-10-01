@@ -237,6 +237,101 @@
         </div>
       </footer-box>
     </a-form>
+
+    <!-- 实时日志查看框 -->
+    <div v-if="enabled" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e8e8e8;">
+      <a-form-item :label="$t('apiSettings.logViewer')" :labelCol="formLayout.label" :wrapperCol="formLayout.wrapper" :colon="false">
+        <div style="margin-bottom: 12px;">
+          <a-button-group>
+            <a-button
+              size="small"
+              @click="startLogWatching"
+              :loading="logWatching"
+              :disabled="logWatching"
+            >
+              <a-icon type="play-circle" />
+              {{ $t('apiSettings.startLogWatching') }}
+            </a-button>
+            <a-button
+              size="small"
+              @click="stopLogWatching"
+              :disabled="!logWatching"
+            >
+              <a-icon type="pause-circle" />
+              {{ $t('apiSettings.stopLogWatching') }}
+            </a-button>
+            <a-button
+              size="small"
+              @click="clearLogs"
+              :disabled="logs.length === 0"
+            >
+              <a-icon type="delete" />
+              {{ $t('apiSettings.clearLogs') }}
+            </a-button>
+            <a-button
+              size="small"
+              @click="copyLogs"
+              :disabled="logs.length === 0"
+            >
+              <a-icon type="copy" />
+              {{ $t('apiSettings.copyLogs') }}
+            </a-button>
+            <a-button
+              size="small"
+              @click="exportLogs"
+              :disabled="logs.length === 0"
+            >
+              <a-icon type="download" />
+              {{ $t('apiSettings.exportLogs') }}
+            </a-button>
+          </a-button-group>
+
+          <span style="margin-left: 12px; color: #666; font-size: 12px;">
+            <a-icon type="info-circle" />
+            {{ $t('apiSettings.logInfo') }}
+          </span>
+        </div>
+
+        <div
+          ref="logContainer"
+          style="
+            background: #f8f9fa;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            height: 300px;
+            overflow-y: auto;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-all;
+          "
+        >
+          <div v-if="logs.length === 0" style="color: #999; text-align: center; padding: 40px;">
+            <a-icon type="file-text" style="font-size: 24px; margin-bottom: 8px; display: block;" />
+            {{ $t('apiSettings.noLogs') }}
+          </div>
+          <div
+            v-for="(log, index) in logs"
+            :key="index"
+            :style="{
+              color: getLogColor(log.level),
+              marginBottom: '4px',
+              padding: '2px 0',
+              borderBottom: index < logs.length - 1 ? '1px solid #f0f0f0' : 'none'
+            }"
+          >
+            <span style="color: #666; font-size: 11px;">[{{ formatLogTime(log.timestamp) }}]</span>
+            <span style="margin-left: 8px; font-weight: bold;">{{ log.level.toUpperCase() }}</span>
+            <span style="margin-left: 8px;">{{ log.message }}</span>
+            <div v-if="log.details" style="margin-left: 20px; margin-top: 2px; color: #666; font-size: 11px;">
+              {{ log.details }}
+            </div>
+          </div>
+        </div>
+      </a-form-item>
+    </div>
   </div>
 </template>
 
@@ -313,6 +408,20 @@ export default class APISetting extends Vue {
     'http://127.0.0.1:8080',
   ]
 
+  // 日志相关
+  logs: Array<{
+    timestamp: number
+    level: 'info' | 'warn' | 'error' | 'debug'
+    message: string
+    details?: string
+  }> = []
+
+  logWatching: boolean = false
+
+  logWatchInterval: number | null = null
+
+  maxLogs: number = 1000
+
   // 计算属性
   get hasChanges(): boolean {
     if (!this.originalConfig) return true
@@ -341,6 +450,7 @@ export default class APISetting extends Vue {
 
   beforeDestroy() {
     this.removeIpcListeners()
+    this.stopLogWatching()
   }
 
   // 数据加载
@@ -689,6 +799,202 @@ export default class APISetting extends Vue {
   @Watch('apiKey')
   onApiKeyChanged(val: string) {
     this.apiKey = this.apiKey.trim()
+  }
+
+  // 日志功能方法
+  startLogWatching() {
+    if (this.logWatching) return
+
+    this.logWatching = true
+    this.addLog('info', '开始监控API服务器日志')
+
+    // 设置日志监听器
+    this.setupLogIpcListeners()
+
+    // 立即获取现有日志
+    this.loadExistingLogs()
+
+    // 设置定期刷新
+    this.logWatchInterval = window.setInterval(() => {
+      this.loadExistingLogs()
+    }, 2000)
+
+    ga.event('API Setting', 'Log Watching Started', { evLabel: 'Started' })
+  }
+
+  stopLogWatching() {
+    if (!this.logWatching) return
+
+    this.logWatching = false
+    this.addLog('info', '停止监控API服务器日志')
+
+    // 清除定时器
+    if (this.logWatchInterval) {
+      clearInterval(this.logWatchInterval)
+      this.logWatchInterval = null
+    }
+
+    // 移除日志监听器
+    this.removeLogIpcListeners()
+
+    ga.event('API Setting', 'Log Watching Stopped', { evLabel: 'Stopped' })
+  }
+
+  clearLogs() {
+    this.logs = []
+    this.$message.success(this.$t('apiSettings.logsCleared'))
+    ga.event('API Setting', 'Logs Cleared', { evLabel: 'Cleared' })
+  }
+
+  copyLogs() {
+    if (this.logs.length === 0) return
+
+    const logText = this.logs.map((log) => {
+      return `[${this.formatLogTime(log.timestamp)}] ${log.level.toUpperCase()}: ${log.message}${log.details ? `\n  Details: ${log.details}` : ''}`
+    }).join('\n')
+
+    const clipboard = (navigator as any).clipboard || (window as any).clipboard
+    if (clipboard) {
+      clipboard.writeText(logText).then(() => {
+        this.$message.success(this.$t('apiSettings.logsCopied'))
+      }).catch(() => {
+        this.$message.error(this.$t('apiSettings.copyFailed'))
+      })
+    } else {
+      // Fallback
+      const textArea = document.createElement('textarea')
+      textArea.value = logText
+      document.body.appendChild(textArea)
+      textArea.select()
+      try {
+        document.execCommand('copy')
+        this.$message.success(this.$t('apiSettings.logsCopied'))
+      } catch (err) {
+        this.$message.error(this.$t('apiSettings.copyFailed'))
+      }
+      document.body.removeChild(textArea)
+    }
+
+    ga.event('API Setting', 'Logs Copied', { evLabel: 'Copied' })
+  }
+
+  exportLogs() {
+    if (this.logs.length === 0) return
+
+    const logText = this.logs.map((log) => {
+      return `[${this.formatLogTime(log.timestamp)}] ${log.level.toUpperCase()}: ${log.message}${log.details ? `\n  Details: ${log.details}` : ''}`
+    }).join('\n')
+
+    const blob = new Blob([logText], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `gridea-api-logs-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    this.$message.success(this.$t('apiSettings.logsExported'))
+    ga.event('API Setting', 'Logs Exported', { evLabel: 'Exported' })
+  }
+
+  setupLogIpcListeners() {
+    ipcRenderer.on('api-log-message', this.handleApiLogMessage)
+  }
+
+  removeLogIpcListeners() {
+    ipcRenderer.removeAllListeners('api-log-message')
+  }
+
+  handleApiLogMessage(event: IpcRendererEvent, logData: any) {
+    this.addLog(logData.level || 'info', logData.message, logData.details)
+  }
+
+  async loadExistingLogs() {
+    try {
+      // 尝试从文件系统读取日志
+      const logData = await ipcRenderer.invoke('get-api-server-logs')
+      if (logData && Array.isArray(logData)) {
+        logData.forEach((log: any) => {
+          this.addLog(log.level || 'info', log.message, log.details, log.timestamp, true)
+        })
+      }
+    } catch (error) {
+      // 如果无法读取日志文件，静默处理
+      console.warn('Failed to load existing logs:', error)
+    }
+  }
+
+  addLog(level: 'info' | 'warn' | 'error' | 'debug', message: string, details?: string, timestamp?: number, silent: boolean = false) {
+    const logEntry = {
+      timestamp: timestamp || Date.now(),
+      level,
+      message,
+      details,
+    }
+
+    // 检查是否已存在相同的日志（避免重复）
+    const isDuplicate = this.logs.length > 0
+      && this.logs[this.logs.length - 1].message === message
+      && this.logs[this.logs.length - 1].level === level
+      && Math.abs(this.logs[this.logs.length - 1].timestamp - logEntry.timestamp) < 1000
+
+    if (!isDuplicate) {
+      this.logs.push(logEntry)
+
+      // 限制日志数量
+      if (this.logs.length > this.maxLogs) {
+        this.logs = this.logs.slice(-this.maxLogs)
+      }
+
+      // 自动滚动到底部
+      this.$nextTick(() => {
+        this.scrollToBottom()
+      })
+
+      if (!silent) {
+        // 对于错误日志，显示通知
+        if (level === 'error') {
+          this.$message.error(`API错误: ${message}`)
+        } else if (level === 'warn') {
+          this.$message.warning(`API警告: ${message}`)
+        }
+      }
+    }
+  }
+
+  scrollToBottom() {
+    const container = this.$refs.logContainer as HTMLElement
+    if (container) {
+      container.scrollTop = container.scrollHeight
+    }
+  }
+
+  formatLogTime(timestamp: number): string {
+    const date = new Date(timestamp)
+    return date.toLocaleTimeString('zh-CN', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      fractionalSecondDigits: 3,
+    })
+  }
+
+  getLogColor(level: string): string {
+    switch (level) {
+      case 'error':
+        return '#ff4d4f'
+      case 'warn':
+        return '#faad14'
+      case 'info':
+        return '#1890ff'
+      case 'debug':
+        return '#722ed1'
+      default:
+        return '#666'
+    }
   }
 }
 </script>

@@ -1,0 +1,949 @@
+[15:06:54.506] INFO: 开始监控API服务器日志
+[15:06:56.474] INFO: API Server is running on 0.0.0.0:3000
+[15:06:56.509] INFO: Health check available at: http://0.0.0.0:3000/api/health
+[15:06:56.518] INFO: API server started successfully on http://localhost:3000
+[15:06:59.725] INFO: {"timestamp":"2025-10-01T07:06:59.724Z","level":"info","message":"API request received","requestId":"req_1759302419724_euz38xwyh","responseTime":0,"method":"POST","path":"/api/articles/publish","userAgent":"curl/8.7.1","ip":"192.168.0.245","type":"request_start"}
+[15:06:59.740] INFO: {"timestamp":"2025-10-01T07:06:59.728Z","level":"info","message":"API request received","requestId":"req_1759302419728_2q18yz5ur","responseTime":0,"method":"POST","path":"/publish","userAgent":"curl/8.7.1","ip":"192.168.0.245","type":"request_start"}
+[15:06:59.749] INFO: {"timestamp":"2025-10-01T07:06:59.728Z","level":"info","message":"Authentication successful","requestId":"req_1759302419728_2q18yz5ur","responseTime":0,"userId":"default-user","method":"default","type":"auth_success"}
+[15:06:59.758] INFO: 🚀 [ARTICLE_PUBLISH] Starting article publish process
+[15:06:59.766] INFO: 📝 [ARTICLE_PUBLISH] Request received at: 2025-10-01T07:06:59.728Z
+[15:06:59.775] INFO: 📋 [ARTICLE_PUBLISH] Article publish request details: [object Object]
+[15:06:59.784] INFO: {"timestamp":"2025-10-01T07:06:59.729Z","level":"info","message":"Article publish attempt","requestId":"req_1759302419728_2q18yz5ur","responseTime":1,"title":"完整发布测试","tags":["完整","发布","部署"],"autoDeploy":true,"contentLength":73}
+[15:06:59.793] INFO: 🔍 [ARTICLE_PUBLISH] Validation result: [object Object]
+[15:06:59.800] INFO: ✅ [ARTICLE_PUBLISH] Basic validation passed
+[15:06:59.809] INFO: 📝 [ARTICLE_PUBLISH] Markdown validation result: [object Object]
+[15:06:59.819] INFO: ✅ [ARTICLE_PUBLISH] Markdown validation passed
+[15:06:59.827] INFO: 📂 [ARTICLE_PUBLISH] Generated filename: 2025-10-01-15-06-59-chinese-30xs64
+[15:06:59.834] INFO: 📋 [ARTICLE_PUBLISH] Article data created: [object Object]
+[15:06:59.844] INFO: 💾 [ARTICLE_PUBLISH] Starting to save article...
+[15:06:59.854] INFO: 💾 [SAVE_ARTICLE] Starting save article process
+[15:06:59.861] INFO: 📋 [SAVE_ARTICLE] Article data: [object Object]
+[15:06:59.868] INFO: 📝 [SAVE_ARTICLE] Step 1: Saving article to file...
+[15:06:59.876] INFO: 📝 [FILE_SAVE] Starting to save post to file: 2025-10-01-15-06-59-chinese-30xs64
+[15:06:59.885] INFO: 📋 [FILE_SAVE] Post details: [object Object]
+[15:06:59.893] INFO: 🖼️ [FILE_SAVE] Image extension: jpg
+[15:06:59.901] INFO: 🌐 [FILE_SAVE] Content processed for domain: https://lijianfei.com
+[15:06:59.909] INFO: 📄 [FILE_SAVE] Markdown content prepared, length: 197
+[15:06:59.918] INFO: ℹ️ [FILE_SAVE] No feature image to process
+[15:06:59.926] INFO: 📝 [FILE_SAVE] Writing markdown file to: /Users/lijianfei/Documents/Gridea/posts/2025-10-01-15-06-59-chinese-30xs64.md
+[15:06:59.932] INFO: ✅ [FILE_SAVE] Markdown file written successfully
+[15:06:59.941] INFO: 🎉 [FILE_SAVE] Post save completed successfully: 完整发布测试
+[15:06:59.952] INFO: 📊 [SAVE_ARTICLE] File save completed in 1ms [object Object]
+[15:06:59.960] INFO: 🗄️ [SAVE_ARTICLE] Step 2: Updating posts database...
+[15:06:59.968] INFO: 🔄 [SAVE_ARTICLE] Updating posts database after saving article: 2025-10-01-15-06-59-chinese-30xs64
+[15:06:59.978] INFO: 📊 [SAVE_ARTICLE] Database update completed in 64ms [object Object]
+[15:06:59.986] INFO: ✅ [SAVE_ARTICLE] Database update result: true
+[15:06:59.994] INFO: 🎉 [SAVE_ARTICLE] Article saved successfully!
+[15:07:00.003] INFO: 📊 [ARTICLE_PUBLISH] Article save process completed in 65ms [object Object]
+[15:07:00.012] INFO: ✅ [ARTICLE_PUBLISH] Article saved successfully to file and database
+[15:07:00.021] INFO: 🔄 [SYNCHRONIZATION] Starting synchronization process
+[15:07:00.030] INFO: 📊 [SYNCHRONIZATION] Current renderer posts count: 245
+[15:07:00.039] INFO: {"timestamp":"2025-10-01T07:06:59.796Z","level":"info","message":"Reloading posts database before rendering","requestId":"req_1759302419728_2q18yz5ur","responseTime":68,"fileName":"2025-10-01-15-06-59-chinese-30xs64","currentPostsCount":245}
+[15:07:00.049] INFO: 📚 [SYNCHRONIZATION] Step 1: Reloading posts database to include latest article...
+[15:07:00.059] INFO: 📚 [DATABASE] Starting database reload from post directory: /Users/lijianfei/Documents/Gridea/posts
+[15:07:00.069] INFO: 📁 [DATABASE] Found 247 files in post directory
+[15:07:00.077] INFO: 🔍 [DATABASE] Filtered to 246 valid markdown files
+[15:07:00.088] INFO: 📖 [DATABASE] Reading file: 10-useful-software-dev-principles.md
+[15:07:00.096] INFO: 📖 [DATABASE] Reading file: 1st-rule-of-programming.md
+[15:07:00.105] INFO: 📖 [DATABASE] Reading file: 2014.md
+[15:07:00.114] INFO: 📖 [DATABASE] Reading file: 2015.md
+[15:07:00.125] INFO: 📖 [DATABASE] Reading file: 2025-10-01-15-06-59-chinese-30xs64.md
+[15:07:00.133] INFO: 📖 [DATABASE] Reading file: 37-xcode-tips.md
+[15:07:00.143] INFO: 📖 [DATABASE] Reading file: 435-duli.md
+[15:07:00.154] INFO: 📖 [DATABASE] Reading file: 435-the-happiest-thing-in-life.md
+[15:07:00.164] INFO: 📖 [DATABASE] Reading file: 50-ui-design-tips-by-pixselacademy-complete-thread.md
+[15:07:00.173] INFO: 📖 [DATABASE] Reading file: Blue-Chip-Kid-Reading-Notes.md
+[15:07:00.183] INFO: 📖 [DATABASE] Reading file: Classic-Learner-vs-Smart-Learner.md
+[15:07:00.194] INFO: 📖 [DATABASE] Reading file: Feynman-Technique.md
+[15:07:00.203] INFO: 📖 [DATABASE] Reading file: How-to-have-your-own-domain-email-seaversion.md
+[15:07:00.211] INFO: 📖 [DATABASE] Reading file: How-to-have-your-own-domain-email.md
+[15:07:00.222] INFO: 📖 [DATABASE] Reading file: Mac-app-uninstallpkg.md
+[15:07:00.231] INFO: 📖 [DATABASE] Reading file: Scrum_and_Sprint_Jira.md
+[15:07:00.240] INFO: 📖 [DATABASE] Reading file: Swift 中 闭包 与 逃逸闭包 的区别.md
+[15:07:00.248] INFO: 📖 [DATABASE] Reading file: The-difference-between-ScaleFill- AspectFit-and-AspectFill.md
+[15:07:00.260] INFO: 📖 [DATABASE] Reading file: Vlog-Nan'ao-Island.md
+[15:07:00.271] INFO: 📖 [DATABASE] Reading file: When-you-don't-create-things.md
+[15:07:00.280] INFO: 📖 [DATABASE] Reading file: a-ubantu-hackathon.md
+[15:07:00.292] INFO: 📖 [DATABASE] Reading file: abcbinding-ios.md
+[15:07:00.302] INFO: 📖 [DATABASE] Reading file: about.md
+[15:07:00.312] INFO: 📖 [DATABASE] Reading file: ai-bian-cheng-gong-ju-de-tu-wei-cong-coser-de-kun-ju-dao-augment-de-qi-shi.md
+[15:07:00.322] INFO: 📖 [DATABASE] Reading file: ai-bian-cheng-gong-ju-zai-sheng-ji-claude-37-sonnet-heng-kong-chu-shi-claude-code-huo-jiang-gai-xie-kai-fa-li-shi.md
+[15:07:00.335] INFO: 📖 [DATABASE] Reading file: ai-jie-di-zhen-grok-3-heng-kong-chu-shi-nian-ya-suo-you-dui-shou.md
+[15:07:00.345] INFO: 📖 [DATABASE] Reading file: an-amazing-sql-joins-cheat-sheet.md
+[15:07:00.355] INFO: 📖 [DATABASE] Reading file: an-incomplete-list-of-skills-senior-engineers-need-beyond-coding.md
+[15:07:00.384] INFO: 📖 [DATABASE] Reading file: an-ssl-error-has-occurred-and-a-secure-connection-to-the-server-cannot-be-made.md
+[15:07:00.394] INFO: 📖 [DATABASE] Reading file: app-kai-fa-zhong-de-httpdns-fang-an.md
+[15:07:00.405] INFO: 📖 [DATABASE] Reading file: asic-xin-pian-wei-lai-ke-ji-de-ji-shi-ju-tou-men-de-zhan-chang.md
+[15:07:00.414] INFO: 📖 [DATABASE] Reading file: auto-layout-leading-and-trailing-attributes-and-rtl.md
+[15:07:00.426] INFO: 📖 [DATABASE] Reading file: ba-nian-bao-zhuan-wei-ke-shi-hua-wang-ye-fu-wan-zheng-ti-shi-ci.md
+[15:07:00.436] INFO: 📖 [DATABASE] Reading file: bian-cheng-gong-ju-de-kuang-biao-nian-dai-cong-claude-4-kan-zhi-neng-nu-li-de-jin-hua-lu-jing.md
+[15:07:00.446] INFO: 📖 [DATABASE] Reading file: cfbundleversion-and-cfbundleshortversionstring.md
+[15:07:00.457] INFO: 📖 [DATABASE] Reading file: chat-gtp-4-browse-with-bing-de-yi-xie-hao-yong-de-ti-shi-ci.md
+[15:07:00.470] INFO: 📖 [DATABASE] Reading file: chatgpt-beta-gong-neng-zhi-custom-instructions.md
+[15:07:00.481] INFO: 📖 [DATABASE] Reading file: chong-bang-lai-xi-ping-guo-jiang-zai-zai-mei-guo-kai-fang-di-san-fang-zhi-fu.md
+[15:07:00.492] INFO: 📖 [DATABASE] Reading file: chong-po-tian-ji-bolt-de-huo-jian-shi-jue-qi-cong-mo-mo-wu-wen-dao-gu-zhi-shi-yi-mei-jin-webcontainers-ru-he-ni-feng-fan-pan.md
+[15:07:00.507] INFO: 📖 [DATABASE] Reading file: chuan-pu-bi-bao-cang-xie-lei-shi-yi-ge-xin-ren-ru-he-zai-yi-xiao-shi-nei-cong-jiu-cai-bian-guang-gan-si-ling.md
+[15:07:00.518] INFO: 📖 [DATABASE] Reading file: claude-code-jiang-zhi-chu-liao-kimi-k2-you-duo-liao-ge-xuan-ze-zhi-pu-glm-45.md
+[15:07:00.528] INFO: 📖 [DATABASE] Reading file: claude-code-zi-dai-li-heng-kong-chu-shi-nu-zhuang-da-lao-cosplay-wan-qi-lai.md
+[15:07:00.542] INFO: 📖 [DATABASE] Reading file: cloud-code-xin-wan-fa-pao-qi-lao-diao-ya-ti-shi-ci-shang-xia-wen-gong-cheng-rang-ni-ma-shang-fei-sheng.md
+[15:07:00.553] INFO: 📖 [DATABASE] Reading file: cocomat-lijianfei-com.md
+[15:07:00.563] INFO: 📖 [DATABASE] Reading file: cong-che-qi-dao-yu-zhou-fei-chuan-te-si-la-ru-he-da-po-ci-yuan-bi.md
+[15:07:00.577] INFO: 📖 [DATABASE] Reading file: credit-card-number-how-to-verify.md
+[15:07:00.589] INFO: 📖 [DATABASE] Reading file: cursorgong-ju-er-fei-shen-qi-rang-ta-wei-ni-gong-zuo.md
+[15:07:00.602] INFO: 📖 [DATABASE] Reading file: da-gong-si-fa-xing-wen-ding-bi-jin-rong-chuang-xin-huan-shi-quan-li-you-xi.md
+[15:07:00.616] INFO: 📖 [DATABASE] Reading file: deepseek-fang-da-zhao-janus-pro-7b-ben-di-bu-shu-jiao-cheng-wen-sheng-tu-shi-zhan-jie-xi.md
+[15:07:00.627] INFO: 📖 [DATABASE] Reading file: deepseek-r1-671b-man-xie-ai-de-xun-fu-ji-wo-zai-ben-di-yu-yun-duan-de-ji-xian-tiao-zhan.md
+[15:07:00.639] INFO: 📖 [DATABASE] Reading file: deepseek-r2-ji-jiang-lai-xi-ren-gong-zhi-neng-xing-ye-de-di-zhen-ji-bian-ge.md
+[15:07:00.651] INFO: 📖 [DATABASE] Reading file: deepseek-rao-guo-liao-ying-wei-da-de-cudadi-duan-xin-pian-jiu-gou-liao-da-lian-pa-pa-pa.md
+[15:07:00.665] INFO: 📖 [DATABASE] Reading file: deepseekopenai-de-tou-hao-jing-di-jie-xi-zhe-chang-ai-da-zhan-de-bei-hou-luo-ji.md
+[15:07:00.676] INFO: 📖 [DATABASE] Reading file: demo-and-code-analysis-resizable-custom-tab-bar-for-macos.md
+[15:07:00.687] INFO: 📖 [DATABASE] Reading file: docker-hen-chang-shi-jian-yi-hou-ji-de-qing-li-yi-xia.md
+[15:07:00.703] INFO: 📖 [DATABASE] Reading file: docker-rong-qi-zi-dong-geng-xin-shen-qi-watchtowerrang-ni-de-rong-qi-yong-bao-qing-chun.md
+[15:07:00.717] INFO: 📖 [DATABASE] Reading file: drawthings-ai-hua-long.md
+[15:07:00.729] INFO: 📖 [DATABASE] Reading file: du-li-zhan-yin-liu-de-liu-liang-xian-jing.md
+[15:07:00.744] INFO: 📖 [DATABASE] Reading file: efficient-life-12-tips.md
+[15:07:00.756] INFO: 📖 [DATABASE] Reading file: error-using-bridging-headers-with-framework-targets-is-unsupported.md
+[15:07:00.768] INFO: 📖 [DATABASE] Reading file: every-ios-app-developer.md
+[15:07:00.784] INFO: 📖 [DATABASE] Reading file: feng-di-gu-suan-back-of-the-envelope-estimation.md
+[15:07:00.796] INFO: 📖 [DATABASE] Reading file: gao-bie-iterm2-de-yin-ying-ghostty-zhe-kuan-shen-ji-zhong-duan-mo-ni-qi-jiang-dian-fu-ni-de-ren-zhi.md
+[15:07:00.811] INFO: 📖 [DATABASE] Reading file: gao-tong-oryon-xin-pian-wei-lai-shi-nian-xiao-fei-dian-zi-de-xin-wang-zhe.md
+[15:07:00.827] INFO: 📖 [DATABASE] Reading file: giving-all-to-the-present.md
+[15:07:00.839] INFO: 📖 [DATABASE] Reading file: goodbye-tencent.md
+[15:07:00.850] INFO: 📖 [DATABASE] Reading file: googl-google-gu-ge-ai-shi-dai-xia-de-sou-suo-di-guo-tou-zi-ta-de-san-ge-mai-ru-dian.md
+[15:07:00.865] INFO: 📖 [DATABASE] Reading file: google-adsense-tian-jia-zhao-shang-yin-xing-zhang-hu.md
+[15:07:00.878] INFO: 📖 [DATABASE] Reading file: google-stage-bao-mu-ji-jiao-cheng-ai-qu-dong-de-ui-she-ji-yu-qian-duan-dai-ma-sheng-cheng.md
+[15:07:00.891] INFO: 📖 [DATABASE] Reading file: google-wei-he-cheng-wei-zhong-mei-mao-yi-zhan-de-ti-zui-yang-fan-long-duan-diao-cha-bei-hou-de-shen-ceng-xuan-ji.md
+[15:07:00.908] INFO: 📖 [DATABASE] Reading file: gowechatdev.md
+[15:07:00.923] INFO: 📖 [DATABASE] Reading file: guan-tian-feng-yi-ge-hei-ke-de-jue-qi-yu-qi-shi.md
+[15:07:00.937] INFO: 📖 [DATABASE] Reading file: guo-de-gang-gei-guo-qi-lin-xin.md
+[15:07:00.954] INFO: 📖 [DATABASE] Reading file: h264-vs-h265shi-pin-bian-ma-biao-zhun-de-xiang-xi-dui-bi.md
+[15:07:00.967] INFO: 📖 [DATABASE] Reading file: how-to-add-china-merchants-bank-all-in-one-card-to-paypal.md
+[15:07:00.980] INFO: 📖 [DATABASE] Reading file: how-to-do-git-migrate.md
+[15:07:00.996] INFO: 📖 [DATABASE] Reading file: how-to-run-your-website-for-less-than-dollar6year.md
+[15:07:01.008] INFO: 📖 [DATABASE] Reading file: how-to-write-a-meeting-minutes.md
+[15:07:01.020] INFO: 📖 [DATABASE] Reading file: hu-lian-wang-cai-yuan-tao-lun.md
+[15:07:01.038] INFO: 📖 [DATABASE] Reading file: iOS 开发中的 workloop 介绍和使用案例.md
+[15:07:01.051] INFO: 📖 [DATABASE] Reading file: internet-com-rank.md
+[15:07:01.066] INFO: 📖 [DATABASE] Reading file: ios-16-jian-qie-ban-dan-chuang-ru-he-ying-dui.md
+[15:07:01.078] INFO: 📖 [DATABASE] Reading file: ios-16-ping-mu-xuan-zhuan-gua-pei.md
+[15:07:01.090] INFO: 📖 [DATABASE] Reading file: ios-164-webview-bu-neng-yong-safari-diao-shi.md
+[15:07:01.106] INFO: 📖 [DATABASE] Reading file: ios-and-macos-dev-tools.md
+[15:07:01.119] INFO: 📖 [DATABASE] Reading file: ios-fang-jie-ping-lu-ping-fang-an.md
+[15:07:01.133] INFO: 📖 [DATABASE] Reading file: ios-nei-cun-zhan-yong-xiu-fu-xiao-ji.md
+[15:07:01.152] INFO: 📖 [DATABASE] Reading file: ios-new-aip.md
+[15:07:01.167] INFO: 📖 [DATABASE] Reading file: ios-tu-pian-ku-http3-shi-yan-de-yi-xie-jie-lun.md
+[15:07:01.179] INFO: 📖 [DATABASE] Reading file: ios-yin-liang-jian-de-jian-ting-de-fang-an.md
+[15:07:01.197] INFO: 📖 [DATABASE] Reading file: ji-zhu-yi-si-yi-ge-cheng-xu-yuan-de-leng-xiao-yu-fan-ji.md
+[15:07:01.210] INFO: 📖 [DATABASE] Reading file: jiao-yi-de-san-tiao-ji-lu.md
+[15:07:01.224] INFO: 📖 [DATABASE] Reading file: jie-jue-instrument-de-han-shu-wei-bei-fu-hao-hua.md
+[15:07:01.242] INFO: 📖 [DATABASE] Reading file: jie-ma-manus-bao-huo-bei-hou-de-hei-se-you-mo-yu-ying-he-luo-ji.md
+[15:07:01.257] INFO: 📖 [DATABASE] Reading file: jie-mi-deepseek-shi-ru-he-tong-guo-zheng-liu-ji-zhu-da-zao-zi-ji-de-ai-mo-xing.md
+[15:07:01.275] INFO: 📖 [DATABASE] Reading file: jie-mi-san-ge-mian-fei-shen-qi-bang-ni-wa-jue-yin-cang-de-liu-liang-bao-cang.md
+[15:07:01.289] INFO: 📖 [DATABASE] Reading file: lesslessclaude-code-best-practicesgreatergreater-guan-hou-gan.md
+[15:07:01.304] INFO: 📖 [DATABASE] Reading file: li-ji-shi-chang-hu-lian-wang-zhuan-qian-de-mi-mi-wu-qi-xiao-bai-ye-neng-qing-song-zhang-wo-de-zhong-ji-zhi-nan.md
+[15:07:01.321] INFO: 📖 [DATABASE] Reading file: liang-yan-deepseek-r1-yue-yu-cheng-gong-ai-zi-you-liao-wu-shen-cha-wu-xian-zhi-dai-ni-ti-yan-zhen-zheng-de-si-xiang-jie-fang.md
+[15:07:01.336] INFO: 📖 [DATABASE] Reading file: liang-zi-ge-ming-wei-ruan-majorana-1-xin-pian-ru-he-gai-xie-ren-lei-ji-suan-wei-lai.md
+[15:07:01.351] INFO: 📖 [DATABASE] Reading file: ma-ji-wei-qing-zai-zhong-guo-gong-han-shui-20-tian-te-si-la-fsd-luo-di-zhong-guo.md
+[15:07:01.370] INFO: 📖 [DATABASE] Reading file: ma-ji-wei-te-si-la-yu-x-ping-tai-hui-zou-shi-yi-zhi-ma.md
+[15:07:01.385] INFO: 📖 [DATABASE] Reading file: mac-app-devtoysmac.md
+[15:07:01.399] INFO: 📖 [DATABASE] Reading file: mac-app-folder-peek.md
+[15:07:01.418] INFO: 📖 [DATABASE] Reading file: mac-app-kap.md
+[15:07:01.432] INFO: 📖 [DATABASE] Reading file: mac-app-lsunusedresources.md
+[15:07:01.451] INFO: 📖 [DATABASE] Reading file: mac-app-macsymbolicator.md
+[15:07:01.466] INFO: 📖 [DATABASE] Reading file: mac-app-maczip.md
+[15:07:01.482] INFO: 📖 [DATABASE] Reading file: mac-app-mas-cli.md
+[15:07:01.500] INFO: 📖 [DATABASE] Reading file: mac-app-messier.md
+[15:07:01.515] INFO: 📖 [DATABASE] Reading file: mac-app-omnidisksweeper.md
+[15:07:01.530] INFO: 📖 [DATABASE] Reading file: mac-app-owlocr.md
+[15:07:01.549] INFO: 📖 [DATABASE] Reading file: mac-app-stats.md
+[15:07:01.565] INFO: 📖 [DATABASE] Reading file: mac-app-switchhosts.md
+[15:07:01.589] INFO: 📖 [DATABASE] Reading file: mac-app-tui-jian-figio.md
+[15:07:01.606] INFO: 📖 [DATABASE] Reading file: mac-app-tui-jian-monitorcontrol-for-apple-silicon-and-intel.md
+[15:07:01.622] INFO: 📖 [DATABASE] Reading file: mac-app-tui-jian-plash.md
+[15:07:01.642] INFO: 📖 [DATABASE] Reading file: mac-app-wbblades.md
+[15:07:01.659] INFO: 📖 [DATABASE] Reading file: mac-app-xclean.md
+[15:07:01.679] INFO: 📖 [DATABASE] Reading file: mac-ya-suo-pdf-wen-jian.md
+[15:07:01.696] INFO: 📖 [DATABASE] Reading file: macos-xi-tong-an-zhuang-wan-hou-xian-shi-wen-jian-yi-sun-pi-huo-zhe-an-zhuang-wan-da-kai-mei-you-fan-ying.md
+[15:07:01.711] INFO: 📖 [DATABASE] Reading file: macosiosipados-shi-yong-drawthings-jin-xing-ai-hui-tu.md
+[15:07:01.730] INFO: 📖 [DATABASE] Reading file: manusrun-xin-jia-po-zhong-guo-ai-xin-gui-pao-lu-li-xing-kan-dai.md
+[15:07:01.746] INFO: 📖 [DATABASE] Reading file: masonry-dynamic-priority.md
+[15:07:01.761] INFO: 📖 [DATABASE] Reading file: mei-gu-72-xiao-shi-arm.md
+[15:07:01.782] INFO: 📖 [DATABASE] Reading file: mei-gu-72-xiao-shi-mai-dang-lao.md
+[15:07:01.799] INFO: 📖 [DATABASE] Reading file: mei-gu-72-xiao-shi-te-si-la.md
+[15:07:01.819] INFO: 📖 [DATABASE] Reading file: mei-guo-huang-jin-chu-bei-zhen-jin-bai-yin-huan-shi-zhi-hu-de-huang-yan-lao-ma-zhun-bei-jie-mi-yi-chang-ke-neng-zhen-liang-shi-jie-de-jin-cai-da-xi.md
+[15:07:01.836] INFO: 📖 [DATABASE] Reading file: mo-kuai-hua-de-yi-xie-si-kao.md
+[15:07:01.853] INFO: 📖 [DATABASE] Reading file: n8nkai-yuan-ai-gong-zuo-liu-ping-tai-de-zi-you-zhi-guang.md
+[15:07:01.875] INFO: 📖 [DATABASE] Reading file: navigationsplitview-he-navigation-stack-qu-bie.md
+[15:07:01.891] INFO: 📖 [DATABASE] Reading file: nu-yong-mian-shi-jing-hua-wen-ti.md
+[15:07:01.913] INFO: 📖 [DATABASE] Reading file: objc-ues-macro.md
+[15:07:01.930] INFO: 📖 [DATABASE] Reading file: one-pome.md
+[15:07:01.946] INFO: 📖 [DATABASE] Reading file: openmemory-mcpai-shi-dai-de-ji-yi-gong-xiang-yu-yin-si-bo-yi.md
+[15:07:01.966] INFO: 📖 [DATABASE] Reading file: ping-guo-ai-he-zuo-hua-luo-a-li-yi-chang-kua-guo-ju-tou-zai-zhong-guo-shi-chang-de-bo-yi.md
+[15:07:01.983] INFO: 📖 [DATABASE] Reading file: pltr-pou-xi-palantirshu-ju-ju-tou-de-tou-zi-mi-ma-yu-wei-lai-lan-tu.md
+[15:07:02.003] INFO: 📖 [DATABASE] Reading file: po-yao-fu.md
+[15:07:02.022] INFO: 📖 [DATABASE] Reading file: python3-ju-yu-wang-fen-xiang-wen-jian.md
+[15:07:02.039] INFO: 📖 [DATABASE] Reading file: qwen-3ai-tui-li-de-xin-li-cheng-bei-huan-shi-guo-du-si-kao-de-xian-jing.md
+[15:07:02.061] INFO: 📖 [DATABASE] Reading file: rang-cloudflare-zai-wo-de-wang-luo-qian-mian.md
+[15:07:02.078] INFO: 📖 [DATABASE] Reading file: reactiveobjc-tips.md
+[15:07:02.099] INFO: 📖 [DATABASE] Reading file: read-book-objc-61-tips.md
+[15:07:02.116] INFO: 📖 [DATABASE] Reading file: read-the-grand-design.md
+[15:07:02.140] INFO: 📖 [DATABASE] Reading file: ren-sheng-zui-hou-yi-ke-su-shi-jiao-ni-tang-ping-zhe-xue.md
+[15:07:02.158] INFO: 📖 [DATABASE] Reading file: risk-design.md
+[15:07:02.175] INFO: 📖 [DATABASE] Reading file: ru-guo-xiang-tou-zi-huo-yi-jing-tou-zi-liao-mrvlni-xu-yao-liao-jie-de.md
+[15:07:02.197] INFO: 📖 [DATABASE] Reading file: ru-he-gei-wang-zhan-zhuang-shang-xuan-ku-de-github-gong-xian-tu-biao-github-contributions-chart.md
+[15:07:02.215] INFO: 📖 [DATABASE] Reading file: ru-he-rang-da-yu-yan-mo-xing-diao-yong-wai-bu-gong-ju-mcp-ji-zhu-jie-xi-yu-pi-pan.md
+[15:07:02.239] INFO: 📖 [DATABASE] Reading file: ru-he-zai-duan-shi-jian-nei-kuai-su-ti-sheng-ying-yu-ji-zhu-mian-shi-shui-ping.md
+[15:07:02.258] INFO: 📖 [DATABASE] Reading file: ru-he-zai-macbook-shang-yong-bing-bu-zhi-chi-de-iphone-he-ipad-ying-yong.md
+[15:07:02.276] INFO: 📖 [DATABASE] Reading file: ru-he-zuo-git-rebase.md
+[15:07:02.298] INFO: 📖 [DATABASE] Reading file: ru-he-zuo-git-squash.md
+[15:07:02.317] INFO: 📖 [DATABASE] Reading file: self-ui-checklist.md
+[15:07:02.341] INFO: 📖 [DATABASE] Reading file: shang-you-zheng-ce-xia-you-dui-ce-zhong-guo-qi-ye-ru-he-xi-shua-mei-guo-de-ai-xin-pian-feng-suo.md
+[15:07:02.361] INFO: 📖 [DATABASE] Reading file: shi-chang-zhou-qi-ping-gu-biao.md
+[15:07:02.384] INFO: 📖 [DATABASE] Reading file: shi-yong-copilot-for-xcode-xie-dai-ma-2.md
+[15:07:02.403] INFO: 📖 [DATABASE] Reading file: shi-yong-createml-ying-yong-chuang-jian-coreml-mo-xing-de-zhi-nan-tu-xiang-fen-lei.md
+[15:07:02.422] INFO: 📖 [DATABASE] Reading file: singapore-how-to-get-a-helper.md
+[15:07:02.444] INFO: 📖 [DATABASE] Reading file: stable-diffusion-mei-hua-er-wei-ma.md
+[15:07:02.464] INFO: 📖 [DATABASE] Reading file: stable-diffusion-webui-yi-jian-bu-shu-he-shi-yong.md
+[15:07:02.489] INFO: 📖 [DATABASE] Reading file: stock-amd-mai-huan-shi-bu-mai-shen-du-jie-xi-rang-ni-bu-zai-you-yu.md
+[15:07:02.508] INFO: 📖 [DATABASE] Reading file: streamable-httpmcp-xie-yi-de-jin-hua-yu-shi-xian.md
+[15:07:02.532] INFO: 📖 [DATABASE] Reading file: swift-block.md
+[15:07:02.550] INFO: 📖 [DATABASE] Reading file: swift-good-library.md
+[15:07:02.571] INFO: 📖 [DATABASE] Reading file: swift-nei-cun-cao-zuo-zhong-ji-zhi-nan-zhi-unsafemutablerawpointer-de-na-xie-shi-er-ni-jue-dui-xiang-bu-dao-ta-you-duo-ni-tian.md
+[15:07:02.594] INFO: 📖 [DATABASE] Reading file: swift-shi-xian-zhan-he-dui-lie.md
+[15:07:02.612] INFO: 📖 [DATABASE] Reading file: swift-structure-code-with-marktodofixme.md
+[15:07:02.638] INFO: 📖 [DATABASE] Reading file: swift-swiftui-objc-keyword-sum.md
+[15:07:02.657] INFO: 📖 [DATABASE] Reading file: swift-weak-yu-unowned.md
+[15:07:02.682] INFO: 📖 [DATABASE] Reading file: swift-zhong-actor-de-shi-yong.md
+[15:07:02.701] INFO: 📖 [DATABASE] Reading file: swift-zhong-sendable-de-shi-yong.md
+[15:07:02.721] INFO: 📖 [DATABASE] Reading file: swift-zhong-task-he-thread-de-qu-bie.md
+[15:07:02.747] INFO: 📖 [DATABASE] Reading file: swiftdata-basics-ji-jian-ru-men.md
+[15:07:02.767] INFO: 📖 [DATABASE] Reading file: swiftui-chang-yong-property-wrappers-zhi-appstorage.md
+[15:07:02.793] INFO: 📖 [DATABASE] Reading file: swiftui-chang-yong-property-wrappers-zhi-binding.md
+[15:07:02.813] INFO: 📖 [DATABASE] Reading file: swiftui-chang-yong-property-wrappers-zhi-environmentobject.md
+[15:07:02.839] INFO: 📖 [DATABASE] Reading file: swiftui-chang-yong-property-wrappers-zhi-observedobject.md
+[15:07:02.858] INFO: 📖 [DATABASE] Reading file: swiftui-chang-yong-property-wrappers-zhi-state.md
+[15:07:02.882] INFO: 📖 [DATABASE] Reading file: swiftui-chang-yong-property-wrappers-zhi-stateobject.md
+[15:07:02.903] INFO: 📖 [DATABASE] Reading file: swiftui-zen-me-jia-ru-google-guang-gao.md
+[15:07:02.923] INFO: 📖 [DATABASE] Reading file: te-si-la-gu-jie-bao-die-bei-hou-de-jing-shen-nei-he-cong-zi-jin-bo-yi-dao-jiao-yi-xin-li-yi-wen-kan-tou-shen-che-de-ren-xing-mi-ma.md
+[15:07:02.948] INFO: 📖 [DATABASE] Reading file: togufu.md
+[15:07:02.967] INFO: 📖 [DATABASE] Reading file: token-tai-gui-shi-shi-claude-boltnew-shuang-yin-qing-kai-fa-mo-shi.md
+[15:07:02.993] INFO: 📖 [DATABASE] Reading file: tui-jian-yi-kuan-dai-li-xie-yi-zhuan-huan-gong-ju-gost.md
+[15:07:03.015] INFO: 📖 [DATABASE] Reading file: twitter-lijianfei-com.md
+[15:07:03.041] INFO: 📖 [DATABASE] Reading file: uicollectionview-tu-pian-shan-shuo.md
+[15:07:03.061] INFO: 📖 [DATABASE] Reading file: us-stock-calendar.md
+[15:07:03.087] INFO: 📖 [DATABASE] Reading file: use-copilot-for-xcode.md
+[15:07:03.108] INFO: 📖 [DATABASE] Reading file: vibe-codingshi-qu-dai-huan-shi-fu-neng.md
+[15:07:03.135] INFO: 📖 [DATABASE] Reading file: web-996fyi.md
+[15:07:03.157] INFO: 📖 [DATABASE] Reading file: web-app-automa.md
+[15:07:03.178] INFO: 📖 [DATABASE] Reading file: web-carbon.md
+[15:07:03.204] INFO: 📖 [DATABASE] Reading file: web-imgggg.md
+[15:07:03.225] INFO: 📖 [DATABASE] Reading file: web-learn-git-branching.md
+[15:07:03.253] INFO: 📖 [DATABASE] Reading file: web-octopusdo.md
+[15:07:03.275] INFO: 📖 [DATABASE] Reading file: web-principlesdesign.md
+[15:07:03.302] INFO: 📖 [DATABASE] Reading file: web-qwerty-learner.md
+[15:07:03.323] INFO: 📖 [DATABASE] Reading file: web-tui-jian-enpuz-ying-yu-chang-ju-ke-shi-hua-yu-fa-fen-xi.md
+[15:07:03.350] INFO: 📖 [DATABASE] Reading file: web-tui-jian-gridzzly.md
+[15:07:03.373] INFO: 📖 [DATABASE] Reading file: web-tui-jian-iconkitchen.md
+[15:07:03.399] INFO: 📖 [DATABASE] Reading file: web-tui-jian-keycaps.md
+[15:07:03.420] INFO: 📖 [DATABASE] Reading file: web-tui-jian-markwhen.md
+[15:07:03.446] INFO: 📖 [DATABASE] Reading file: web-tui-jian-osswiki.md
+[15:07:03.468] INFO: 📖 [DATABASE] Reading file: web-tui-jian-patternsdev.md
+[15:07:03.495] INFO: 📖 [DATABASE] Reading file: web-tui-jian-regular-expressions-cheat-sheet-by-davechild.md
+[15:07:03.518] INFO: 📖 [DATABASE] Reading file: web-tui-jian-typelitio.md
+[15:07:03.540] INFO: 📖 [DATABASE] Reading file: web-tui-jian-wwwwebsequencediagramscom.md
+[15:07:03.567] INFO: 📖 [DATABASE] Reading file: web-up-6.md
+[15:07:03.589] INFO: 📖 [DATABASE] Reading file: web-visualgo.md
+[15:07:03.617] INFO: 📖 [DATABASE] Reading file: web-visualgonet.md
+[15:07:03.639] INFO: 📖 [DATABASE] Reading file: web-zhenti.md
+[15:07:03.668] INFO: 📖 [DATABASE] Reading file: wei-xin-yu-yin-tong-hua-dan-chuang-gong-neng-quan-jie-xi-ping-guo-ba-ba-gei-de-yin-cang-fu-li.md
+[15:07:03.691] INFO: 📖 [DATABASE] Reading file: windows-system-download.md
+[15:07:03.721] INFO: 📖 [DATABASE] Reading file: wkwebview-useragent.md
+[15:07:03.744] INFO: 📖 [DATABASE] Reading file: world-phone-number.md
+[15:07:03.774] INFO: 📖 [DATABASE] Reading file: wwdc24-zhi-create-ml-de-xin-gong-neng.md
+[15:07:03.798] INFO: 📖 [DATABASE] Reading file: xcode-pgo-optimization-tool.md
+[15:07:03.827] INFO: 📖 [DATABASE] Reading file: xcode-qie-huan-swift-ban-ben-he-xiao-ban-ben.md
+[15:07:03.850] INFO: 📖 [DATABASE] Reading file: xian-qia-jiao-huo-multi-gpu-slicrossfirede-ben-zhi-jie-xi.md
+[15:07:03.878] INFO: 📖 [DATABASE] Reading file: xin-jia-po-jia-zhao-zhuan-huan-ti-yan.md
+[15:07:03.901] INFO: 📖 [DATABASE] Reading file: xin-jia-po-ru-he-ci-tui-nu-yong.md
+[15:07:03.930] INFO: 📖 [DATABASE] Reading file: xing-ye-da-ge-gong-shen-ru-ju-gemini-cliai-jia-chi-de-ming-ling-xing-shen-qi.md
+[15:07:03.953] INFO: 📖 [DATABASE] Reading file: xiong-di-men-yi-ding-yao-yong-bao-ai.md
+[15:07:03.983] INFO: 📖 [DATABASE] Reading file: ya-ma-xun-kiro-xin-de-hua-quan-xiu-tui.md
+[15:07:04.005] INFO: 📖 [DATABASE] Reading file: yi-ge-kuai-su-da-jian-ge-ren-wei-bo-de-fang-shi.md
+[15:07:04.035] INFO: 📖 [DATABASE] Reading file: yi-ge-te-si-la-lao-gu-min-de-mai-fa.md
+[15:07:04.059] INFO: 📖 [DATABASE] Reading file: yi-jian-gao-ding-cloudflare-dns-zi-dong-geng-xin-gao-bie-shou-dong-fan-suo.md
+[15:07:04.089] INFO: 📖 [DATABASE] Reading file: yi-xie-gong-ju.md
+[15:07:04.112] INFO: 📖 [DATABASE] Reading file: yi-xie-xiao-hong-shu-yun-ying-de-gong-ju.md
+[15:07:04.143] INFO: 📖 [DATABASE] Reading file: yi-zhao-rang-ni-de-ai-cheng-ben-kuang-jiang-80o1-mo-xing-ye-neng-miao-bian-o1-prodeepseek-ye-ke-yi.md
+[15:07:04.167] INFO: 📖 [DATABASE] Reading file: ying-wei-da-qing-cang-huan-gu-mei-gu-shi-chang-shang-yan-xie-xi-yu-bao-zhang-de-shuang-chong-xi-ma.md
+[15:07:04.196] INFO: 📖 [DATABASE] Reading file: yong-claude-code-fu-pan-lao-xiang-mu-zhi-teng-xun-kai-xin-shu-kou-yu-xiu.md
+[15:07:04.220] INFO: 📖 [DATABASE] Reading file: yong-cursor-jin-2-xiao-shi-jiu-shang-jia-liao-yi-kuan-macos-app.md
+[15:07:04.253] INFO: 📖 [DATABASE] Reading file: you-yu-do.md
+[15:07:04.277] INFO: 📖 [DATABASE] Reading file: yu-ming-xuan-sha-hao-he-xin-ci-huan-shi-pin-pai-ci-seo-lao-si-ji-dai-ni-wan-zhuan.md
+[15:07:04.307] INFO: 📖 [DATABASE] Reading file: zai-appkit-zhong-you-ya-di-ji-cheng-swiftui-shi-tu-nshostingview-yu-nsviewcontroller-de-shi-jian-zhi-nan.md
+[15:07:04.333] INFO: 📖 [DATABASE] Reading file: zai-hao-dao-gu-wen-ye-de-hui-wen-wen-ti-40-ge-chatgpt-prompt.md
+[15:07:04.366] INFO: 📖 [DATABASE] Reading file: zai-mei-gu-li-shi-me-shi-tax-loss-harvest.md
+[15:07:04.390] INFO: 📖 [DATABASE] Reading file: zai-uikit-zhong-you-ya-di-ji-cheng-swiftui-shi-tu-uihostingcontroller-de-zui-jia-shi-jian-zhi-nan.md
+[15:07:04.420] INFO: 📖 [DATABASE] Reading file: zai-xcode-15-zhong-shi-yong-logger.md
+[15:07:04.444] INFO: 📖 [DATABASE] Reading file: zai-xun-huan-li-de-yi-bu-ren-wu-wan-cheng-zai-jin-xing-qi-ta-cao-zuo.md
+[15:07:04.475] INFO: 📖 [DATABASE] Reading file: zhen-han-lai-xi-ben-di-bu-shu-zui-qiang-kai-yuan-shi-jue-da-mo-xing-qwen25-vl-de-shen-qi-ti-yan.md
+[15:07:04.499] INFO: 📖 [DATABASE] Reading file: zhen-liang-chuang-xin-de-ben-zhi-jing-shi-dao-ban-cong-0-dao-1-de-zhen-xiang-bi-ni-xiang-xiang-de-geng-jian-dan.md
+[15:07:04.530] INFO: 📖 [DATABASE] Reading file: zhen-liang-zhi-xu-7gb-xian-cun-jiu-neng-xun-lian-chu-deepseek-r1-ji-bie-tui-li-mo-xing-unsloth-dai-ni-qing-song-shang-shou.md
+[15:07:04.555] INFO: 📖 [DATABASE] Reading file: zhi-shi-zao-yin-yu-an-quan-mi-si-jie-mi-telegram-de-zhen-xiang-yu-feng-xian.md
+[15:07:04.587] INFO: ✅ [DATABASE] Successfully parsed post: 1st rule of programming (1st-rule-of-programming)
+[15:07:04.613] INFO: ✅ [DATABASE] Successfully parsed post: 2014 (2014)
+[15:07:04.647] INFO: ✅ [DATABASE] Successfully parsed post: 2015 (2015)
+[15:07:04.675] INFO: ✅ [DATABASE] Successfully parsed post: 完整发布测试 (2025-10-01-15-06-59-chinese-30xs64)
+[15:07:04.708] INFO: ✅ [DATABASE] Successfully parsed post: 人生最幸福的事 (435-the-happiest-thing-in-life)
+[15:07:04.734] INFO: ✅ [DATABASE] Successfully parsed post: 独立 (435-duli)
+[15:07:04.764] INFO: ✅ [DATABASE] Successfully parsed post: 50 UI Design Tips by pixselacademy  Complete Thread 🧵 (50-ui-design-tips-by-pixselacademy-complete-thread)
+[15:07:04.789] INFO: ✅ [DATABASE] Successfully parsed post: 瀑布 vs 敏捷式学习法 (Classic-Learner-vs-Smart-Learner)
+[15:07:04.822] INFO: ✅ [DATABASE] Successfully parsed post: 如何拥有自己的域名邮箱【海外版】 (How-to-have-your-own-domain-email-seaversion)
+[15:07:04.848] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：UninstallPKG (Mac-app-uninstallpkg)
+[15:07:04.879] INFO: ✅ [DATABASE] Successfully parsed post: 近期基于Scrum的开发流程的感受 (Scrum_and_Sprint_Jira)
+[15:07:04.910] INFO: ✅ [DATABASE] Successfully parsed post: Swift 中 闭包 与 逃逸闭包 的区别 (Swift 中 闭包 与 逃逸闭包 的区别)
+[15:07:04.938] INFO: ✅ [DATABASE] Successfully parsed post: 如何拥有自己的域名邮箱 (How-to-have-your-own-domain-email)
+[15:07:04.969] INFO: ✅ [DATABASE] Successfully parsed post: Scale Fill、Aspect Fit 和 Aspect Fill 的区别 (The-difference-between-ScaleFill- AspectFit-and-AspectFill)
+[15:07:04.996] INFO: ✅ [DATABASE] Successfully parsed post: Vlog 南澳岛 (Vlog-Nan'ao-Island)
+[15:07:05.030] INFO: ✅ [DATABASE] Successfully parsed post: 关于 (about)
+[15:07:05.058] INFO: ✅ [DATABASE] Successfully parsed post: AI 编程工具再升级！Claude 3.7 Sonnet 横空出世，Claude Code 或将改写开发历史！ (ai-bian-cheng-gong-ju-zai-sheng-ji-claude-37-sonnet-heng-kong-chu-shi-claude-code-huo-jiang-gai-xie-kai-fa-li-shi)
+[15:07:05.091] INFO: ✅ [DATABASE] Successfully parsed post: Ubuntu的黑客马拉松 (a-ubantu-hackathon)
+[15:07:05.118] INFO: ✅ [DATABASE] Successfully parsed post: AI编程工具的突围：从Cursor的困局到Augment的启示 (ai-bian-cheng-gong-ju-de-tu-wei-cong-coser-de-kun-ju-dao-augment-de-qi-shi)
+[15:07:05.152] INFO: ✅ [DATABASE] Successfully parsed post: AI界地震！Grok 3横空出世，碾压所有对手！ (ai-jie-di-zhen-grok-3-heng-kong-chu-shi-nian-ya-suo-you-dui-shou)
+[15:07:05.180] INFO: ✅ [DATABASE] Successfully parsed post:  An amazing SQL joins cheat sheet (an-amazing-sql-joins-cheat-sheet)
+[15:07:05.213] INFO: ✅ [DATABASE] Successfully parsed post: 费曼学习法 (Feynman-Technique)
+[15:07:05.240] INFO: ✅ [DATABASE] Successfully parsed post: "不做事情只会评论的话，最后就变成眼高手低的人了" (When-you-don't-create-things)
+[15:07:05.273] INFO: ✅ [DATABASE] Successfully parsed post: An incomplete list of skills senior engineers need, beyond coding (an-incomplete-list-of-skills-senior-engineers-need-beyond-coding)
+[15:07:05.302] INFO: ✅ [DATABASE] Successfully parsed post: App 开发中的 HTTPDNS 方案 (app-kai-fa-zhong-de-httpdns-fang-an)
+[15:07:05.334] INFO: ✅ [DATABASE] Successfully parsed post: ASIC 芯片：未来科技的基石，巨头们的战场！ (asic-xin-pian-wei-lai-ke-ji-de-ji-shi-ju-tou-men-de-zhan-chang)
+[15:07:05.368] INFO: ✅ [DATABASE] Successfully parsed post: Auto Layout leading and trailing attributes and RTL (auto-layout-leading-and-trailing-attributes-and-rtl)
+[15:07:05.395] INFO: ✅ [DATABASE] Successfully parsed post: An SSL error has occurred and a secure connection to the server cannot be made (an-ssl-error-has-occurred-and-a-secure-connection-to-the-server-cannot-be-made)
+[15:07:05.430] INFO: ✅ [DATABASE] Successfully parsed post: 如何把年报转为可视化网页（附完整提示词） (ba-nian-bao-zhuan-wei-ke-shi-hua-wang-ye-fu-wan-zheng-ti-shi-ci)
+[15:07:05.458] INFO: ✅ [DATABASE] Successfully parsed post: 编程工具的狂飙年代：从Claude 4看“智能奴隶”的进化路径 (bian-cheng-gong-ju-de-kuang-biao-nian-dai-cong-claude-4-kan-zhi-neng-nu-li-de-jin-hua-lu-jing)
+[15:07:05.492] INFO: ✅ [DATABASE] Successfully parsed post: Chat GTP-4 Browse with Bing 的一些好用的提示词 (chat-gtp-4-browse-with-bing-de-yi-xie-hao-yong-de-ti-shi-ci)
+[15:07:05.519] INFO: ✅ [DATABASE] Successfully parsed post: ChatGPT Beta 功能之 Custom instructions (chatgpt-beta-gong-neng-zhi-custom-instructions)
+[15:07:05.555] INFO: ✅ [DATABASE] Successfully parsed post: CFBundleVersion与CFBundleShortVersionString (cfbundleversion-and-cfbundleshortversionstring)
+[15:07:05.583] INFO: ✅ [DATABASE] Successfully parsed post: 重磅来袭：苹果将在美国开放第三方支付 (chong-bang-lai-xi-ping-guo-jiang-zai-zai-mei-guo-kai-fang-di-san-fang-zhi-fu)
+[15:07:05.617] INFO: ✅ [DATABASE] Successfully parsed post: 冲破天际！Bolt的火箭式崛起：从默默无闻到估值十亿美金， WebContainers如何逆风翻盘？ (chong-po-tian-ji-bolt-de-huo-jian-shi-jue-qi-cong-mo-mo-wu-wen-dao-gu-zhi-shi-yi-mei-jin-webcontainers-ru-he-ni-feng-fan-pan)
+[15:07:05.645] INFO: ✅ [DATABASE] Successfully parsed post: 川普币爆仓血泪史：一个新人如何在一小时内从韭菜变光杆司令 (chuan-pu-bi-bao-cang-xie-lei-shi-yi-ge-xin-ren-ru-he-zai-yi-xiao-shi-nei-cong-jiu-cai-bian-guang-gan-si-ling)
+[15:07:05.680] INFO: ✅ [DATABASE] Successfully parsed post: Claude Code 降智？ 除了 Kimi K2 又多了个选择 ➡️ “智谱GLM-4.5” (claude-code-jiang-zhi-chu-liao-kimi-k2-you-duo-liao-ge-xuan-ze-zhi-pu-glm-45)
+[15:07:05.713] INFO: ✅ [DATABASE] Successfully parsed post: Claude Code 子代理横空出世，咱们 Cosplay 玩起来！？ (claude-code-zi-dai-li-heng-kong-chu-shi-nu-zhuang-da-lao-cosplay-wan-qi-lai)
+[15:07:05.741] INFO: ✅ [DATABASE] Successfully parsed post: Claude Code 新玩法：抛弃老掉牙提示词，上下文工程让你“码”上飞升！ (cloud-code-xin-wan-fa-pao-qi-lao-diao-ya-ti-shi-ci-shang-xia-wen-gong-cheng-rang-ni-ma-shang-fei-sheng)
+[15:07:05.777] INFO: ✅ [DATABASE] Successfully parsed post: 从车企到宇宙飞船：特斯拉如何打破次元壁？ (cong-che-qi-dao-yu-zhou-fei-chuan-te-si-la-ru-he-da-po-ci-yuan-bi)
+[15:07:05.807] INFO: ✅ [DATABASE] Successfully parsed post: 信用卡卡号是怎么回事 (credit-card-number-how-to-verify)
+[15:07:05.843] INFO: ✅ [DATABASE] Successfully parsed post: Cursor：工具，而非神器——让它为你工作！ (cursorgong-ju-er-fei-shen-qi-rang-ta-wei-ni-gong-zuo)
+[15:07:05.873] INFO: ✅ [DATABASE] Successfully parsed post: DeepSeek放大招：Janus Pro 7B本地部署教程+文生图实战解析！ (deepseek-fang-da-zhao-janus-pro-7b-ben-di-bu-shu-jiao-cheng-wen-sheng-tu-shi-zhan-jie-xi)
+[15:07:05.907] INFO: ✅ [DATABASE] Successfully parsed post: 大公司发行稳定币：金融创新还是权力游戏？ (da-gong-si-fa-xing-wen-ding-bi-jin-rong-chuang-xin-huan-shi-quan-li-you-xi)
+[15:07:05.943] INFO: ✅ [DATABASE] Successfully parsed post: 蚊子抗高射炮？揭秘如何在低配电脑上运行 DeepSeek R1 671B大模型！ (deepseek-r1-671b-man-xie-ai-de-xun-fu-ji-wo-zai-ben-di-yu-yun-duan-de-ji-xian-tiao-zhan)
+[15:07:05.972] INFO: ✅ [DATABASE] Successfully parsed post: COCOMAT (cocomat-lijianfei-com)
+[15:07:06.005] INFO: ✅ [DATABASE] Successfully parsed post: DeepSeek 绕过了英伟达的 CUDA？低端芯片就够了？打脸啪啪啪！ (deepseek-rao-guo-liao-ying-wei-da-de-cudadi-duan-xin-pian-jiu-gou-liao-da-lian-pa-pa-pa)
+[15:07:06.034] INFO: ✅ [DATABASE] Successfully parsed post: Deepseek：OpenAI的头号劲敌？解析这场AI大战的背后逻辑！ (deepseekopenai-de-tou-hao-jing-di-jie-xi-zhe-chang-ai-da-zhan-de-bei-hou-luo-ji)
+[15:07:06.070] INFO: ✅ [DATABASE] Successfully parsed post: Docker 很长时间以后记得清理一下 (docker-hen-chang-shi-jian-yi-hou-ji-de-qing-li-yi-xia)
+[15:07:06.101] INFO: ✅ [DATABASE] Successfully parsed post: Docker 容器自动更新神器 Watchtower：让你的容器永葆青春！ (docker-rong-qi-zi-dong-geng-xin-shen-qi-watchtowerrang-ni-de-rong-qi-yong-bao-qing-chun)
+[15:07:06.138] INFO: ✅ [DATABASE] Successfully parsed post: DeepSeek R2 即将来袭：人工智能行业的地震级变革？ (deepseek-r2-ji-jiang-lai-xi-ren-gong-zhi-neng-xing-ye-de-di-zhen-ji-bian-ge)
+[15:07:06.169] INFO: ✅ [DATABASE] Successfully parsed post: DrawThings AI 画水墨龙 (drawthings-ai-hua-long)
+[15:07:06.209] INFO: ✅ [DATABASE] Successfully parsed post: 独立站引流的“流量陷阱” (du-li-zhan-yin-liu-de-liu-liang-xian-jing)
+[15:07:06.245] INFO: ✅ [DATABASE] Successfully parsed post: 《高效人生的12个关键点》读书笔记 (efficient-life-12-tips)
+[15:07:06.276] INFO: ✅ [DATABASE] Successfully parsed post: error: Using bridging headers with framework targets is unsupported  (error-using-bridging-headers-with-framework-targets-is-unsupported)
+[15:07:06.314] INFO: ✅ [DATABASE] Successfully parsed post: Every iOS app developer (every-ios-app-developer)
+[15:07:06.349] INFO: ✅ [DATABASE] Successfully parsed post: 告别 iTerm2 的阴影！Ghostty 这款神级终端模拟器将颠覆你的认知！ (gao-bie-iterm2-de-yin-ying-ghostty-zhe-kuan-shen-ji-zhong-duan-mo-ni-qi-jiang-dian-fu-ni-de-ren-zhi)
+[15:07:06.387] INFO: ✅ [DATABASE] Successfully parsed post: 封底估算(Back-of-the-Envelope Estimation) (feng-di-gu-suan-back-of-the-envelope-estimation)
+[15:07:06.419] INFO: ✅ [DATABASE] Successfully parsed post: 高通Oryon芯片：未来十年，消费电子的新王者？ (gao-tong-oryon-xin-pian-wei-lai-shi-nian-xiao-fei-dian-zi-de-xin-wang-zhe)
+[15:07:06.458] INFO: ✅ [DATABASE] Successfully parsed post: "对未来的真正慷慨，是把一切都献给现在" (giving-all-to-the-present)
+[15:07:06.494] INFO: ✅ [DATABASE] Successfully parsed post: Goodbye!!! Tencent🐧 (goodbye-tencent)
+[15:07:06.525] INFO: ✅ [DATABASE] Successfully parsed post: $GOOGL Google 谷歌：AI时代下的搜索帝国，投资它的三个买入点！ (googl-google-gu-ge-ai-shi-dai-xia-de-sou-suo-di-guo-tou-zi-ta-de-san-ge-mai-ru-dian)
+[15:07:06.560] INFO: ✅ [DATABASE] Successfully parsed post: Google Adsense 添加招商银行帐户 (google-adsense-tian-jia-zhao-shang-yin-xing-zhang-hu)
+[15:07:06.592] INFO: ✅ [DATABASE] Successfully parsed post: Google Stitch 保姆级教程：AI驱动的UI设计与前端代码生成 (google-stage-bao-mu-ji-jiao-cheng-ai-qu-dong-de-ui-she-ji-yu-qian-duan-dai-ma-sheng-cheng)
+[15:07:06.631] INFO: ✅ [DATABASE] Successfully parsed post: Google为何成为中美贸易战的“替罪羊”？反垄断调查背后的深层玄机！ (google-wei-he-cheng-wei-zhong-mei-mao-yi-zhan-de-ti-zui-yang-fan-long-duan-diao-cha-bei-hou-de-shen-ceng-xuan-ji)
+[15:07:06.663] INFO: ✅ [DATABASE] Successfully parsed post: 走一遭微信小程序蓝牙开发 (gowechatdev)
+[15:07:06.700] INFO: ✅ [DATABASE] Successfully parsed post: 关天峰：黑客界“天高我为峰” (guan-tian-feng-yi-ge-hei-ke-de-jue-qi-yu-qi-shi)
+[15:07:06.737] INFO: ✅ [DATABASE] Successfully parsed post: 郭德纲给郭麒麟信（全文） (guo-de-gang-gei-guo-qi-lin-xin)
+[15:07:06.769] INFO: ✅ [DATABASE] Successfully parsed post: H.264 vs H.265：视频编码标准的详细对比 (h264-vs-h265shi-pin-bian-ma-biao-zhun-de-xiang-xi-dui-bi)
+[15:07:06.807] INFO: ✅ [DATABASE] Successfully parsed post: 如何做 Git 迁移 (how-to-do-git-migrate)
+[15:07:06.840] INFO: ✅ [DATABASE] Successfully parsed post: How to run your website for less than $6/year. (how-to-run-your-website-for-less-than-dollar6year)
+[15:07:06.878] INFO: ✅ [DATABASE] Successfully parsed post: 如何写一份会议纪要 (how-to-write-a-meeting-minutes)
+[15:07:06.915] INFO: ✅ [DATABASE] Successfully parsed post: 互联网裁员讨论 (hu-lian-wang-cai-yuan-tao-lun)
+[15:07:06.949] INFO: ✅ [DATABASE] Successfully parsed post: Paypal 如何添加香港招商银行一卡通 (how-to-add-china-merchants-bank-all-in-one-card-to-paypal)
+[15:07:06.984] INFO: ✅ [DATABASE] Successfully parsed post: iOS 开发中的 workloop 介绍和使用案例 (iOS 开发中的 workloop 介绍和使用案例)
+[15:07:07.015] INFO: ✅ [DATABASE] Successfully parsed post: 一些常见互联网公司的GitHub开源项目 官方主页 (internet-com-rank)
+[15:07:07.056] INFO: ✅ [DATABASE] Successfully parsed post: iOS 16 剪切板弹窗如何应对 (ios-16-jian-qie-ban-dan-chuang-ru-he-ying-dui)
+[15:07:07.094] INFO: ✅ [DATABASE] Successfully parsed post: iOS 16 屏幕旋转适配 (ios-16-ping-mu-xuan-zhuan-gua-pei)
+[15:07:07.126] INFO: ✅ [DATABASE] Successfully parsed post: iOS 16.4 Webview 不能用Safari调试 (ios-164-webview-bu-neng-yong-safari-diao-shi)
+[15:07:07.163] INFO: ✅ [DATABASE] Successfully parsed post: iOS & macOS Dev Tools (ios-and-macos-dev-tools)
+[15:07:07.195] INFO: ✅ [DATABASE] Successfully parsed post: iOS 防截屏/录屏 方案 (ios-fang-jie-ping-lu-ping-fang-an)
+[15:07:07.234] INFO: ✅ [DATABASE] Successfully parsed post: iOS 内存占用修复小记 (ios-nei-cun-zhan-yong-xiu-fu-xiao-ji)
+[15:07:07.268] INFO: ✅ [DATABASE] Successfully parsed post: iOS 这些年新增的API (ios-new-aip)
+[15:07:07.308] INFO: ✅ [DATABASE] Successfully parsed post: iOS 图片库HTTP/3实验 的一些结论 (ios-tu-pian-ku-http3-shi-yan-de-yi-xie-jie-lun)
+[15:07:07.347] INFO: ✅ [DATABASE] Successfully parsed post: iOS 音量键的监听的方案 (ios-yin-liang-jian-de-jian-ting-de-fang-an)
+[15:07:07.381] INFO: ✅ [DATABASE] Successfully parsed post: 技术已死？一个程序员的冷笑与反击 (ji-zhu-yi-si-yi-ge-cheng-xu-yuan-de-leng-xiao-yu-fan-ji)
+[15:07:07.422] INFO: ✅ [DATABASE] Successfully parsed post: 交易的三条纪律 (jiao-yi-de-san-tiao-ji-lu)
+[15:07:07.462] INFO: ✅ [DATABASE] Successfully parsed post: 解决 Instrument 的函数未被符号化 (jie-jue-instrument-de-han-shu-wei-bei-fu-hao-hua)
+[15:07:07.496] INFO: ✅ [DATABASE] Successfully parsed post: 解码 Manus 爆火背后的黑色幽默与硬核逻辑   (jie-ma-manus-bao-huo-bei-hou-de-hei-se-you-mo-yu-ying-he-luo-ji)
+[15:07:07.533] INFO: ✅ [DATABASE] Successfully parsed post: 揭秘DeepSeek是如何通过“蒸馏”技术打造自己的AI模型？ (jie-mi-deepseek-shi-ru-he-tong-guo-zheng-liu-ji-zhu-da-zao-zi-ji-de-ai-mo-xing)
+[15:07:07.566] INFO: ✅ [DATABASE] Successfully parsed post: 揭秘三个免费神器，帮你挖掘隐藏的流量宝藏！ (jie-mi-san-ge-mian-fei-shen-qi-bang-ni-wa-jue-yin-cang-de-liu-liang-bao-cang)
+[15:07:07.609] INFO: ✅ [DATABASE] Successfully parsed post: 惊艳！DeepSeek R1越狱成功！AI自由了？无审查、无限制，带你体验真正的“思想解放”！ (liang-yan-deepseek-r1-yue-yu-cheng-gong-ai-zi-you-liao-wu-shen-cha-wu-xian-zhi-dai-ni-ti-yan-zhen-zheng-de-si-xiang-jie-fang)
+[15:07:07.652] INFO: ✅ [DATABASE] Successfully parsed post: 利基市场：互联网赚钱的秘密武器！小白也能轻松掌握的终极指南！ (li-ji-shi-chang-hu-lian-wang-zhuan-qian-de-mi-mi-wu-qi-xiao-bai-ye-neng-qing-song-zhang-wo-de-zhong-ji-zhi-nan)
+[15:07:07.686] INFO: ✅ [DATABASE] Successfully parsed post: 量子革命：微软 Majorana 1 芯片如何改写人类计算未来？ (liang-zi-ge-ming-wei-ruan-majorana-1-xin-pian-ru-he-gai-xie-ren-lei-ji-suan-wei-lai)
+[15:07:07.726] INFO: ✅ [DATABASE] Successfully parsed post: 马纪委，请在中国工厂睡20天！特斯拉 FSD 落地中国！ (ma-ji-wei-qing-zai-zhong-guo-gong-han-shui-20-tian-te-si-la-fsd-luo-di-zhong-guo)
+[15:07:07.759] INFO: ✅ [DATABASE] Successfully parsed post: 《Claude Code best practices》观后感  (lesslessclaude-code-best-practicesgreatergreater-guan-hou-gan)
+[15:07:07.801] INFO: ✅ [DATABASE] Successfully parsed post: 马纪委，特斯拉与X平台会走势一致吗？ (ma-ji-wei-te-si-la-yu-x-ping-tai-hui-zou-shi-yi-zhi-ma)
+[15:07:07.845] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：Folder Peek (mac-app-folder-peek)
+[15:07:07.878] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：DevToysMac (mac-app-devtoysmac)
+[15:07:07.917] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：Kap (mac-app-kap)
+[15:07:07.953] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：LSUnusedResources (mac-app-lsunusedresources)
+[15:07:07.995] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：MacSymbolicator (mac-app-macsymbolicator)
+[15:07:08.036] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：MacZip (mac-app-maczip)
+[15:07:08.072] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：mas-cli (mac-app-mas-cli)
+[15:07:08.114] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：OwlOCR (mac-app-owlocr)
+[15:07:08.156] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：OmniDiskSweeper (mac-app-omnidisksweeper)
+[15:07:08.193] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：Stats (mac-app-stats)
+[15:07:08.232] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：Messier 生成火焰图 (mac-app-messier)
+[15:07:08.267] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：fig.io (mac-app-tui-jian-figio)
+[15:07:08.311] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：SwitchHosts (mac-app-switchhosts)
+[15:07:08.354] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：MonitorControl - for Apple Silicon and Intel (mac-app-tui-jian-monitorcontrol-for-apple-silicon-and-intel)
+[15:07:08.389] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：plash (mac-app-tui-jian-plash)
+[15:07:08.430] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：WBBlades (mac-app-wbblades)
+[15:07:08.474] INFO: ✅ [DATABASE] Successfully parsed post: Mac App 推荐：Xclean (mac-app-xclean)
+[15:07:08.510] INFO: ✅ [DATABASE] Successfully parsed post: Mac 压缩PDF文件 (mac-ya-suo-pdf-wen-jian)
+[15:07:08.552] INFO: ✅ [DATABASE] Successfully parsed post: macOS 系统安装完后显示「文件已损坏」或者安装完打开没有反应 (macos-xi-tong-an-zhuang-wan-hou-xian-shi-wen-jian-yi-sun-pi-huo-zhe-an-zhuang-wan-da-kai-mei-you-fan-ying)
+[15:07:08.589] INFO: ✅ [DATABASE] Successfully parsed post: MacOS/iOS/iPadOS 使用 DrawThings 进行AI 绘图 (macosiosipados-shi-yong-drawthings-jin-xing-ai-hui-tu)
+[15:07:08.632] INFO: ✅ [DATABASE] Successfully parsed post: ARM 的 IPO (mei-gu-72-xiao-shi-arm)
+[15:07:08.675] INFO: ✅ [DATABASE] Successfully parsed post: Manus“润”新加坡：中国AI新贵跑路？理性看待 (manusrun-xin-jia-po-zhong-guo-ai-xin-gui-pao-lu-li-xing-kan-dai)
+[15:07:08.712] INFO: ✅ [DATABASE] Successfully parsed post: Masonry 用法小结 (masonry-dynamic-priority)
+[15:07:08.754] INFO: ✅ [DATABASE] Successfully parsed post: 美国黄金储备真金不怕火炼？马斯克准备揭秘一场可能震惊世界的“金”彩大戏！ (mei-guo-huang-jin-chu-bei-zhen-jin-bai-yin-huan-shi-zhi-hu-de-huang-yan-lao-ma-zhun-bei-jie-mi-yi-chang-ke-neng-zhen-liang-shi-jie-de-jin-cai-da-xi)
+[15:07:08.800] INFO: ✅ [DATABASE] Successfully parsed post: 模块化的一些思考 (mo-kuai-hua-de-yi-xie-si-kao)
+[15:07:08.836] INFO: ✅ [DATABASE] Successfully parsed post: NavigationSplitView 和 Navigation Stack 区别 (navigationsplitview-he-navigation-stack-qu-bie)
+[15:07:08.877] INFO: ✅ [DATABASE] Successfully parsed post: 新加坡女佣面试问题 (nu-yong-mian-shi-jing-hua-wen-ti)
+[15:07:08.923] INFO: ✅ [DATABASE] Successfully parsed post: Objc 中一些常用宏 (objc-ues-macro)
+[15:07:08.960] INFO: ✅ [DATABASE] Successfully parsed post: 麦当劳和减肥药 (mei-gu-72-xiao-shi-mai-dang-lao)
+[15:07:09.001] INFO: ✅ [DATABASE] Successfully parsed post: One Pome (one-pome)
+[15:07:09.039] INFO: ✅ [DATABASE] Successfully parsed post: OpenMemory MCP：AI时代的记忆共享与隐私博弈 (openmemory-mcpai-shi-dai-de-ji-yi-gong-xiang-yu-yin-si-bo-yi)
+[15:07:09.084] INFO: ✅ [DATABASE] Successfully parsed post: 苹果AI合作花落阿里：一场跨国巨头在中国市场的博弈 (ping-guo-ai-he-zuo-hua-luo-a-li-yi-chang-kua-guo-ju-tou-zai-zhong-guo-shi-chang-de-bo-yi)
+[15:07:09.125] INFO: ✅ [DATABASE] Successfully parsed post: $PLTR 剖析Palantir：数据巨头的投资密码与未来蓝图！ (pltr-pou-xi-palantirshu-ju-ju-tou-de-tou-zi-mi-ma-yu-wei-lai-lan-tu)
+[15:07:09.163] INFO: ✅ [DATABASE] Successfully parsed post: N8N：开源AI工作流平台的自由之光 (n8nkai-yuan-ai-gong-zuo-liu-ping-tai-de-zi-you-zhi-guang)
+[15:07:09.207] INFO: ✅ [DATABASE] Successfully parsed post: 芯特斯拉：Dojo AI 计算机和 D1芯片 (mei-gu-72-xiao-shi-te-si-la)
+[15:07:09.252] INFO: ✅ [DATABASE] Successfully parsed post: python3 局域网分享文件 (python3-ju-yu-wang-fen-xiang-wen-jian)
+[15:07:09.290] INFO: ✅ [DATABASE] Successfully parsed post: Qwen 3：AI推理的新里程碑，还是过度思考的陷阱？ (qwen-3ai-tui-li-de-xin-li-cheng-bei-huan-shi-guo-du-si-kao-de-xian-jing)
+[15:07:09.333] INFO: ✅ [DATABASE] Successfully parsed post: 让 Cloudflare 在我的网络前面 (rang-cloudflare-zai-wo-de-wang-luo-qian-mian)
+[15:07:09.380] INFO: ✅ [DATABASE] Successfully parsed post: ReactiveObjC 使用小结 (reactiveobjc-tips)
+[15:07:09.419] INFO: ✅ [DATABASE] Successfully parsed post: 《破窑赋》 (po-yao-fu)
+[15:07:09.462] INFO: ✅ [DATABASE] Successfully parsed post: 《编写高质量代码：改善Objective-C程序的61个建议》读书笔记 (read-book-objc-61-tips)
+[15:07:09.508] INFO: ✅ [DATABASE] Successfully parsed post: 《大设计》读书笔记 (read-the-grand-design)
+[15:07:09.548] INFO: ✅ [DATABASE] Successfully parsed post: 人生最后一课：苏轼教你“躺平”哲学 (ren-sheng-zui-hou-yi-ke-su-shi-jiao-ni-tang-ping-zhe-xue)
+[15:07:09.591] INFO: ✅ [DATABASE] Successfully parsed post: 风险设计 (risk-design)
+[15:07:09.638] INFO: ✅ [DATABASE] Successfully parsed post: 如果想投资或已经投资了MRVL，你需要了解的 (ru-guo-xiang-tou-zi-huo-yi-jing-tou-zi-liao-mrvlni-xu-yao-liao-jie-de)
+[15:07:09.679] INFO: ✅ [DATABASE] Successfully parsed post: 如何让大语言模型调用外部工具？MCP技术解析与批判 (ru-he-rang-da-yu-yan-mo-xing-diao-yong-wai-bu-gong-ju-mcp-ji-zhu-jie-xi-yu-pi-pan)
+[15:07:09.722] INFO: ✅ [DATABASE] Successfully parsed post: 如何给网站装上炫酷的 Github 贡献图表(Github Contributions Chart) (ru-he-gei-wang-zhan-zhuang-shang-xuan-ku-de-github-gong-xian-tu-biao-github-contributions-chart)
+[15:07:09.770] INFO: ✅ [DATABASE] Successfully parsed post: 如何在短时间内快速提升英语技术面试水平？ (ru-he-zai-duan-shi-jian-nei-kuai-su-ti-sheng-ying-yu-ji-zhu-mian-shi-shui-ping)
+[15:07:09.811] INFO: ✅ [DATABASE] Successfully parsed post: 如何做 Git rebase (ru-he-zuo-git-rebase)
+[15:07:09.854] INFO: ✅ [DATABASE] Successfully parsed post: 如何在 Macbook  上用并不支持的iPhone 和 iPad 应用 (ru-he-zai-macbook-shang-yong-bing-bu-zhi-chi-de-iphone-he-ipad-ying-yong)
+[15:07:09.901] INFO: ✅ [DATABASE] Successfully parsed post: 如何做 Git squash (ru-he-zuo-git-squash)
+[15:07:09.941] INFO: ✅ [DATABASE] Successfully parsed post: “上有政策，下有对策”——中国企业如何戏耍美国的AI芯片封锁 (shang-you-zheng-ce-xia-you-dui-ce-zhong-guo-qi-ye-ru-he-xi-shua-mei-guo-de-ai-xin-pian-feng-suo)
+[15:07:09.985] INFO: ✅ [DATABASE] Successfully parsed post: 交互设计自查表 (self-ui-checklist)
+[15:07:10.032] INFO: ✅ [DATABASE] Successfully parsed post: 使用 Copilot for Xcode 写代码 2 (shi-yong-copilot-for-xcode-xie-dai-ma-2)
+[15:07:10.074] INFO: ✅ [DATABASE] Successfully parsed post: 市场周期评估表 (shi-chang-zhou-qi-ping-gu-biao)
+[15:07:10.118] INFO: ✅ [DATABASE] Successfully parsed post: 使用 CreateML 应用创建 CoreML 模型的指南 — 图像分类 (shi-yong-createml-ying-yong-chuang-jian-coreml-mo-xing-de-zhi-nan-tu-xiang-fen-lei)
+[15:07:10.166] INFO: ✅ [DATABASE] Successfully parsed post: 新加坡女佣雇佣体验 (singapore-how-to-get-a-helper)
+[15:07:10.208] INFO: ✅ [DATABASE] Successfully parsed post: stable-diffusion-webui 一键部署和使用 (stable-diffusion-webui-yi-jian-bu-shu-he-shi-yong)
+[15:07:10.254] INFO: ✅ [DATABASE] Successfully parsed post: 用 Stable Diffusion 美化二维码 (stable-diffusion-mei-hua-er-wei-ma)
+[15:07:10.302] INFO: ✅ [DATABASE] Successfully parsed post: $AMD 买还是不买？深度解析让你不再犹豫！ (stock-amd-mai-huan-shi-bu-mai-shen-du-jie-xi-rang-ni-bu-zai-you-yu)
+[15:07:10.344] INFO: ✅ [DATABASE] Successfully parsed post: Streamable HTTP：MCP协议的进化与实现 (streamable-httpmcp-xie-yi-de-jin-hua-yu-shi-xian)
+[15:07:10.389] INFO: ✅ [DATABASE] Successfully parsed post: Swift内存操作终极指南 之 UnsafeMutableRawPointer的那些事儿！你绝对想不到它有多逆天！ (swift-nei-cun-cao-zuo-zhong-ji-zhi-nan-zhi-unsafemutablerawpointer-de-na-xie-shi-er-ni-jue-dui-xiang-bu-dao-ta-you-duo-ni-tian)
+[15:07:10.437] INFO: ✅ [DATABASE] Successfully parsed post: Swift 常用三方库 (swift-good-library)
+[15:07:10.479] INFO: ✅ [DATABASE] Successfully parsed post: Swift 实现栈和队列 (swift-shi-xian-zhan-he-dui-lie)
+[15:07:10.524] INFO: ✅ [DATABASE] Successfully parsed post: Swift Structure code with MARK/TODO/FIXME (swift-structure-code-with-marktodofixme)
+[15:07:10.573] INFO: ✅ [DATABASE] Successfully parsed post: Swift weak 与 unowned (swift-weak-yu-unowned)
+[15:07:10.615] INFO: ✅ [DATABASE] Successfully parsed post: Swift 中 Task 和 Thread 的区别 (swift-zhong-task-he-thread-de-qu-bie)
+[15:07:10.661] INFO: ✅ [DATABASE] Successfully parsed post: Swift 中 Actor 的使用 (swift-zhong-actor-de-shi-yong)
+[15:07:10.710] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI 常用 Property Wrappers 之 AppStorage (swiftui-chang-yong-property-wrappers-zhi-appstorage)
+[15:07:10.753] INFO: ✅ [DATABASE] Successfully parsed post: SwiftData Basics 极简入门 (swiftdata-basics-ji-jian-ru-men)
+[15:07:10.800] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI 常用 Property Wrappers 之 EnvironmentObject (swiftui-chang-yong-property-wrappers-zhi-environmentobject)
+[15:07:10.849] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI 常用 Property Wrappers 之 Binding (swiftui-chang-yong-property-wrappers-zhi-binding)
+[15:07:10.891] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI 常用 Property Wrappers 之 ObservedObject (swiftui-chang-yong-property-wrappers-zhi-observedobject)
+[15:07:10.936] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI 常用 Property Wrappers 之 State (swiftui-chang-yong-property-wrappers-zhi-state)
+[15:07:10.986] INFO: ✅ [DATABASE] Successfully parsed post: Swift 中 Sendable 的使用   (swift-zhong-sendable-de-shi-yong)
+[15:07:11.030] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI 怎么加入 Google 广告  (swiftui-zen-me-jia-ru-google-guang-gao)
+[15:07:11.078] INFO: ✅ [DATABASE] Successfully parsed post: $TSLA 特斯拉股价暴跌背后的精神内核：从资金博弈到交易心理，一文看透"神车"的人性密码 (te-si-la-gu-jie-bao-die-bei-hou-de-jing-shen-nei-he-cong-zi-jin-bo-yi-dao-jiao-yi-xin-li-yi-wen-kan-tou-shen-che-de-ren-xing-mi-ma)
+[15:07:11.125] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI 常用 Property Wrappers 之 StateObject (swiftui-chang-yong-property-wrappers-zhi-stateobject)
+[15:07:11.177] INFO: ✅ [DATABASE] Successfully parsed post: 推荐一款代理协议转换工具 gost (tui-jian-yi-kuan-dai-li-xie-yi-zhuan-huan-gong-ju-gost)
+[15:07:11.219] INFO: ✅ [DATABASE] Successfully parsed post: Token 太贵？试试 Claude + bolt.new 双引擎开发模式 (token-tai-gui-shi-shi-claude-boltnew-shuang-yin-qing-kai-fa-mo-shi)
+[15:07:11.266] INFO: ✅ [DATABASE] Successfully parsed post: 浪子回头金不换，只此一心叫长情 (togufu)
+[15:07:11.318] INFO: ✅ [DATABASE] Successfully parsed post: UICollectionView 图片闪烁 (uicollectionview-tu-pian-shan-shuo)
+[15:07:11.362] INFO: ✅ [DATABASE] Successfully parsed post: 美股日历 (us-stock-calendar)
+[15:07:11.411] INFO: ✅ [DATABASE] Successfully parsed post: Tweets (twitter-lijianfei-com)
+[15:07:11.463] INFO: ✅ [DATABASE] Successfully parsed post: 使用 Copilot for Xcode 写代码 (use-copilot-for-xcode)
+[15:07:11.505] INFO: ✅ [DATABASE] Successfully parsed post: “Vibe-Coding”是取代？还是赋能？ (vibe-codingshi-qu-dai-huan-shi-fu-neng)
+[15:07:11.553] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：996.fyi (web-996fyi)
+[15:07:11.604] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：carbon (web-carbon)
+[15:07:11.647] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：Automa (web-app-automa)
+[15:07:11.696] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：Learn Git Branching (web-learn-git-branching)
+[15:07:11.749] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：Octopus.do (web-octopusdo)
+[15:07:11.803] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：principles.design (web-principlesdesign)
+[15:07:11.847] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：ENPUZ —— 英语长句可视化语法分析 (web-tui-jian-enpuz-ying-yu-chang-ju-ke-shi-hua-yu-fa-fen-xi)
+[15:07:11.897] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：Qwerty Learner  (web-qwerty-learner)
+[15:07:11.950] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：imgggg (web-imgggg)
+[15:07:12.013] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：Gridzzly (web-tui-jian-gridzzly)
+[15:07:12.058] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：IconKitchen (web-tui-jian-iconkitchen)
+[15:07:12.107] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：Markwhen (web-tui-jian-markwhen)
+[15:07:12.162] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：KeyCaps (web-tui-jian-keycaps)
+[15:07:12.206] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：patterns.dev (web-tui-jian-patternsdev)
+[15:07:12.255] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：oss.wiki (web-tui-jian-osswiki)
+[15:07:12.310] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：英语学习导航 (web-up-6)
+[15:07:12.356] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：TypeLit.io  (web-tui-jian-typelitio)
+[15:07:12.405] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：英语真题在线 (web-zhenti)
+[15:07:12.458] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：Regular Expressions Cheat Sheet by DaveChild (web-tui-jian-regular-expressions-cheat-sheet-by-davechild)
+[15:07:12.510] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：www.websequencediagrams.com (web-tui-jian-wwwwebsequencediagramscom)
+[15:07:12.555] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：数据结构和算法动态可视化  (web-visualgo)
+[15:07:12.607] INFO: ✅ [DATABASE] Successfully parsed post: Web 推荐：visualgo.net (web-visualgonet)
+[15:07:12.661] INFO: ✅ [DATABASE] Successfully parsed post: 微信语音通话弹窗功能全解析：苹果爸爸给的隐藏福利！ (wei-xin-yu-yin-tong-hua-dan-chuang-gong-neng-quan-jie-xi-ping-guo-ba-ba-gei-de-yin-cang-fu-li)
+[15:07:12.706] INFO: ✅ [DATABASE] Successfully parsed post: 聊一聊 WKWebView UserAgent 的相关姿势 (wkwebview-useragent)
+[15:07:12.758] INFO: ✅ [DATABASE] Successfully parsed post: Windows 系统下载 (windows-system-download)
+[15:07:12.810] INFO: ✅ [DATABASE] Successfully parsed post: WWDC24 之 Create ML 的新功能 (wwdc24-zhi-create-ml-de-xin-gong-neng)
+[15:07:12.864] INFO: ✅ [DATABASE] Successfully parsed post: 基于 Xcode 自带工具 PGO 优化启动时间 (xcode-pgo-optimization-tool)
+[15:07:12.910] INFO: ✅ [DATABASE] Successfully parsed post: Xcode 切换 Swift 版本和小版本 (xcode-qie-huan-swift-ban-ben-he-xiao-ban-ben)
+[15:07:12.960] INFO: ✅ [DATABASE] Successfully parsed post: 显卡交火（Multi-GPU, SLI/CrossFire）的本质解析 (xian-qia-jiao-huo-multi-gpu-slicrossfirede-ben-zhi-jie-xi)
+[15:07:13.015] INFO: ✅ [DATABASE] Successfully parsed post: 新加坡如何辞退女佣 (xin-jia-po-ru-he-ci-tui-nu-yong)
+[15:07:13.067] INFO: ✅ [DATABASE] Successfully parsed post: 行业大哥躬身入菊：Gemini CLI，AI加持的命令行神器？ (xing-ye-da-ge-gong-shen-ru-ju-gemini-cliai-jia-chi-de-ming-ling-xing-shen-qi)
+[15:07:13.113] INFO: ✅ [DATABASE] Successfully parsed post: 新加坡驾照转换体验 (xin-jia-po-jia-zhao-zhuan-huan-ti-yan)
+[15:07:13.166] INFO: ✅ [DATABASE] Successfully parsed post: 兄弟们一定要拥抱 AI (xiong-di-men-yi-ding-yao-yong-bao-ai)
+[15:07:13.222] INFO: ✅ [DATABASE] Successfully parsed post: 亚马逊 Kiro ：新的花拳绣腿？ (ya-ma-xun-kiro-xin-de-hua-quan-xiu-tui)
+[15:07:13.270] INFO: ✅ [DATABASE] Successfully parsed post: 一个特斯拉老股民的买法 (yi-ge-te-si-la-lao-gu-min-de-mai-fa)
+[15:07:13.322] INFO: ✅ [DATABASE] Successfully parsed post: 一个快速搭建个人微博的方式 (yi-ge-kuai-su-da-jian-ge-ren-wei-bo-de-fang-shi)
+[15:07:13.377] INFO: ✅ [DATABASE] Successfully parsed post: DDNS-GO + Cloudflare 解决动态 IP 变化 (yi-jian-gao-ding-cloudflare-dns-zi-dong-geng-xin-gao-bie-shou-dong-fan-suo)
+[15:07:13.434] INFO: ✅ [DATABASE] Successfully parsed post: 一些小红书运营的工具 (yi-xie-xiao-hong-shu-yun-ying-de-gong-ju)
+[15:07:13.483] INFO: ✅ [DATABASE] Successfully parsed post: 一招让你的AI成本狂降80%！o1模型也能秒变o1 Pro！DeepSeek 也可以！ (yi-zhao-rang-ni-de-ai-cheng-ben-kuang-jiang-80o1-mo-xing-ye-neng-miao-bian-o1-prodeepseek-ye-ke-yi)
+[15:07:13.536] INFO: ✅ [DATABASE] Successfully parsed post: 一些工具,有些我也还没用过 (yi-xie-gong-ju)
+[15:07:13.593] INFO: ✅ [DATABASE] Successfully parsed post: 英伟达清仓换股，美股市场上演“血洗”与“暴涨”的双重戏码！ (ying-wei-da-qing-cang-huan-gu-mei-gu-shi-chang-shang-yan-xie-xi-yu-bao-zhang-de-shuang-chong-xi-ma)
+[15:07:13.647] INFO: ✅ [DATABASE] Successfully parsed post: 用 Claude Code 复盘老项目 之 腾讯开心鼠 口语秀  (yong-claude-code-fu-pan-lao-xiang-mu-zhi-teng-xun-kai-xin-shu-kou-yu-xiu)
+[15:07:13.696] INFO: ✅ [DATABASE] Successfully parsed post: 我用 Cursor 仅2小时就上架了一款 macOS App (yong-cursor-jin-2-xiao-shi-jiu-shang-jia-liao-yi-kuan-macos-app)
+[15:07:13.749] INFO: ✅ [DATABASE] Successfully parsed post: 犹豫 (you-yu-do)
+[15:07:13.807] INFO: ✅ [DATABASE] Successfully parsed post: 域名选啥好？核心词还是品牌词？SEO老司机带你玩转！ (yu-ming-xuan-sha-hao-he-xin-ci-huan-shi-pin-pai-ci-seo-lao-si-ji-dai-ni-wan-zhuan)
+[15:07:13.861] INFO: ✅ [DATABASE] Successfully parsed post: 在AppKit中优雅地集成SwiftUI视图：NSHostingView与NSViewController的实践指南 (zai-appkit-zhong-you-ya-di-ji-cheng-swiftui-shi-tu-nshostingview-yu-nsviewcontroller-de-shi-jian-zhi-nan)
+[15:07:13.910] INFO: ✅ [DATABASE] Successfully parsed post: 再好的顾问，也得会问问题（61 个 ChatGPT prompt） (zai-hao-dao-gu-wen-ye-de-hui-wen-wen-ti-40-ge-chatgpt-prompt)
+[15:07:13.965] INFO: ✅ [DATABASE] Successfully parsed post: 在美股里什么是 tax Loss Harvest (zai-mei-gu-li-shi-me-shi-tax-loss-harvest)
+[15:07:14.023] INFO: ✅ [DATABASE] Successfully parsed post: 在 Xcode 15 中使用 Logger (zai-xcode-15-zhong-shi-yong-logger)
+[15:07:14.077] INFO: ✅ [DATABASE] Successfully parsed post: 在UIKit中优雅地集成SwiftUI视图：UIHostingController的最佳实践指南 (zai-uikit-zhong-you-ya-di-ji-cheng-swiftui-shi-tu-uihostingcontroller-de-zui-jia-shi-jian-zhi-nan)
+[15:07:14.127] INFO: ✅ [DATABASE] Successfully parsed post: 在循环里的异步任务完成再进行其他操作 (zai-xun-huan-li-de-yi-bu-ren-wu-wan-cheng-zai-jin-xing-qi-ta-cao-zuo)
+[15:07:14.181] INFO: ✅ [DATABASE] Successfully parsed post: 震撼来袭！本地部署最强开源视觉大模型 Qwen2.5-VL 的神奇体验 (zhen-han-lai-xi-ben-di-bu-shu-zui-qiang-kai-yuan-shi-jue-da-mo-xing-qwen25-vl-de-shen-qi-ti-yan)
+[15:07:14.240] INFO: ✅ [DATABASE] Successfully parsed post: 震惊！创新的本质竟是“盗版”？从0到1的真相比你想象的更简单 (zhen-liang-chuang-xin-de-ben-zhi-jing-shi-dao-ban-cong-0-dao-1-de-zhen-xiang-bi-ni-xiang-xiang-de-geng-jian-dan)
+[15:07:14.295] INFO: ✅ [DATABASE] Successfully parsed post: 知识噪音与安全迷思：揭秘Telegram的真相与风险 (zhi-shi-zao-yin-yu-an-quan-mi-si-jie-mi-telegram-de-zhen-xiang-yu-feng-xian)
+[15:07:14.347] INFO: ✅ [DATABASE] Successfully parsed post: 震惊！只需7GB显存就能训练出DeepSeek R1级别推理模型？Unsloth带你轻松上手！ (zhen-liang-zhi-xu-7gb-xian-cun-jiu-neng-xun-lian-chu-deepseek-r1-ji-bie-tui-li-mo-xing-unsloth-dai-ni-qing-song-shang-shou)
+[15:07:14.401] INFO: ✅ [DATABASE] Successfully parsed post: ABCBinding--简化Cocos和Native交互利器（iOS篇） (abcbinding-ios)
+[15:07:14.461] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI：Demo and code review for Resizable Custom Tab Bar for macOS (demo-and-code-analysis-resizable-custom-tab-bar-for-macos)
+[15:07:14.516] INFO: ✅ [DATABASE] Successfully parsed post: Swift 使用闭包（block） (swift-block)
+[15:07:14.567] INFO: ✅ [DATABASE] Successfully parsed post: SwiftUI/Swift/Objective-C修饰符总结 (swift-swiftui-objc-keyword-sum)
+[15:07:14.622] INFO: ✅ [DATABASE] Successfully parsed post: 十个有用的软件开发原则 (10-useful-software-dev-principles)
+[15:07:14.683] INFO: ✅ [DATABASE] Successfully parsed post: 各个国家电话号码格式 (world-phone-number)
+[15:07:14.741] INFO: ✅ [DATABASE] Successfully parsed post: 37 个 Xcode 技巧和捷径，加快你的日常开发速度 (37-xcode-tips)
+[15:07:14.793] INFO: ✅ [DATABASE] Successfully parsed post: 电子书《蓝筹孩子》的笔记 (Blue-Chip-Kid-Reading-Notes)
+[15:07:14.849] INFO: 📊 [DATABASE] Sorted 246 posts by date (newest first)
+[15:07:14.908] INFO: 📈 [DATABASE] Current posts count in database: 246
+[15:07:14.966] INFO: 💾 [DATABASE] Database updated with 246 posts
+[15:07:15.018] INFO: 📰 [DATABASE] Published posts: 245, Draft posts: 1
+[15:07:15.074] INFO: 📋 [DATABASE] Published posts list:
+[15:07:15.133] INFO:   1. 完整发布测试 (2025-10-01-15-06-59-chinese-30xs64)
+[15:07:15.192] INFO:   2. Google Stitch 保姆级教程：AI驱动的UI设计与前端代码生成 (google-stage-bao-mu-ji-jiao-cheng-ai-qu-dong-de-ui-she-ji-yu-qian-duan-dai-ma-sheng-cheng)
+[15:07:15.249] INFO:   3. 在UIKit中优雅地集成SwiftUI视图：UIHostingController的最佳实践指南 (zai-uikit-zhong-you-ya-di-ji-cheng-swiftui-shi-tu-uihostingcontroller-de-zui-jia-shi-jian-zhi-nan)
+[15:07:15.301] INFO:   4. 在AppKit中优雅地集成SwiftUI视图：NSHostingView与NSViewController的实践指南 (zai-appkit-zhong-you-ya-di-ji-cheng-swiftui-shi-tu-nshostingview-yu-nsviewcontroller-de-shi-jian-zhi-nan)
+[15:07:15.360] INFO:   5. 兄弟们一定要拥抱 AI (xiong-di-men-yi-ding-yao-yong-bao-ai)
+[15:07:15.421] INFO:   6. 《Claude Code best practices》观后感  (lesslessclaude-code-best-practicesgreatergreater-guan-hou-gan)
+[15:07:15.479] INFO:   7. Claude Code 降智？ 除了 Kimi K2 又多了个选择 ➡️ “智谱GLM-4.5” (claude-code-jiang-zhi-chu-liao-kimi-k2-you-duo-liao-ge-xuan-ze-zhi-pu-glm-45)
+[15:07:15.531] INFO:   8. Claude Code 子代理横空出世，咱们 Cosplay 玩起来！？ (claude-code-zi-dai-li-heng-kong-chu-shi-nu-zhuang-da-lao-cosplay-wan-qi-lai)
+[15:07:15.590] INFO:   9. 亚马逊 Kiro ：新的花拳绣腿？ (ya-ma-xun-kiro-xin-de-hua-quan-xiu-tui)
+[15:07:15.651] INFO:   10. Claude Code 新玩法：抛弃老掉牙提示词，上下文工程让你“码”上飞升！ (cloud-code-xin-wan-fa-pao-qi-lao-diao-ya-ti-shi-ci-shang-xia-wen-gong-cheng-rang-ni-ma-shang-fei-sheng)
+[15:07:15.710] INFO:   11. Manus“润”新加坡：中国AI新贵跑路？理性看待 (manusrun-xin-jia-po-zhong-guo-ai-xin-gui-pao-lu-li-xing-kan-dai)
+[15:07:15.762] INFO:   12. 行业大哥躬身入菊：Gemini CLI，AI加持的命令行神器？ (xing-ye-da-ge-gong-shen-ru-ju-gemini-cliai-jia-chi-de-ming-ling-xing-shen-qi)
+[15:07:15.821] INFO:   13. 用 Claude Code 复盘老项目 之 腾讯开心鼠 口语秀  (yong-claude-code-fu-pan-lao-xiang-mu-zhi-teng-xun-kai-xin-shu-kou-yu-xiu)
+[15:07:15.879] INFO:   14. “Vibe-Coding”是取代？还是赋能？ (vibe-codingshi-qu-dai-huan-shi-fu-neng)
+[15:07:15.942] INFO:   15. 技术已死？一个程序员的冷笑与反击 (ji-zhu-yi-si-yi-ge-cheng-xu-yuan-de-leng-xiao-yu-fan-ji)
+[15:07:15.999] INFO:   16. 大公司发行稳定币：金融创新还是权力游戏？ (da-gong-si-fa-xing-wen-ding-bi-jin-rong-chuang-xin-huan-shi-quan-li-you-xi)
+[15:07:16.053] INFO:   17. “上有政策，下有对策”——中国企业如何戏耍美国的AI芯片封锁 (shang-you-zheng-ce-xia-you-dui-ce-zhong-guo-qi-ye-ru-he-xi-shua-mei-guo-de-ai-xin-pian-feng-suo)
+[15:07:16.110] INFO:   18. AI编程工具的突围：从Cursor的困局到Augment的启示 (ai-bian-cheng-gong-ju-de-tu-wei-cong-coser-de-kun-ju-dao-augment-de-qi-shi)
+[15:07:16.172] INFO:   19. 知识噪音与安全迷思：揭秘Telegram的真相与风险 (zhi-shi-zao-yin-yu-an-quan-mi-si-jie-mi-telegram-de-zhen-xiang-yu-feng-xian)
+[15:07:16.232] INFO:   20. OpenMemory MCP：AI时代的记忆共享与隐私博弈 (openmemory-mcpai-shi-dai-de-ji-yi-gong-xiang-yu-yin-si-bo-yi)
+[15:07:16.295] INFO:   21. 编程工具的狂飙年代：从Claude 4看“智能奴隶”的进化路径 (bian-cheng-gong-ju-de-kuang-biao-nian-dai-cong-claude-4-kan-zhi-neng-nu-li-de-jin-hua-lu-jing)
+[15:07:16.348] INFO:   22. N8N：开源AI工作流平台的自由之光 (n8nkai-yuan-ai-gong-zuo-liu-ping-tai-de-zi-you-zhi-guang)
+[15:07:16.410] INFO:   23. Streamable HTTP：MCP协议的进化与实现 (streamable-httpmcp-xie-yi-de-jin-hua-yu-shi-xian)
+[15:07:16.472] INFO:   24. 如何在短时间内快速提升英语技术面试水平？ (ru-he-zai-duan-shi-jian-nei-kuai-su-ti-sheng-ying-yu-ji-zhu-mian-shi-shui-ping)
+[15:07:16.535] INFO:   25. 如何把年报转为可视化网页（附完整提示词） (ba-nian-bao-zhuan-wei-ke-shi-hua-wang-ye-fu-wan-zheng-ti-shi-ci)
+[15:07:16.589] INFO:   26. Qwen 3：AI推理的新里程碑，还是过度思考的陷阱？ (qwen-3ai-tui-li-de-xin-li-cheng-bei-huan-shi-guo-du-si-kao-de-xian-jing)
+[15:07:16.650] INFO:   27. 如何让大语言模型调用外部工具？MCP技术解析与批判 (ru-he-rang-da-yu-yan-mo-xing-diao-yong-wai-bu-gong-ju-mcp-ji-zhu-jie-xi-yu-pi-pan)
+[15:07:16.711] INFO:   28. 关天峰：黑客界“天高我为峰” (guan-tian-feng-yi-ge-hei-ke-de-jue-qi-yu-qi-shi)
+[15:07:16.777] INFO:   29. 解码 Manus 爆火背后的黑色幽默与硬核逻辑   (jie-ma-manus-bao-huo-bei-hou-de-hei-se-you-mo-yu-ying-he-luo-ji)
+[15:07:16.838] INFO:   30. DeepSeek R2 即将来袭：人工智能行业的地震级变革？ (deepseek-r2-ji-jiang-lai-xi-ren-gong-zhi-neng-xing-ye-de-di-zhen-ji-bian-ge)
+[15:07:16.893] INFO:   31. 马纪委，特斯拉与X平台会走势一致吗？ (ma-ji-wei-te-si-la-yu-x-ping-tai-hui-zou-shi-yi-zhi-ma)
+[15:07:16.954] INFO:   32. 马纪委，请在中国工厂睡20天！特斯拉 FSD 落地中国！ (ma-ji-wei-qing-zai-zhong-guo-gong-han-shui-20-tian-te-si-la-fsd-luo-di-zhong-guo)
+[15:07:17.017] INFO:   33. AI 编程工具再升级！Claude 3.7 Sonnet 横空出世，Claude Code 或将改写开发历史！ (ai-bian-cheng-gong-ju-zai-sheng-ji-claude-37-sonnet-heng-kong-chu-shi-claude-code-huo-jiang-gai-xie-kai-fa-li-shi)
+[15:07:17.081] INFO:   34. 美国黄金储备真金不怕火炼？马斯克准备揭秘一场可能震惊世界的“金”彩大戏！ (mei-guo-huang-jin-chu-bei-zhen-jin-bai-yin-huan-shi-zhi-hu-de-huang-yan-lao-ma-zhun-bei-jie-mi-yi-chang-ke-neng-zhen-liang-shi-jie-de-jin-cai-da-xi)
+[15:07:17.144] INFO:   35. $GOOGL Google 谷歌：AI时代下的搜索帝国，投资它的三个买入点！ (googl-google-gu-ge-ai-shi-dai-xia-de-sou-suo-di-guo-tou-zi-ta-de-san-ge-mai-ru-dian)
+[15:07:17.199] INFO:   36. 量子革命：微软 Majorana 1 芯片如何改写人类计算未来？ (liang-zi-ge-ming-wei-ruan-majorana-1-xin-pian-ru-he-gai-xie-ren-lei-ji-suan-wei-lai)
+[15:07:17.262] INFO:   37. AI界地震！Grok 3横空出世，碾压所有对手！ (ai-jie-di-zhen-grok-3-heng-kong-chu-shi-nian-ya-suo-you-dui-shou)
+[15:07:17.323] INFO:   38. 一招让你的AI成本狂降80%！o1模型也能秒变o1 Pro！DeepSeek 也可以！ (yi-zhao-rang-ni-de-ai-cheng-ben-kuang-jiang-80o1-mo-xing-ye-neng-miao-bian-o1-prodeepseek-ye-ke-yi)
+[15:07:17.391] INFO:   39. $AMD 买还是不买？深度解析让你不再犹豫！ (stock-amd-mai-huan-shi-bu-mai-shen-du-jie-xi-rang-ni-bu-zai-you-yu)
+[15:07:17.453] INFO:   40. 震撼来袭！本地部署最强开源视觉大模型 Qwen2.5-VL 的神奇体验 (zhen-han-lai-xi-ben-di-bu-shu-zui-qiang-kai-yuan-shi-jue-da-mo-xing-qwen25-vl-de-shen-qi-ti-yan)
+[15:07:17.518] INFO:   41. 英伟达清仓换股，美股市场上演“血洗”与“暴涨”的双重戏码！ (ying-wei-da-qing-cang-huan-gu-mei-gu-shi-chang-shang-yan-xie-xi-yu-bao-zhang-de-shuang-chong-xi-ma)
+[15:07:17.574] INFO:   42. $PLTR 剖析Palantir：数据巨头的投资密码与未来蓝图！ (pltr-pou-xi-palantirshu-ju-ju-tou-de-tou-zi-mi-ma-yu-wei-lai-lan-tu)
+[15:07:17.638] INFO:   43. $TSLA 特斯拉股价暴跌背后的精神内核：从资金博弈到交易心理，一文看透"神车"的人性密码 (te-si-la-gu-jie-bao-die-bei-hou-de-jing-shen-nei-he-cong-zi-jin-bo-yi-dao-jiao-yi-xin-li-yi-wen-kan-tou-shen-che-de-ren-xing-mi-ma)
+[15:07:17.702] INFO:   44. 苹果AI合作花落阿里：一场跨国巨头在中国市场的博弈 (ping-guo-ai-he-zuo-hua-luo-a-li-yi-chang-kua-guo-ju-tou-zai-zhong-guo-shi-chang-de-bo-yi)
+[15:07:17.767] INFO:   45. DeepSeek 绕过了英伟达的 CUDA？低端芯片就够了？打脸啪啪啪！ (deepseek-rao-guo-liao-ying-wei-da-de-cudadi-duan-xin-pian-jiu-gou-liao-da-lian-pa-pa-pa)
+[15:07:17.831] INFO:   46. 震惊！只需7GB显存就能训练出DeepSeek R1级别推理模型？Unsloth带你轻松上手！ (zhen-liang-zhi-xu-7gb-xian-cun-jiu-neng-xun-lian-chu-deepseek-r1-ji-bie-tui-li-mo-xing-unsloth-dai-ni-qing-song-shang-shou)
+[15:07:17.890] INFO:   47. 蚊子抗高射炮？揭秘如何在低配电脑上运行 DeepSeek R1 671B大模型！ (deepseek-r1-671b-man-xie-ai-de-xun-fu-ji-wo-zai-ben-di-yu-yun-duan-de-ji-xian-tiao-zhan)
+[15:07:17.952] INFO:   48. 利基市场：互联网赚钱的秘密武器！小白也能轻松掌握的终极指南！ (li-ji-shi-chang-hu-lian-wang-zhuan-qian-de-mi-mi-wu-qi-xiao-bai-ye-neng-qing-song-zhang-wo-de-zhong-ji-zhi-nan)
+[15:07:18.016] INFO:   49. 惊艳！DeepSeek R1越狱成功！AI自由了？无审查、无限制，带你体验真正的“思想解放”！ (liang-yan-deepseek-r1-yue-yu-cheng-gong-ai-zi-you-liao-wu-shen-cha-wu-xian-zhi-dai-ni-ti-yan-zhen-zheng-de-si-xiang-jie-fang)
+[15:07:18.081] INFO:   50. Google为何成为中美贸易战的“替罪羊”？反垄断调查背后的深层玄机！ (google-wei-he-cheng-wei-zhong-mei-mao-yi-zhan-de-ti-zui-yang-fan-long-duan-diao-cha-bei-hou-de-shen-ceng-xuan-ji)
+[15:07:18.144] INFO:   51. 显卡交火（Multi-GPU, SLI/CrossFire）的本质解析 (xian-qia-jiao-huo-multi-gpu-slicrossfirede-ben-zhi-jie-xi)
+[15:07:18.205] INFO:   52. 微信语音通话弹窗功能全解析：苹果爸爸给的隐藏福利！ (wei-xin-yu-yin-tong-hua-dan-chuang-gong-neng-quan-jie-xi-ping-guo-ba-ba-gei-de-yin-cang-fu-li)
+[15:07:18.265] INFO:   53. 揭秘DeepSeek是如何通过“蒸馏”技术打造自己的AI模型？ (jie-mi-deepseek-shi-ru-he-tong-guo-zheng-liu-ji-zhu-da-zao-zi-ji-de-ai-mo-xing)
+[15:07:18.331] INFO:   54. DeepSeek放大招：Janus Pro 7B本地部署教程+文生图实战解析！ (deepseek-fang-da-zhao-janus-pro-7b-ben-di-bu-shu-jiao-cheng-wen-sheng-tu-shi-zhan-jie-xi)
+[15:07:18.401] INFO:   55. Deepseek：OpenAI的头号劲敌？解析这场AI大战的背后逻辑！ (deepseekopenai-de-tou-hao-jing-di-jie-xi-zhe-chang-ai-da-zhan-de-bei-hou-luo-ji)
+[15:07:18.467] INFO:   56. 震惊！创新的本质竟是“盗版”？从0到1的真相比你想象的更简单 (zhen-liang-chuang-xin-de-ben-zhi-jing-shi-dao-ban-cong-0-dao-1-de-zhen-xiang-bi-ni-xiang-xiang-de-geng-jian-dan)
+[15:07:18.533] INFO:   57. 川普币爆仓血泪史：一个新人如何在一小时内从韭菜变光杆司令 (chuan-pu-bi-bao-cang-xie-lei-shi-yi-ge-xin-ren-ru-he-zai-yi-xiao-shi-nei-cong-jiu-cai-bian-guang-gan-si-ling)
+[15:07:18.591] INFO:   58. Swift内存操作终极指南 之 UnsafeMutableRawPointer的那些事儿！你绝对想不到它有多逆天！ (swift-nei-cun-cao-zuo-zhong-ji-zhi-nan-zhi-unsafemutablerawpointer-de-na-xie-shi-er-ni-jue-dui-xiang-bu-dao-ta-you-duo-ni-tian)
+[15:07:18.656] INFO:   59. Cursor：工具，而非神器——让它为你工作！ (cursorgong-ju-er-fei-shen-qi-rang-ta-wei-ni-gong-zuo)
+[15:07:18.722] INFO:   60. Docker 容器自动更新神器 Watchtower：让你的容器永葆青春！ (docker-rong-qi-zi-dong-geng-xin-shen-qi-watchtowerrang-ni-de-rong-qi-yong-bao-qing-chun)
+[15:07:18.793] INFO:   61. Token 太贵？试试 Claude + bolt.new 双引擎开发模式 (token-tai-gui-shi-shi-claude-boltnew-shuang-yin-qing-kai-fa-mo-shi)
+[15:07:18.859] INFO:   62. 告别 iTerm2 的阴影！Ghostty 这款神级终端模拟器将颠覆你的认知！ (gao-bie-iterm2-de-yin-ying-ghostty-zhe-kuan-shen-ji-zhong-duan-mo-ni-qi-jiang-dian-fu-ni-de-ren-zhi)
+[15:07:18.925] INFO:   63. 如何给网站装上炫酷的 Github 贡献图表(Github Contributions Chart) (ru-he-gei-wang-zhan-zhuang-shang-xuan-ku-de-github-gong-xian-tu-biao-github-contributions-chart)
+[15:07:18.985] INFO:   64. NavigationSplitView 和 Navigation Stack 区别 (navigationsplitview-he-navigation-stack-qu-bie)
+[15:07:19.053] INFO:   65. 一个特斯拉老股民的买法 (yi-ge-te-si-la-lao-gu-min-de-mai-fa)
+[15:07:19.119] INFO:   66. 一些工具,有些我也还没用过 (yi-xie-gong-ju)
+[15:07:19.191] INFO:   67. Docker 很长时间以后记得清理一下 (docker-hen-chang-shi-jian-yi-hou-ji-de-qing-li-yi-xia)
+[15:07:19.257] INFO:   68. 如果想投资或已经投资了MRVL，你需要了解的 (ru-guo-xiang-tou-zi-huo-yi-jing-tou-zi-liao-mrvlni-xu-yao-liao-jie-de)
+[15:07:19.330] INFO:   69. 冲破天际！Bolt的火箭式崛起：从默默无闻到估值十亿美金， WebContainers如何逆风翻盘？ (chong-po-tian-ji-bolt-de-huo-jian-shi-jue-qi-cong-mo-mo-wu-wen-dao-gu-zhi-shi-yi-mei-jin-webcontainers-ru-he-ni-feng-fan-pan)
+[15:07:19.402] INFO:   70. ASIC 芯片：未来科技的基石，巨头们的战场！ (asic-xin-pian-wei-lai-ke-ji-de-ji-shi-ju-tou-men-de-zhan-chang)
+[15:07:19.467] INFO:   71. Swift 中 Task 和 Thread 的区别 (swift-zhong-task-he-thread-de-qu-bie)
+[15:07:19.534] INFO:   72. iOS 开发中的 workloop 介绍和使用案例 (iOS 开发中的 workloop 介绍和使用案例)
+[15:07:19.605] INFO:   73. Swift 中 闭包 与 逃逸闭包 的区别 (Swift 中 闭包 与 逃逸闭包 的区别)
+[15:07:19.676] INFO:   74. Swift 中 Actor 的使用 (swift-zhong-actor-de-shi-yong)
+[15:07:19.745] INFO:   75. Swift 中 Sendable 的使用   (swift-zhong-sendable-de-shi-yong)
+[15:07:19.813] INFO:   76. 在美股里什么是 tax Loss Harvest (zai-mei-gu-li-shi-me-shi-tax-loss-harvest)
+[15:07:19.876] INFO:   77. 揭秘三个免费神器，帮你挖掘隐藏的流量宝藏！ (jie-mi-san-ge-mian-fei-shen-qi-bang-ni-wa-jue-yin-cang-de-liu-liang-bao-cang)
+[15:07:19.943] INFO:   78. 独立站引流的“流量陷阱” (du-li-zhan-yin-liu-de-liu-liang-xian-jing)
+[15:07:20.014] INFO:   79. 从车企到宇宙飞船：特斯拉如何打破次元壁？ (cong-che-qi-dao-yu-zhou-fei-chuan-te-si-la-ru-he-da-po-ci-yuan-bi)
+[15:07:20.084] INFO:   80. 人生最后一课：苏轼教你“躺平”哲学 (ren-sheng-zui-hou-yi-ke-su-shi-jiao-ni-tang-ping-zhe-xue)
+[15:07:20.155] INFO:   81. 我用 Cursor 仅2小时就上架了一款 macOS App (yong-cursor-jin-2-xiao-shi-jiu-shang-jia-liao-yi-kuan-macos-app)
+[15:07:20.224] INFO:   82. 域名选啥好？核心词还是品牌词？SEO老司机带你玩转！ (yu-ming-xuan-sha-hao-he-xin-ci-huan-shi-pin-pai-ci-seo-lao-si-ji-dai-ni-wan-zhuan)
+[15:07:20.295] INFO:   83. 一些小红书运营的工具 (yi-xie-xiao-hong-shu-yun-ying-de-gong-ju)
+[15:07:20.359] INFO:   84. WWDC24 之 Create ML 的新功能 (wwdc24-zhi-create-ml-de-xin-gong-neng)
+[15:07:20.429] INFO:   85. 使用 CreateML 应用创建 CoreML 模型的指南 — 图像分类 (shi-yong-createml-ying-yong-chuang-jian-coreml-mo-xing-de-zhi-nan-tu-xiang-fen-lei)
+[15:07:20.501] INFO:   86. H.264 vs H.265：视频编码标准的详细对比 (h264-vs-h265shi-pin-bian-ma-biao-zhun-de-xiang-xi-dui-bi)
+[15:07:20.573] INFO:   87. error: Using bridging headers with framework targets is unsupported  (error-using-bridging-headers-with-framework-targets-is-unsupported)
+[15:07:20.643] INFO:   88. 让 Cloudflare 在我的网络前面 (rang-cloudflare-zai-wo-de-wang-luo-qian-mian)
+[15:07:20.713] INFO:   89. 封底估算(Back-of-the-Envelope Estimation) (feng-di-gu-suan-back-of-the-envelope-estimation)
+[15:07:20.783] INFO:   90. 使用 Copilot for Xcode 写代码 2 (shi-yong-copilot-for-xcode-xie-dai-ma-2)
+[15:07:20.847] INFO:   91. 如何在 Macbook  上用并不支持的iPhone 和 iPad 应用 (ru-he-zai-macbook-shang-yong-bing-bu-zhi-chi-de-iphone-he-ipad-ying-yong)
+[15:07:20.916] INFO:   92. macOS 系统安装完后显示「文件已损坏」或者安装完打开没有反应 (macos-xi-tong-an-zhuang-wan-hou-xian-shi-wen-jian-yi-sun-pi-huo-zhe-an-zhuang-wan-da-kai-mei-you-fan-ying)
+[15:07:20.989] INFO:   93. 推荐一款代理协议转换工具 gost (tui-jian-yi-kuan-dai-li-xie-yi-zhuan-huan-gong-ju-gost)
+[15:07:21.064] INFO:   94. 重磅来袭：苹果将在美国开放第三方支付 (chong-bang-lai-xi-ping-guo-jiang-zai-zai-mei-guo-kai-fang-di-san-fang-zhi-fu)
+[15:07:21.136] INFO:   95. 在 Xcode 15 中使用 Logger (zai-xcode-15-zhong-shi-yong-logger)
+[15:07:21.207] INFO:   96. 新加坡如何辞退女佣 (xin-jia-po-ru-he-ci-tui-nu-yong)
+[15:07:21.279] INFO:   97. 使用 Copilot for Xcode 写代码 (use-copilot-for-xcode)
+[15:07:21.346] INFO:   98. SwiftUI：Demo and code review for Resizable Custom Tab Bar for macOS (demo-and-code-analysis-resizable-custom-tab-bar-for-macos)
+[15:07:21.420] INFO:   99. 高通Oryon芯片：未来十年，消费电子的新王者？ (gao-tong-oryon-xin-pian-wei-lai-shi-nian-xiao-fei-dian-zi-de-xin-wang-zhe)
+[15:07:21.492] INFO:   100. 芯特斯拉：Dojo AI 计算机和 D1芯片 (mei-gu-72-xiao-shi-te-si-la)
+[15:07:21.594] INFO:   101. ARM 的 IPO (mei-gu-72-xiao-shi-arm)
+[15:07:21.690] INFO:   102. 麦当劳和减肥药 (mei-gu-72-xiao-shi-mai-dang-lao)
+[15:07:21.766] INFO:   103. App 开发中的 HTTPDNS 方案 (app-kai-fa-zhong-de-httpdns-fang-an)
+[15:07:21.838] INFO:   104. 美股日历 (us-stock-calendar)
+[15:07:21.911] INFO:   105. Chat GTP-4 Browse with Bing 的一些好用的提示词 (chat-gtp-4-browse-with-bing-de-yi-xie-hao-yong-de-ti-shi-ci)
+[15:07:21.978] INFO:   106. 用 Stable Diffusion 美化二维码 (stable-diffusion-mei-hua-er-wei-ma)
+[15:07:22.052] INFO:   107. DDNS-GO + Cloudflare 解决动态 IP 变化 (yi-jian-gao-ding-cloudflare-dns-zi-dong-geng-xin-gao-bie-shou-dong-fan-suo)
+[15:07:22.126] INFO:   108. 一个快速搭建个人微博的方式 (yi-ge-kuai-su-da-jian-ge-ren-wei-bo-de-fang-shi)
+[15:07:22.203] INFO:   109. 再好的顾问，也得会问问题（61 个 ChatGPT prompt） (zai-hao-dao-gu-wen-ye-de-hui-wen-wen-ti-40-ge-chatgpt-prompt)
+[15:07:22.276] INFO:   110. An SSL error has occurred and a secure connection to the server cannot be made (an-ssl-error-has-occurred-and-a-secure-connection-to-the-server-cannot-be-made)
+[15:07:22.353] INFO:   111. ChatGPT Beta 功能之 Custom instructions (chatgpt-beta-gong-neng-zhi-custom-instructions)
+[15:07:22.426] INFO:   112. SwiftUI 怎么加入 Google 广告  (swiftui-zen-me-jia-ru-google-guang-gao)
+[15:07:22.500] INFO:   113. 交易的三条纪律 (jiao-yi-de-san-tiao-ji-lu)
+[15:07:22.572] INFO:   114. SwiftData Basics 极简入门 (swiftdata-basics-ji-jian-ru-men)
+[15:07:22.641] INFO:   115. 市场周期评估表 (shi-chang-zhou-qi-ping-gu-biao)
+[15:07:22.714] INFO:   116. DrawThings AI 画水墨龙 (drawthings-ai-hua-long)
+[15:07:22.789] INFO:   117. MacOS/iOS/iPadOS 使用 DrawThings 进行AI 绘图 (macosiosipados-shi-yong-drawthings-jin-xing-ai-hui-tu)
+[15:07:22.863] INFO:   118. Google Adsense 添加招商银行帐户 (google-adsense-tian-jia-zhao-shang-yin-xing-zhang-hu)
+[15:07:22.940] INFO:   119. SwiftUI 常用 Property Wrappers 之 AppStorage (swiftui-chang-yong-property-wrappers-zhi-appstorage)
+[15:07:23.014] INFO:   120. SwiftUI 常用 Property Wrappers 之 EnvironmentObject (swiftui-chang-yong-property-wrappers-zhi-environmentobject)
+[15:07:23.089] INFO:   121. SwiftUI 常用 Property Wrappers 之 StateObject (swiftui-chang-yong-property-wrappers-zhi-stateobject)
+[15:07:23.163] INFO:   122. SwiftUI 常用 Property Wrappers 之 ObservedObject (swiftui-chang-yong-property-wrappers-zhi-observedobject)
+[15:07:23.239] INFO:   123. 近期基于Scrum的开发流程的感受 (Scrum_and_Sprint_Jira)
+[15:07:23.307] INFO:   124. SwiftUI 常用 Property Wrappers 之 Binding (swiftui-chang-yong-property-wrappers-zhi-binding)
+[15:07:23.384] INFO:   125. SwiftUI 常用 Property Wrappers 之 State (swiftui-chang-yong-property-wrappers-zhi-state)
+[15:07:23.461] INFO:   126. 解决 Instrument 的函数未被符号化 (jie-jue-instrument-de-han-shu-wei-bei-fu-hao-hua)
+[15:07:23.539] INFO:   127. UICollectionView 图片闪烁 (uicollectionview-tu-pian-shan-shuo)
+[15:07:23.615] INFO:   128. iOS 16.4 Webview 不能用Safari调试 (ios-164-webview-bu-neng-yong-safari-diao-shi)
+[15:07:23.692] INFO:   129. 如何拥有自己的域名邮箱【海外版】 (How-to-have-your-own-domain-email-seaversion)
+[15:07:23.770] INFO:   130. stable-diffusion-webui 一键部署和使用 (stable-diffusion-webui-yi-jian-bu-shu-he-shi-yong)
+[15:07:23.850] INFO:   131. iOS 音量键的监听的方案 (ios-yin-liang-jian-de-jian-ting-de-fang-an)
+[15:07:23.928] INFO:   132. python3 局域网分享文件 (python3-ju-yu-wang-fen-xiang-wen-jian)
+[15:07:24.008] INFO:   133. 互联网裁员讨论 (hu-lian-wang-cai-yuan-tao-lun)
+[15:07:24.078] INFO:   134. Auto Layout leading and trailing attributes and RTL (auto-layout-leading-and-trailing-attributes-and-rtl)
+[15:07:24.157] INFO:   135. Swift weak 与 unowned (swift-weak-yu-unowned)
+[15:07:24.235] INFO:   136. iOS 内存占用修复小记 (ios-nei-cun-zhan-yong-xiu-fu-xiao-ji)
+[15:07:24.316] INFO:   137. Xcode 切换 Swift 版本和小版本 (xcode-qie-huan-swift-ban-ben-he-xiao-ban-ben)
+[15:07:24.393] INFO:   138. 新加坡女佣面试问题 (nu-yong-mian-shi-jing-hua-wen-ti)
+[15:07:24.474] INFO:   139. iOS 16 屏幕旋转适配 (ios-16-ping-mu-xuan-zhuan-gua-pei)
+[15:07:24.552] INFO:   140. Mac 压缩PDF文件 (mac-ya-suo-pdf-wen-jian)
+[15:07:24.632] INFO:   141. iOS 16 剪切板弹窗如何应对 (ios-16-jian-qie-ban-dan-chuang-ru-he-ying-dui)
+[15:07:24.738] INFO:   142. Swift 实现栈和队列 (swift-shi-xian-zhan-he-dui-lie)
+[15:07:24.817] INFO:   143. iOS 防截屏/录屏 方案 (ios-fang-jie-ping-lu-ping-fang-an)
+[15:07:24.897] INFO:   144. 《破窑赋》 (po-yao-fu)
+[15:07:24.977] INFO:   145. An incomplete list of skills senior engineers need, beyond coding (an-incomplete-list-of-skills-senior-engineers-need-beyond-coding)
+[15:07:25.048] INFO:   146. 模块化的一些思考 (mo-kuai-hua-de-yi-xie-si-kao)
+[15:07:25.128] INFO:   147. 在循环里的异步任务完成再进行其他操作 (zai-xun-huan-li-de-yi-bu-ren-wu-wan-cheng-zai-jin-xing-qi-ta-cao-zuo)
+[15:07:25.207] INFO:   148. Mac App 推荐：MonitorControl - for Apple Silicon and Intel (mac-app-tui-jian-monitorcontrol-for-apple-silicon-and-intel)
+[15:07:25.289] INFO:   149. 郭德纲给郭麒麟信（全文） (guo-de-gang-gei-guo-qi-lin-xin)
+[15:07:25.370] INFO:   150. CFBundleVersion与CFBundleShortVersionString (cfbundleversion-and-cfbundleshortversionstring)
+[15:07:25.453] INFO:   151. SwiftUI/Swift/Objective-C修饰符总结 (swift-swiftui-objc-keyword-sum)
+[15:07:25.533] INFO:   152. Swift Structure code with MARK/TODO/FIXME (swift-structure-code-with-marktodofixme)
+[15:07:25.613] INFO:   153. iOS & macOS Dev Tools (ios-and-macos-dev-tools)
+[15:07:25.692] INFO:   154. 各个国家电话号码格式 (world-phone-number)
+[15:07:25.772] INFO:   155. 新加坡女佣雇佣体验 (singapore-how-to-get-a-helper)
+[15:07:25.852] INFO:   156. Mac App 推荐：fig.io (mac-app-tui-jian-figio)
+[15:07:25.933] INFO:   157. Mac App 推荐：plash (mac-app-tui-jian-plash)
+[15:07:26.014] INFO:   158. Web 推荐：KeyCaps (web-tui-jian-keycaps)
+[15:07:26.096] INFO:   159.  An amazing SQL joins cheat sheet (an-amazing-sql-joins-cheat-sheet)
+[15:07:26.169] INFO:   160. Web 推荐：IconKitchen (web-tui-jian-iconkitchen)
+[15:07:26.251] INFO:   161. Web 推荐：TypeLit.io  (web-tui-jian-typelitio)
+[15:07:26.333] INFO:   162. Web 推荐：Gridzzly (web-tui-jian-gridzzly)
+[15:07:26.416] INFO:   163. Web 推荐：ENPUZ —— 英语长句可视化语法分析 (web-tui-jian-enpuz-ying-yu-chang-ju-ke-shi-hua-yu-fa-fen-xi)
+[15:07:26.496] INFO:   164. Web 推荐：www.websequencediagrams.com (web-tui-jian-wwwwebsequencediagramscom)
+[15:07:26.580] INFO:   165. 新加坡驾照转换体验 (xin-jia-po-jia-zhao-zhuan-huan-ti-yan)
+[15:07:26.662] INFO:   166. 50 UI Design Tips by pixselacademy  Complete Thread 🧵 (50-ui-design-tips-by-pixselacademy-complete-thread)
+[15:07:26.747] INFO:   167. Web 推荐：oss.wiki (web-tui-jian-osswiki)
+[15:07:26.828] INFO:   168. Web 推荐：Markwhen (web-tui-jian-markwhen)
+[15:07:26.912] INFO:   169. Web 推荐：Regular Expressions Cheat Sheet by DaveChild (web-tui-jian-regular-expressions-cheat-sheet-by-davechild)
+[15:07:26.993] INFO:   170. Web 推荐：patterns.dev (web-tui-jian-patternsdev)
+[15:07:27.077] INFO:   171. 信用卡卡号是怎么回事 (credit-card-number-how-to-verify)
+[15:07:27.164] INFO:   172. COCOMAT (cocomat-lijianfei-com)
+[15:07:27.250] INFO:   173. Mac App 推荐：Folder Peek (mac-app-folder-peek)
+[15:07:27.333] INFO:   174. Web 推荐：数据结构和算法动态可视化  (web-visualgo)
+[15:07:27.419] INFO:   175. 犹豫 (you-yu-do)
+[15:07:27.501] INFO:   176. Web 推荐：英语学习导航 (web-up-6)
+[15:07:27.579] INFO:   177. Web 推荐：Learn Git Branching (web-learn-git-branching)
+[15:07:27.663] INFO:   178. iOS 这些年新增的API (ios-new-aip)
+[15:07:27.748] INFO:   179. Mac App 推荐：DevToysMac (mac-app-devtoysmac)
+[15:07:27.832] INFO:   180. Mac App 推荐：MacSymbolicator (mac-app-macsymbolicator)
+[15:07:27.918] INFO:   181. Mac App 推荐：OmniDiskSweeper (mac-app-omnidisksweeper)
+[15:07:28.003] INFO:   182. Web 推荐：Automa (web-app-automa)
+[15:07:28.090] INFO:   183. Mac App 推荐：OwlOCR (mac-app-owlocr)
+[15:07:28.194] INFO:   184. Mac App 推荐：mas-cli (mac-app-mas-cli)
+[15:07:28.280] INFO:   185. 费曼学习法 (Feynman-Technique)
+[15:07:28.369] INFO:   186. "不做事情只会评论的话，最后就变成眼高手低的人了" (When-you-don't-create-things)
+[15:07:28.451] INFO:   187. "对未来的真正慷慨，是把一切都献给现在" (giving-all-to-the-present)
+[15:07:28.538] INFO:   188. 一些常见互联网公司的GitHub开源项目 官方主页 (internet-com-rank)
+[15:07:28.628] INFO:   189. Web 推荐：英语真题在线 (web-zhenti)
+[15:07:28.716] INFO:   190. Web 推荐：996.fyi (web-996fyi)
+[15:07:28.805] INFO:   191. Web 推荐：Qwerty Learner  (web-qwerty-learner)
+[15:07:28.893] INFO:   192. Mac App 推荐：SwitchHosts (mac-app-switchhosts)
+[15:07:28.983] INFO:   193. Mac App 推荐：Kap (mac-app-kap)
+[15:07:29.074] INFO:   194. Mac App 推荐：MacZip (mac-app-maczip)
+[15:07:29.170] INFO:   195. 1st rule of programming (1st-rule-of-programming)
+[15:07:29.264] INFO:   196. Web 推荐：visualgo.net (web-visualgonet)
+[15:07:29.358] INFO:   197. Web 推荐：principles.design (web-principlesdesign)
+[15:07:29.451] INFO:   198. Web 推荐：Octopus.do (web-octopusdo)
+[15:07:29.542] INFO:   199. Mac App 推荐：Stats (mac-app-stats)
+[15:07:29.631] INFO:   200. Web 推荐：imgggg (web-imgggg)
+[15:07:29.721] INFO:   201. Web 推荐：carbon (web-carbon)
+[15:07:29.812] INFO:   202. Mac App 推荐：UninstallPKG (Mac-app-uninstallpkg)
+[15:07:29.904] INFO:   203. How to run your website for less than $6/year. (how-to-run-your-website-for-less-than-dollar6year)
+[15:07:29.994] INFO:   204. Mac App 推荐：Xclean (mac-app-xclean)
+[15:07:30.085] INFO:   205. 基于 Xcode 自带工具 PGO 优化启动时间 (xcode-pgo-optimization-tool)
+[15:07:30.173] INFO:   206. Mac App 推荐：Messier 生成火焰图 (mac-app-messier)
+[15:07:30.268] INFO:   207. Mac App 推荐：WBBlades (mac-app-wbblades)
+[15:07:30.363] INFO:   208. Mac App 推荐：LSUnusedResources (mac-app-lsunusedresources)
+[15:07:30.468] INFO:   209. ReactiveObjC 使用小结 (reactiveobjc-tips)
+[15:07:30.570] INFO:   210. 《高效人生的12个关键点》读书笔记 (efficient-life-12-tips)
+[15:07:30.667] INFO:   211. 《大设计》读书笔记 (read-the-grand-design)
+[15:07:30.759] INFO:   212. Swift 常用三方库 (swift-good-library)
+[15:07:30.852] INFO:   213. Objc 中一些常用宏 (objc-ues-macro)
+[15:07:30.945] INFO:   214. Masonry 用法小结 (masonry-dynamic-priority)
+[15:07:31.039] INFO:   215. Every iOS app developer (every-ios-app-developer)
+[15:07:31.133] INFO:   216. 人生最幸福的事 (435-the-happiest-thing-in-life)
+[15:07:31.228] INFO:   217. 交互设计自查表 (self-ui-checklist)
+[15:07:31.320] INFO:   218. Windows 系统下载 (windows-system-download)
+[15:07:31.417] INFO:   219. 瀑布 vs 敏捷式学习法 (Classic-Learner-vs-Smart-Learner)
+[15:07:31.511] INFO:   220. 独立 (435-duli)
+[15:07:31.609] INFO:   221. 风险设计 (risk-design)
+[15:07:31.704] INFO:   222. Tweets (twitter-lijianfei-com)
+[15:07:31.918] INFO:   223. 如何做 Git squash (ru-he-zuo-git-squash)
+[15:07:32.024] INFO:   224. 如何做 Git rebase (ru-he-zuo-git-rebase)
+[15:07:32.134] INFO:   225. 如何做 Git 迁移 (how-to-do-git-migrate)
+[15:07:32.232] INFO:   226. Vlog 南澳岛 (Vlog-Nan'ao-Island)
+[15:07:32.337] INFO:   227. Goodbye!!! Tencent🐧 (goodbye-tencent)
+[15:07:32.434] INFO:   228. iOS 图片库HTTP/3实验 的一些结论 (ios-tu-pian-ku-http3-shi-yan-de-yi-xie-jie-lun)
+[15:07:32.533] INFO:   229. 聊一聊 WKWebView UserAgent 的相关姿势 (wkwebview-useragent)
+[15:07:32.639] INFO:   230. 走一遭微信小程序蓝牙开发 (gowechatdev)
+[15:07:32.738] INFO:   231. 37 个 Xcode 技巧和捷径，加快你的日常开发速度 (37-xcode-tips)
+[15:07:32.836] INFO:   232. ABCBinding--简化Cocos和Native交互利器（iOS篇） (abcbinding-ios)
+[15:07:32.933] INFO:   233. 十个有用的软件开发原则 (10-useful-software-dev-principles)
+[15:07:33.032] INFO:   234. 如何写一份会议纪要 (how-to-write-a-meeting-minutes)
+[15:07:33.132] INFO:   235. Swift 使用闭包（block） (swift-block)
+[15:07:33.232] INFO:   236. Paypal 如何添加香港招商银行一卡通 (how-to-add-china-merchants-bank-all-in-one-card-to-paypal)
+[15:07:33.330] INFO:   237. One Pome (one-pome)
+[15:07:33.431] INFO:   238. Scale Fill、Aspect Fit 和 Aspect Fill 的区别 (The-difference-between-ScaleFill- AspectFit-and-AspectFill)
+[15:07:33.530] INFO:   239. 电子书《蓝筹孩子》的笔记 (Blue-Chip-Kid-Reading-Notes)
+[15:07:33.630] INFO:   240. 如何拥有自己的域名邮箱 (How-to-have-your-own-domain-email)
+[15:07:33.730] INFO:   241. 浪子回头金不换，只此一心叫长情 (togufu)
+[15:07:33.830] INFO:   242. 2015 (2015)
+[15:07:33.926] INFO:   243. Ubuntu的黑客马拉松 (a-ubantu-hackathon)
+[15:07:34.028] INFO:   244. 2014 (2014)
+[15:07:34.126] INFO:   245. 关于 (about)
+[15:07:34.226] INFO: ✅ [DATABASE] Database reload completed successfully! Reloaded 246 posts from 246 files
+[15:07:34.326] INFO: 📊 [SYNCHRONIZATION] Database reload completed in 61ms
+[15:07:34.430] INFO: 🔄 [SYNCHRONIZATION] Step 2: Updating renderer database reference...
+[15:07:34.531] INFO: 📊 [SYNCHRONIZATION] Renderer database updated: [object Object]
+[15:07:34.636] INFO: {"timestamp":"2025-10-01T07:06:59.858Z","level":"info","message":"Posts database reloaded","requestId":"req_1759302419728_2q18yz5ur","responseTime":130,"fileName":"2025-10-01-15-06-59-chinese-30xs64","newPostsCount":245}
+[15:07:34.737] INFO: 🌐 [SYNCHRONIZATION] Step 3: Starting website generation process...
+[15:07:34.841] INFO: {"timestamp":"2025-10-01T07:06:59.858Z","level":"info","message":"Starting website generation process","requestId":"req_1759302419728_2q18yz5ur","responseTime":130,"fileName":"2025-10-01-15-06-59-chinese-30xs64","autoDeploy":true,"outputDir":"/Users/lijianfei/.gridea/output","themePath":"/Users/lijianfei/Documents/Gridea/themes/notes","postsCount":245}
+[15:07:34.943] INFO: 🌐 [SYNCHRONIZATION] Domain configured for rendering: https://lijianfei.com
+[15:07:35.046] INFO: {"timestamp":"2025-10-01T07:06:59.858Z","level":"info","message":"Domain set for rendering","requestId":"req_1759302419728_2q18yz5ur","responseTime":130,"domain":"https://lijianfei.com"}
+[15:07:35.146] INFO: 🎨 [SYNCHRONIZATION] Step 4: Calling renderAll() method to generate static website...
+[15:07:35.249] INFO: {"timestamp":"2025-10-01T07:06:59.858Z","level":"info","message":"Calling renderAll() method","requestId":"req_1759302419728_2q18yz5ur","responseTime":130,"method":"renderAll","timeout":60000,"autoDeploy":true}
+[15:07:35.351] INFO: 🚀 Starting renderAll process
+[15:07:35.453] INFO: 📁 Step 1: Clearing output folder
+[15:07:35.579] INFO: 📊 Step 2: Formatting data for render
+[15:07:35.676] INFO: 🎨 Step 3: Building CSS
+[15:07:35.801] INFO: result 
+      .post-container .post .post-title {
+        text-align: left;
+      }
+      .post-container .post .post-info {
+        text-align: left;
+      }
+      .post-detail .post .post-title {
+        text-align: left;
+      }
+      .post-detail .post .post-info {
+        text-align: left;
+      }
+    
+      body {
+        font-family: -apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang SC','Hiragino Sans GB','Droid Sans Fallback','Microsoft YaHei',sans-serif;
+      }
+    
+      .main {
+        background: #FFFFFF;
+      }
+    
+      body {
+        background: #FFFFFF;
+      }
+    
+      body {
+        color: #1D1F23;
+      }
+    
+      a {
+        color: #1D1F23;
+      }
+    
+      a:hover {
+        color: #F15406;
+      }
+    
+[15:07:36.057] INFO: 📄 Step 4: Rendering post list page (index)
+[15:07:36.174] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/index.html
+[15:07:36.387] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/2/index.html
+[15:07:36.520] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/3/index.html
+[15:07:36.629] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/4/index.html
+[15:07:36.742] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/5/index.html
+[15:07:36.858] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/6/index.html
+[15:07:36.961] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/7/index.html
+[15:07:37.068] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/8/index.html
+[15:07:37.174] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/9/index.html
+[15:07:37.285] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/10/index.html
+[15:07:37.397] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/11/index.html
+[15:07:37.504] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/12/index.html
+[15:07:37.609] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/13/index.html
+[15:07:37.716] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/14/index.html
+[15:07:37.822] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/15/index.html
+[15:07:37.935] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/16/index.html
+[15:07:38.056] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/17/index.html
+[15:07:38.179] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/18/index.html
+[15:07:38.302] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/19/index.html
+[15:07:38.431] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/20/index.html
+[15:07:38.555] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/21/index.html
+[15:07:38.672] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/22/index.html
+[15:07:38.790] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/23/index.html
+[15:07:38.903] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/24/index.html
+[15:07:39.011] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/page/25/index.html
+[15:07:39.120] INFO: 📑 Step 5: Rendering archives page
+[15:07:39.229] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/archives/index.html
+[15:07:39.337] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/archives/page/2/index.html
+[15:07:39.450] INFO: 👏  PostList Page: /Users/lijianfei/.gridea/output/archives/page/3/index.html
+[15:07:39.560] INFO: 🏷️  Step 6: Rendering tag list page
+[15:07:39.668] INFO: 👏  Tags Page: /Users/lijianfei/.gridea/output/tags/index.html
+[15:07:39.774] INFO: 📝 Step 7: Rendering post detail pages
+[15:07:39.880] INFO: 🏷️  Step 8: Rendering tag detail pages
+[15:07:39.986] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/yuan-ma-yue-du/index.html
+[15:07:40.092] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/claude-code/index.html
+[15:07:40.196] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai-ide/index.html
+[15:07:40.301] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/context-engineering/index.html
+[15:07:40.408] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mcp/index.html
+[15:07:40.521] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mcp/page/2/index.html
+[15:07:40.629] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/security/index.html
+[15:07:40.737] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai-agent/index.html
+[15:07:40.844] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai-agent/page/2/index.html
+[15:07:40.951] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/manus/index.html
+[15:07:41.058] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/tesla/index.html
+[15:07:41.166] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/DeepSeek/index.html
+[15:07:41.274] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/Cryptocurrency/index.html
+[15:07:41.387] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/docker/index.html
+[15:07:41.493] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/operations/index.html
+[15:07:41.601] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/seo/index.html
+[15:07:41.708] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/wwdc/index.html
+[15:07:41.824] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/cloudflare/index.html
+[15:07:41.931] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/git/index.html
+[15:07:42.040] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/nas/index.html
+[15:07:42.152] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/stock/index.html
+[15:07:42.261] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/stock/page/2/index.html
+[15:07:42.374] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/how/index.html
+[15:07:42.486] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swiftui/index.html
+[15:07:42.596] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swiftui/page/2/index.html
+[15:07:42.708] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/index.html
+[15:07:42.818] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/page/2/index.html
+[15:07:42.927] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/page/3/index.html
+[15:07:43.044] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/page/4/index.html
+[15:07:43.157] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ai/page/5/index.html
+[15:07:43.268] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/ algorithm/index.html
+[15:07:43.379] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/how-to-do-it-in-singapore/index.html
+[15:07:43.492] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/why/index.html
+[15:07:43.604] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/principles.design/index.html
+[15:07:43.717] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/web/index.html
+[15:07:43.828] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/web/page/2/index.html
+[15:07:43.940] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/web/page/3/index.html
+[15:07:44.060] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mac-app/index.html
+[15:07:44.172] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mac-app/page/2/index.html
+[15:07:44.286] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/mac-app/page/3/index.html
+[15:07:44.403] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/objc/index.html
+[15:07:44.517] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/objc/page/2/index.html
+[15:07:44.631] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/study-notes/index.html
+[15:07:44.746] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swift/index.html
+[15:07:44.859] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swift/page/2/index.html
+[15:07:44.972] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/swift/page/3/index.html
+[15:07:45.092] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/original/index.html
+[15:07:45.209] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/original/page/2/index.html
+[15:07:45.324] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/translate/index.html
+[15:07:45.442] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/xcode/index.html
+[15:07:45.558] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/xcode/page/2/index.html
+[15:07:45.674] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/record_golden_sentence/index.html
+[15:07:45.791] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/record_golden_sentence/page/2/index.html
+[15:07:45.904] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/Windows/index.html
+[15:07:46.027] INFO: 👏  Tag Page: /Users/lijianfei/.gridea/output/tag/good-image/index.html
+[15:07:46.146] INFO: 📁 Step 9: Copying static files
+[15:07:46.264] INFO: 🎨 Step 10: Rendering custom pages
+[15:07:46.385] INFO: 🌐 Step 11: Building CNAME
+[15:07:46.503] INFO: 📡 Step 12: Building RSS feed
+[15:07:46.620] INFO: ✅ renderAll completed successfully in 942ms
+[15:07:46.737] INFO: 🎉 [SYNCHRONIZATION] Static website generated successfully in 942ms
+[15:07:46.860] INFO: {"timestamp":"2025-10-01T07:07:00.800Z","level":"info","message":"Static website generated successfully","requestId":"req_1759302419728_2q18yz5ur","responseTime":1072,"fileName":"2025-10-01-15-06-59-chinese-30xs64","autoDeploy":true,"renderDuration":942,"outputDir":"/Users/lijianfei/.gridea/output"}
+[15:07:46.977] INFO: 📋 [SYNCHRONIZATION] Final posts count in database: 245
+[15:07:47.107] INFO: {"timestamp":"2025-10-01T07:07:00.800Z","level":"info","message":"Deployment started","requestId":"req_1759302419728_2q18yz5ur","responseTime":1072,"articleId":"2025-10-01-15-06-59-chinese-30xs64","autoDeploy":true,"type":"deployment_start"}
+[15:07:47.233] INFO: {"timestamp":"2025-10-01T07:07:00.800Z","level":"info","message":"Starting deployment process","requestId":"req_1759302419728_2q18yz5ur","responseTime":1072,"fileName":"2025-10-01-15-06-59-chinese-30xs64"}
+[15:07:47.356] INFO: Not a repo Could not find HEAD.
+[15:07:47.476] INFO: info [object Object]
+[15:07:47.594] INFO: common push
+[15:07:47.719] INFO: statusSummary *added
+[15:07:58.576] INFO: pushRes [object Object]
+[15:07:58.712] INFO: {"timestamp":"2025-10-01T07:07:58.576Z","level":"info","message":"Deployment successful","requestId":"req_1759302419728_2q18yz5ur","responseTime":58848,"articleId":"2025-10-01-15-06-59-chinese-30xs64","deployUrl":"https://lijianfei.com","duration":57776,"type":"deployment_success"}
+[15:07:58.857] INFO: 🎉 [ARTICLE_PUBLISH] Article publish process completed successfully! [object Object]
+[15:07:58.980] INFO: {"timestamp":"2025-10-01T07:07:58.576Z","level":"info","message":"Article published successfully","requestId":"req_1759302419728_2q18yz5ur","responseTime":58848,"articleId":"2025-10-01-15-06-59-chinese-30xs64","deploymentStatus":"completed","autoDeploy":true,"deployUrl":"https://lijianfei.com","tags":["完整","发布","部署"]}
+[15:07:59.090] INFO: 📤 [ARTICLE_PUBLISH] Sending success response to client
+[15:07:59.215] INFO: {"timestamp":"2025-10-01T07:07:58.577Z","level":"info","message":"API response sent","requestId":"req_1759302419728_2q18yz5ur","responseTime":58849,"statusCode":200,"type":"request_end"}

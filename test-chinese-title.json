@@ -1,0 +1,6 @@
+{
+  "title": "测试中文标题",
+  "content": "# 测试中文标题\n\n这是一个测试文章。",
+  "tags": ["测试"],
+  "autoDeploy": false
+}

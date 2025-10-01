@@ -12,6 +12,9 @@ import { formatYamlString } from '../helpers/utils'
 
 Bluebird.promisifyAll(fs)
 
+// Use Node.js built-in promises for better compatibility
+const fsPromises = fs.promises
+
 export default class Posts extends Model {
   postDir: string
 
@@ -136,6 +139,107 @@ ${postMatter.content}`
     return true
   }
 
+  public async reloadPosts() {
+    // Re-read all markdown files from the post directory
+    console.log(`📚 [DATABASE] Starting database reload from post directory: ${this.postDir}`)
+    const resultList: any = []
+    let files = await fse.readdir(this.postDir)
+    console.log(`📁 [DATABASE] Found ${files.length} files in post directory`)
+
+    files = files.filter(junk.not)
+    console.log(`🔍 [DATABASE] Filtered to ${files.length} valid markdown files`)
+
+    // Read and parse all markdown files
+    await Promise.all(files.map(async (file) => {
+      try {
+        console.log(`📖 [DATABASE] Reading file: ${file}`)
+        const content = await fsPromises.readFile(path.join(this.postDir, file), 'utf8')
+        const postMatter = matter(content)
+
+        const data = postMatter.data as any
+
+        // Format title
+        if (data && data.title) {
+          data.title = formatYamlString(data.title)
+          // Remove useless `'` in formatYamlString generate
+          data.title = String(data.title).replace(/''/g, '\'')
+        }
+
+        // Format date
+        if (data && data.date) {
+          if (typeof data.date === 'string') {
+            data.date = moment(data.date).format('YYYY-MM-DD HH:mm:ss')
+          } else {
+            data.date = moment(data.date).subtract(8, 'hours').format('YYYY-MM-DD HH:mm:ss')
+          }
+        }
+
+        // Set default values for missing fields
+        if (data.published === undefined) {
+          data.published = false
+        }
+        if (data.hideInList === undefined) {
+          data.hideInList = false
+        }
+        if (data.isTop === undefined) {
+          data.isTop = false
+        }
+
+        delete postMatter.orig // Remove orig <Buffer>
+        const post = {
+          ...postMatter,
+          abstract: '',
+          fileName: file.substring(0, file.length - 3), // Remove .md extension
+        }
+
+        // Extract abstract from more tag
+        const moreReg = /\n\s*<!--\s*more\s*-->\s*\n/i
+        const matchMore = moreReg.exec(post.content)
+        if (matchMore) {
+          post.abstract = post.content.substring(0, matchMore.index)
+        }
+
+        console.log(`✅ [DATABASE] Successfully parsed post: ${data.title || 'Untitled'} (${post.fileName})`)
+        resultList.push(post)
+      } catch (error) {
+        console.error(`❌ [DATABASE] Error reading file ${file}:`, error)
+      }
+    }))
+
+    // Sort posts by date (newest first)
+    resultList.sort((a: any, b: any) => moment(b.data.date).unix() - moment(a.data.date).unix())
+    console.log(`📊 [DATABASE] Sorted ${resultList.length} posts by date (newest first)`)
+
+    // Get current posts count before update
+    const currentPostsCount = this.$posts.get('posts').value() ? this.$posts.get('posts').value().length : 0
+    console.log(`📈 [DATABASE] Current posts count in database: ${currentPostsCount}`)
+
+    // Update the database with the fresh data
+    this.$posts.set('posts', resultList).write()
+
+    // CRITICAL FIX: Also update the in-memory database (appInstance.db.posts)
+    // This ensures the renderer has access to the latest posts
+    this.db.posts = resultList
+    console.log(`💾 [DATABASE] Database updated with ${resultList.length} posts`)
+    console.log(`🔄 [DATABASE] In-memory appInstance.db.posts synchronized with ${resultList.length} posts`)
+
+    // Log details about published posts
+    const publishedPosts = resultList.filter((post: any) => post.data.published === true)
+    const draftPosts = resultList.filter((post: any) => post.data.published === false)
+    console.log(`📰 [DATABASE] Published posts: ${publishedPosts.length}, Draft posts: ${draftPosts.length}`)
+
+    // Log titles of published posts
+    if (publishedPosts.length > 0) {
+      console.log('📋 [DATABASE] Published posts list:')
+      publishedPosts.forEach((post: any, index: number) => {
+        console.log(`  ${index + 1}. ${post.data.title || 'Untitled'} (${post.fileName})`)
+      })
+    }
+
+    console.log(`✅ [DATABASE] Database reload completed successfully! Reloaded ${resultList.length} posts from ${files.length} files`)
+    return resultList
+  }
+
   async list() {
     await this.savePosts()
     const posts = await this.$posts.get('posts').value()
@@ -158,9 +262,23 @@ ${postMatter.content}`
    * @param post
    */
   async savePostToFile(post: IPost): Promise<IPost | null> {
+    console.log(`📝 [FILE_SAVE] Starting to save post to file: ${post.fileName}`)
+    console.log('📋 [FILE_SAVE] Post details:', {
+      title: post.title,
+      fileName: post.fileName,
+      tags: post.tags,
+      published: post.published,
+      date: post.date,
+      hasFeatureImage: !!post.featureImage.path,
+      contentLength: post.content.length,
+    })
+
     const helper = new ContentHelper()
     const content = helper.changeImageUrlLocalToDomain(post.content, this.db.setting.domain)
     const extendName = (post.featureImage.name || 'jpg').split('.').pop()
+
+    console.log(`🖼️ [FILE_SAVE] Image extension: ${extendName}`)
+    console.log(`🌐 [FILE_SAVE] Content processed for domain: ${this.db.setting.domain}`)
 
     post.title = formatYamlString(post.title)
 
@@ -175,30 +293,60 @@ isTop: ${post.isTop}
 ---
 ${content}`
 
+    console.log(`📄 [FILE_SAVE] Markdown content prepared, length: ${mdStr.length}`)
+
     try {
       // If exist feature image
       if (post.featureImage.path) {
+        console.log(`🖼️ [FILE_SAVE] Processing feature image: ${post.featureImage.path}`)
         const filePath = `${this.postImageDir}/${post.fileName}.${extendName}`
 
+        console.log(`📁 [FILE_SAVE] Target feature image path: ${filePath}`)
+
         if (post.featureImage.path !== filePath) {
+          console.log(`📋 [FILE_SAVE] Copying feature image from ${post.featureImage.path} to ${filePath}`)
           fse.copySync(post.featureImage.path, filePath)
+          console.log('✅ [FILE_SAVE] Feature image copied successfully')
 
           // Clean the old file
           if (post.featureImage.path.includes(this.postImageDir)) {
+            console.log(`🗑️ [FILE_SAVE] Removing old feature image: ${post.featureImage.path}`)
             fse.removeSync(post.featureImage.path)
+            console.log('✅ [FILE_SAVE] Old feature image removed')
           }
+        } else {
+          console.log('ℹ️ [FILE_SAVE] Feature image already at target location, skipping copy')
         }
+      } else {
+        console.log('ℹ️ [FILE_SAVE] No feature image to process')
       }
 
       // Write file must use fse, beause fs.writeFile need callback
-      await fse.writeFile(`${this.postDir}/${post.fileName}.md`, mdStr)
+      const markdownFilePath = `${this.postDir}/${post.fileName}.md`
+      console.log(`📝 [FILE_SAVE] Writing markdown file to: ${markdownFilePath}`)
+      await fse.writeFile(markdownFilePath, mdStr)
+      console.log('✅ [FILE_SAVE] Markdown file written successfully')
 
       // Clean the old file
       if (post.deleteFileName) {
-        fse.removeSync(`${this.postDir}/${post.deleteFileName}.md`)
+        const oldFilePath = `${this.postDir}/${post.deleteFileName}.md`
+        console.log(`🗑️ [FILE_SAVE] Removing old file: ${oldFilePath}`)
+        fse.removeSync(oldFilePath)
+        console.log('✅ [FILE_SAVE] Old file removed successfully')
       }
+
+      console.log(`🎉 [FILE_SAVE] Post save completed successfully: ${post.title}`)
     } catch (e) {
-      console.error('ERROR: ', e)
+      console.error(`❌ [FILE_SAVE] Error saving post ${post.fileName}:`, e)
+      console.error('❌ [FILE_SAVE] Error details:', {
+        fileName: post.fileName,
+        title: post.title,
+        postDir: this.postDir,
+        postImageDir: this.postImageDir,
+        hasFeatureImage: !!post.featureImage.path,
+        errorMessage: e instanceof Error ? e.message : String(e),
+      })
+      return null
     }
     return post
   }
