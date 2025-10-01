@@ -30,7 +30,11 @@
     "test:watch:unit": "vitest",
     "test:coverage:unit": "vitest run --coverage",
     "test:api": "vitest run tests/unit/api",
-    "test:api:watch": "vitest tests/unit/api"
+    "test:api:watch": "vitest tests/unit/api",
+    "test:integration": "vitest run tests/integration --reporter=verbose",
+    "test:integration:watch": "vitest tests/integration --reporter=verbose",
+    "test:integration:config": "vitest run tests/integration/config-simple.test.ts --reporter=basic",
+    "test:integration:lifecycle": "vitest run tests/integration/server-lifecycle.test.ts --reporter=basic"
   },
   "dependencies": {
     "@fontsource/noto-serif": "^4.5.9",

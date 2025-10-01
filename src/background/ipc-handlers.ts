@@ -25,7 +25,7 @@ async function loadServerModules() {
  */
 async function handleStartAPIServer(
   event: IpcMainInvokeEvent,
-  config: { port: number; auth?: string; cors: { enabled: boolean; origins: string[] } },
+  config: { port: number; host?: string; auth?: string; cors: { enabled: boolean; origins: string[] } },
 ): Promise<{ success: boolean; url?: string; error?: string; code?: string }> {
   try {
     // Validate configuration
@@ -51,9 +51,12 @@ async function handleStartAPIServer(
     }
 
     // Update configuration
-    const { port, auth, cors } = config
+    const {
+      port, host = '0.0.0.0', auth, cors,
+    } = config
     const serverConfig: any = {
       port,
+      host,
       auth: {
         enabled: !!auth,
         secretKey: auth || '',
@@ -69,7 +72,7 @@ async function handleStartAPIServer(
     // Start server
     await apiServer.start(port)
 
-    const url = `http://localhost:${port}`
+    const url = host === '0.0.0.0' ? `http://localhost:${port}` : `http://${host}:${port}`
 
     // Notify renderer process
     if (event.sender) {
@@ -189,13 +192,15 @@ async function handleSaveAPISettings(
     await loadServerModules()
 
     // Convert frontend settings to backend config format
-    const { port = 3000, auth = {}, cors = {} } = settings
+    const {
+      port = 3000, host = '0.0.0.0', auth = {}, cors = {},
+    } = settings
     const { enabled = false, secretKey = '' } = auth
     const { origins = ['*'] } = cors
 
     const apiConfig: any = {
       port,
-      host: 'localhost',
+      host,
       auth: {
         enabled,
         secretKey,
@@ -400,4 +405,60 @@ export function getAPIServerInstance(): any | null {
  */
 export function getConfigManagerInstance(): any | null {
   return configManager
+}
+
+/**
+ * Set API server instance (for testing)
+ */
+export function setAPIServerInstance(instance: any): void {
+  apiServer = instance
+}
+
+/**
+ * Set config manager instance (for testing)
+ */
+export function setConfigManagerInstance(instance: any): void {
+  configManager = instance
+}
+
+/**
+ * Set app instance (for testing)
+ */
+export function setAppInstance(instance: any): void {
+  appInstance = instance
+}
+
+/**
+ * Reset all singletons (for testing)
+ */
+export function resetIPCHandlers(): void {
+  apiServer = null
+  configManager = null
+  appInstance = null
+  APIServer = null
+  ConfigManager = null
+}
+
+/**
+ * Clear and reset IPC handlers (for testing)
+ */
+export function clearIPCHandlers(): void {
+  // Remove all handlers if method exists
+  if (typeof ipcMain.removeHandler === 'function') {
+    try {
+      ipcMain.removeHandler('start-api-server')
+      ipcMain.removeHandler('stop-api-server')
+      ipcMain.removeHandler('get-api-server-status')
+      ipcMain.removeHandler('save-api-settings')
+      ipcMain.removeHandler('test-webhook')
+    } catch (error) {
+      // Ignore errors when removing non-existent handlers
+    }
+  }
+
+  // Remove all event listeners
+  ipcMain.removeAllListeners('api-server-status-changed')
+  ipcMain.removeAllListeners('api-server-started')
+  ipcMain.removeAllListeners('api-server-stopped')
+  ipcMain.removeAllListeners('api-server-error')
 }

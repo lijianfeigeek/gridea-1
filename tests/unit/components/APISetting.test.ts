@@ -1,17 +1,16 @@
 // APISetting Component Test Suite
 // 基于Vue.js和Electron的API设置组件测试
 
-import { vi } from 'vitest'
 import { ipcRenderer } from 'electron'
 
 // Mock electron ipcRenderer
-vi.mock('electron', () => ({
+jest.mock('electron', () => ({
   ipcRenderer: {
-    send: vi.fn(),
-    on: vi.fn(),
-    once: vi.fn(),
-    removeAllListeners: vi.fn(),
-    invoke: vi.fn(),
+    send: jest.fn(),
+    on: jest.fn(),
+    once: jest.fn(),
+    removeAllListeners: jest.fn(),
+    invoke: jest.fn(),
   },
 }))
 
@@ -39,23 +38,23 @@ const mockStore = {
       },
     },
   },
-  dispatch: vi.fn(),
-  commit: vi.fn(),
+  dispatch: jest.fn(),
+  commit: jest.fn(),
 }
 
 // Mock Vue message service
 const mockMessage = {
-  success: vi.fn(),
-  error: vi.fn(),
-  warning: vi.fn(),
-  info: vi.fn(),
+  success: jest.fn(),
+  error: jest.fn(),
+  warning: jest.fn(),
+  info: jest.fn(),
 }
 
 // Mock Vue bus
 const mockBus = {
-  $on: vi.fn(),
-  $emit: vi.fn(),
-  $off: vi.fn(),
+  $on: jest.fn(),
+  $emit: jest.fn(),
+  $off: jest.fn(),
 }
 
 // Mock Vue i18n
@@ -66,16 +65,16 @@ const mockI18n = {
 // Mock form service
 const mockForm = {
   createForm: () => ({
-    setFieldsValue: vi.fn(),
-    getFieldsValue: vi.fn(),
-    validateFields: vi.fn(),
+    setFieldsValue: jest.fn(),
+    getFieldsValue: jest.fn(),
+    validateFields: jest.fn(),
   }),
 }
 
 // Mock window API
 if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'require', {
-    value: vi.fn((module) => {
+    value: jest.fn((module) => {
       if (module === 'electron') {
         return { ipcRenderer }
       }
@@ -86,7 +85,7 @@ if (typeof window !== 'undefined') {
 } else {
   // Mock global window for Node.js environment
   global.window = {
-    require: vi.fn((module) => {
+    require: jest.fn((module) => {
       if (module === 'electron') {
         return { ipcRenderer }
       }
@@ -330,20 +329,20 @@ describe('APISetting Component Test Suite', () => {
 
   beforeEach(() => {
     // Reset mocks
-    vi.clearAllMocks()
+    jest.clearAllMocks()
 
     // Setup mock ipcRenderer
     mockIpcRenderer = {
-      send: vi.fn(),
-      on: vi.fn(),
-      once: vi.fn(),
-      removeAllListeners: vi.fn(),
-      invoke: vi.fn(),
+      send: jest.fn(),
+      on: jest.fn(),
+      once: jest.fn(),
+      removeAllListeners: jest.fn(),
+      invoke: jest.fn(),
     }
 
     // Override electron mock
     const originalRequire = require
-    global.require = vi.fn().mockImplementation((module: string) => {
+    global.require = jest.fn().mockImplementation((module: string) => {
       if (module === 'electron') {
         return { ipcRenderer: mockIpcRenderer }
       }
@@ -632,7 +631,7 @@ describe('APISetting Component Test Suite', () => {
 
   describe('6. 生命周期测试', () => {
     test('组件挂载时设置IPC监听器', () => {
-      const setupIpcListenersSpy = vi.spyOn(component, 'setupIpcListeners')
+      const setupIpcListenersSpy = jest.spyOn(component, 'setupIpcListeners')
 
       // Clear the mock to count only this test's calls
       mockIpcRenderer.on.mockClear()
@@ -644,7 +643,7 @@ describe('APISetting Component Test Suite', () => {
     })
 
     test('组件销毁时移除IPC监听器', () => {
-      const removeIpcListenersSpy = vi.spyOn(component, 'removeIpcListeners')
+      const removeIpcListenersSpy = jest.spyOn(component, 'removeIpcListeners')
 
       // Clear the mock to count only this test's calls
       mockIpcRenderer.removeAllListeners.mockClear()
@@ -656,7 +655,7 @@ describe('APISetting Component Test Suite', () => {
     })
 
     test('组件挂载时加载API设置', () => {
-      const loadApiSettingsSpy = vi.spyOn(component, 'loadApiSettings')
+      const loadApiSettingsSpy = jest.spyOn(component, 'loadApiSettings')
 
       component.mounted()
 

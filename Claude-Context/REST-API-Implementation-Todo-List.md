@@ -767,53 +767,12 @@
 - [x] 问题根源定位完成 (四个核心问题已明确识别：Mock配置缺失、测试环境混入、IPC Mock不完整、Webhook连接问题)
 - [x] **测试执行环境验证完成** (确认Vitest和Jest环境分别独立运行，但存在配置交叉)
 - [x] **失败测试分类完成** (将失败测试分为Mock相关、环境相关、IPC相关和连接相关)
-- [ ] **Vitest Mock配置修复** (需要在tests/setup.ts中添加缺失的mockFsExtra等Mock对象)
-- [ ] **Jest测试路径排除配置** (需要在jest.config.js中排除Vitest专用测试文件)
-- [ ] **IPC集成测试Mock完善** (需要在Jest setup中添加完整的Promise方法支持)
-- [ ] **集成测试通过验证** (当前约32个测试失败，需要修复后重新运行确保通过)
-
-
-
-任务4.2完成情况总结
-
-  根据我的详细分析，任务4.2"运行集成测试并修复问题"的当前完成情况为：
-
-  📊 完成度：60%（问题识别和分析阶段完成，关键修复工作待执行）
-
-  ✅ 已完成的核心工作：
-
-  1. 全面测试执行：成功运行了Vitest和Jest测试套件
-  2. 精准问题定位：识别了4个核心问题领域
-  3. 深度根因分析：梳理了测试框架架构和依赖关系
-  4. 文档更新完善：详细记录了所有发现并更新了检查清单
-
-  ❌ 关键待修复问题：
-
-  🔴 高优先级问题：
-  1. Vitest Mock配置缺失（影响24个配置集成测试）
-  2. Jest测试环境混入（影响2个Jest测试）
-
-  🟡 中优先级问题：
-  3. IPC集成测试Mock不完整（影响6个IPC测试）
-  4. Webhook服务连接问题（影响1个测试）
-
-  🔧 具体修改建议：
-
-  立即修复（90分钟内可完成）：
-  1. 在tests/setup.ts中添加缺失的mockFsExtra等Mock对象
-  2. 在jest.config.js中排除Vitest专用测试文件
-  3. 完善tests/setup-jest.js中的Promise方法支持
-  4. 修复Webhook测试环境配置
-
-  📈 修复预期：
-
-  - 整体测试通过率：从当前约60% → 90%+
-  - Vitest集成测试：修复24个失败测试
-  - Jest IPC测试：从26个通过 → 32个全部通过
-
-  任务4.2的分析阶段已高质量完成，剩余主要是执行具体的代码修复工作。
-
-
+- [ ] **fs-extra Spy同步修复** (`tests/integration/server-lifecycle.test.ts` 仍未捕获 `mockFsExtra.writeJsonSync` 调用，Vitest 报告 *Expected spy to be called*；需确保 `tests/setup.ts` 导出的 spy 与 `ConfigManager.saveConfig()` 使用的实例一致，并在保存配置时触发 `writeJsonSync`/`ensureDirSync`)
+- [ ] **ConfigManager 单例注入修复** (`tests/integration/background-ipc.test.ts` 在 `start-api-server` 流程中抛出 `configManager.updateConfig is not a function`；需要让测试能够替换 `src/background/ipc-handlers.ts` 内的 `configManager` 单例，或暴露 setter 以复用 Vitest mock)
+- [ ] **IPC集成测试Mock完善** (`cleanupAPIServer` 场景访问 `mockApiServer.isServerRunning` 时为 `undefined`，需提供方式将同一 Mock 实例注入 `apiServer` 单例，并补全 `stop`/`isServerRunning` 的 spy 实现)
+- [ ] **Webhook服务Mock修复（Vitest集成）** (`tests/integration/webhook-article.test.ts` 仍因 `this.startEventProcessor is not a function`、`shutdown` 缺失而失败；应将 `tests/setup.ts` 的 mock 路径改为 `../src/server/services/webhook` 并补齐 Promise 风格的生命周期方法)
+- [ ] **Jest WebhookService 实例修复** (`tests/unit/services/webhook.test.ts` 18 个用例全部报 `webhookService.createWebhook/shutdown is not a function`；需调整 `tests/setup-jest.js` 的导出（例如增加 `__esModule: true` 与 `default`）或改用真实实现+局部 stub，恢复实例方法)
+- [ ] **集成测试通过验证** (当前 `yarn test:integration`：8 个文件失败，171 个用例中 88 个失败；`yarn test`：4 个套件中 2 个失败，20/141 断言失败。修复后需重新执行并记录零失败结果)
 
 ---
 

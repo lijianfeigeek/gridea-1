@@ -1,6 +1,3 @@
-import {
-  describe, it, expect, beforeEach, afterEach, vi,
-} from 'vitest'
 import request from 'supertest'
 
 // Using global express mock from setup.ts
@@ -13,27 +10,27 @@ import { WebhookService } from '../../../src/server/services/webhook'
 // Using global express mock from setup.ts
 
 // Mock all dependencies before importing
-vi.mock('uuid', () => ({
+jest.mock('uuid', () => ({
   v4: () => `test-uuid-${Math.random().toString(36).substr(2, 9)}`,
 }))
 
-vi.mock('axios', () => ({
-  default: vi.fn().mockResolvedValue({
+jest.mock('axios', () => ({
+  default: jest.fn().mockResolvedValue({
     status: 200,
     data: { success: true },
     headers: {},
   }),
 }))
 
-vi.mock('crypto', () => ({
-  createHmac: vi.fn().mockReturnValue({
-    update: vi.fn().mockReturnThis(),
-    digest: vi.fn().mockReturnValue('mock-signature'),
+jest.mock('crypto', () => ({
+  createHmac: jest.fn().mockReturnValue({
+    update: jest.fn().mockReturnThis(),
+    digest: jest.fn().mockReturnValue('mock-signature'),
   }),
 }))
 
-vi.mock('express-validator', () => ({
-  validationResult: vi.fn().mockImplementation((req) => {
+jest.mock('express-validator', () => ({
+  validationResult: jest.fn().mockImplementation((req) => {
     // Check if the request has validation errors based on the data
     const { url, events } = req.body
 

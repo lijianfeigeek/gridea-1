@@ -36,6 +36,7 @@ export interface IGitalkSetting {
 export interface IAPISetting {
   enabled: boolean
   port: number
+  host: string
   auth: {
     enabled: boolean
     apiKey: string

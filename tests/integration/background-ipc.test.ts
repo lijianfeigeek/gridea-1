@@ -2,7 +2,15 @@ import { vi } from 'vitest'
 import { app, ipcMain, BrowserWindow } from 'electron'
 
 // Now import the mocked modules
-import { initializeIPCHandlers, cleanupAPIServer } from '../../src/background/ipc-handlers'
+import {
+  initializeIPCHandlers,
+  cleanupAPIServer,
+  setAPIServerInstance,
+  setConfigManagerInstance,
+  setAppInstance,
+  resetIPCHandlers,
+  clearIPCHandlers,
+} from '../../src/background/ipc-handlers'
 import { APIServer } from '../../src/server/api/index'
 import { ConfigManager } from '../../src/server/api/config'
 
@@ -49,6 +57,10 @@ describe('Background Process IPC Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
+    // Reset IPC handlers and singletons
+    clearIPCHandlers()
+    resetIPCHandlers()
+
     // Create mock instances
     const MockAPIServer = APIServer as any
     const MockConfigManager = ConfigManager as any
@@ -57,6 +69,11 @@ describe('Background Process IPC Integration', () => {
     mockApiServer = new MockAPIServer()
     mockConfigManager = new MockConfigManager()
     mockWindow = new MockBrowserWindow()
+
+    // Inject mock instances using setter functions
+    setAPIServerInstance(mockApiServer)
+    setConfigManagerInstance(mockConfigManager)
+    setAppInstance({ db: { get: vi.fn(), set: vi.fn() } })
 
     // Ensure mock methods are available for dynamic modification during tests
     // These methods are already defined in vi.mock but we need to ensure they're accessible

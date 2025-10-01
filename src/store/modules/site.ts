@@ -87,6 +87,7 @@ const siteState: Site = {
   api: {
     enabled: false,
     port: 3000,
+    host: '0.0.0.0',
     auth: {
       enabled: false,
       apiKey: '',

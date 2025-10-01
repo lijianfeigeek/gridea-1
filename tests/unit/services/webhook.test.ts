@@ -1,27 +1,28 @@
-import {
-  describe, it, expect, beforeEach, afterEach, vi,
-} from 'vitest'
 import axios from 'axios'
 import { WebhookService } from '../../../src/server/services/webhook'
 import { WebhookEventType, WebhookEventData } from '../../../src/server/interfaces/webhook'
 
-vi.mock('axios')
-vi.mock('uuid', () => ({
+jest.mock('axios')
+jest.mock('uuid', () => ({
   v4: () => `test-uuid-${Math.random().toString(36).substr(2, 9)}`,
 }))
 
-const mockedAxios = vi.mocked(axios)
+const mockedAxios = axios as jest.Mocked<typeof axios>
 
 describe('WebhookService', () => {
   let webhookService: WebhookService
 
   beforeEach(() => {
+    // Use fake timers to control async operations
+    jest.useFakeTimers()
     webhookService = new WebhookService()
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   afterEach(() => {
     webhookService.shutdown()
+    // Restore real timers
+    jest.useRealTimers()
   })
 
   describe('Webhook Management', () => {
@@ -54,7 +55,7 @@ describe('WebhookService', () => {
         events: ['post.published'],
       })
 
-      await new Promise(resolve => setTimeout(resolve, 10))
+      await jest.advanceTimersByTimeAsync(10)
 
       const updated = await webhookService.updateWebhook(webhook.id, {
         enabled: false,
@@ -146,7 +147,8 @@ describe('WebhookService', () => {
 
       await webhookService.emitEvent('post.published', eventData)
 
-      await new Promise(resolve => setTimeout(resolve, 100))
+      // Run all pending timers to ensure queue is processed
+      await jest.runAllTimersAsync()
 
       const deliveries = webhookService.getWebhookDeliveries(webhook.id)
       expect(deliveries).toHaveLength(1)
@@ -181,7 +183,8 @@ describe('WebhookService', () => {
 
       await webhookService.emitEvent('post.published', eventData)
 
-      await new Promise(resolve => setTimeout(resolve, 300))
+      // Advance timers enough time for retry attempts
+      await jest.advanceTimersByTimeAsync(300)
 
       const deliveries = webhookService.getWebhookDeliveries(webhook.id)
       expect(deliveries).toHaveLength(1)
@@ -216,7 +219,8 @@ describe('WebhookService', () => {
 
       await webhookService.emitEvent('post.published', eventData)
 
-      await new Promise(resolve => setTimeout(resolve, 200))
+      // Advance timers to trigger first retry but not complete it
+      await jest.advanceTimersByTimeAsync(200)
 
       const deliveries = webhookService.getWebhookDeliveries(webhook.id)
       expect(deliveries).toHaveLength(1)
@@ -310,7 +314,7 @@ describe('WebhookService', () => {
       await webhookService.emitEvent('post.published', eventData1)
       await webhookService.emitEvent('post.published', eventData2)
 
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await jest.runAllTimersAsync()
 
       const deliveries = webhookService.getWebhookDeliveries(webhook.id)
       expect(deliveries).toHaveLength(1)
@@ -398,7 +402,7 @@ describe('WebhookService', () => {
 
       await webhookService.emitEvent('post.published', eventData)
 
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await jest.runAllTimersAsync()
 
       const stats = webhookService.getStats()
 
@@ -464,7 +468,7 @@ describe('WebhookService', () => {
 
       await webhookService.emitEvent('post.published', eventData)
 
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await jest.runAllTimersAsync()
 
       expect(mockedAxios).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -504,7 +508,7 @@ describe('WebhookService', () => {
 
       await webhookService.emitEvent('post.published', eventData)
 
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await jest.runAllTimersAsync()
 
       expect(mockedAxios).toHaveBeenCalledWith(
         expect.objectContaining({

@@ -3,6 +3,7 @@ import moment from 'moment'
 import Bluebird from 'bluebird'
 import Posts from '../../posts'
 import Deploy from '../../deploy'
+import Renderer from '../../renderer'
 import { MarkdownValidator, ValidationResult } from '../../validators/markdown'
 import {
   ArticlePublishRequest,
@@ -26,11 +27,14 @@ export class ArticlesController {
 
   private deploy: Deploy
 
+  private renderer: Renderer
+
   private validator: MarkdownValidator
 
   constructor(appInstance: any) {
     this.posts = new Posts(appInstance)
     this.deploy = new Deploy(appInstance)
+    this.renderer = new Renderer(appInstance)
     this.validator = new MarkdownValidator({
       maxContentLength: 1000000,
       maxLineLength: 10000,
@@ -137,6 +141,37 @@ export class ArticlesController {
           req.logger.logDeploymentStart(fileName, true)
           deploymentStatus = 'started'
 
+          // Step 1: Generate static website
+          req.logger.info('Starting website generation process', {
+            fileName,
+            outputDir: this.renderer.outputDir,
+            themePath: this.renderer.themePath,
+            postsCount: this.renderer.db.posts.length,
+          })
+
+          // Set domain for rendering
+          this.renderer.db.themeConfig.domain = this.renderer.db.setting.domain
+          req.logger.info('Domain set for rendering', {
+            domain: this.renderer.db.themeConfig.domain,
+          })
+
+          req.logger.info('Calling renderAll() method', {
+            method: 'renderAll',
+            timeout: 60000, // 60 second timeout expectation
+          })
+
+          const renderStartTime = Date.now()
+          await this.renderer.renderAll()
+          const renderDuration = Date.now() - renderStartTime
+
+          req.logger.info('Static website generated successfully', {
+            fileName,
+            renderDuration,
+            outputDir: this.renderer.outputDir,
+          })
+
+          // Step 2: Deploy to remote
+          req.logger.info('Starting deployment process', { fileName })
           const deployStartTime = Date.now()
           const deployResult = await this.deploy.publish()
           const deployDuration = Date.now() - deployStartTime
@@ -155,7 +190,15 @@ export class ArticlesController {
           const deployDuration = Date.now() - (req.startTime || Date.now())
           deploymentStatus = 'network_error'
           deploymentError = error instanceof Error ? error.message : 'Unknown deployment error'
-          req.logger.logDeploymentFailure(fileName, deploymentError, deployDuration)
+
+          req.logger.error('Website generation and deployment failed', error instanceof Error ? error : new Error(String(error)), {
+            fileName,
+            deploymentStatus,
+            deployDuration,
+            errorType: typeof error,
+            errorMessage: error instanceof Error ? error.message : String(error),
+            errorStack: error instanceof Error ? error.stack : undefined,
+          })
         }
       }
 
@@ -270,6 +313,18 @@ export class ArticlesController {
   private async saveArticle(articleData: any): Promise<boolean> {
     try {
       const result = await this.posts.savePostToFile(articleData)
+      if (result !== null) {
+        // Update database after saving article file
+        console.log('🔄 Updating posts database after saving article:', articleData.fileName)
+        const updateResult = await this.posts.savePosts()
+        console.log('✅ Database update result:', updateResult)
+
+        // Regenerate entire website after database update
+        console.log('🔄 Starting website regeneration after article save')
+        this.renderer.db.themeConfig.domain = this.renderer.db.setting.domain
+        await this.renderer.renderAll()
+        console.log('✅ Website regeneration completed')
+      }
       return result !== null
     } catch (error) {
       console.error('Error saving article:', error)

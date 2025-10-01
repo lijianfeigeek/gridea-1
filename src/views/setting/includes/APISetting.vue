@@ -37,6 +37,33 @@
           @change="handlePortChange"
           style="width: 200px;"
         />
+      </a-form-item>
+
+      <!-- 主机配置选择 -->
+      <a-form-item
+        v-if="enabled"
+        :label="$t('apiSettings.host')"
+        :labelCol="formLayout.label"
+        :wrapperCol="formLayout.wrapper"
+        :colon="false"
+        :help="$t('apiSettings.hostHelp')"
+      >
+        <a-select
+          v-model="host"
+          :disabled="apiServerStatus.running"
+          @change="handleHostChange"
+          style="width: 300px;"
+        >
+          <a-select-option value="localhost">
+            {{ $t('apiSettings.hostLocalhost') }}
+          </a-select-option>
+          <a-select-option value="0.0.0.0">
+            {{ $t('apiSettings.hostAllInterfaces') }}
+          </a-select-option>
+          <a-select-option value="127.0.0.1">
+            {{ $t('apiSettings.hostLoopback') }}
+          </a-select-option>
+        </a-select>
         <a-button
           v-if="apiServerStatus.running"
           type="default"
@@ -251,6 +278,8 @@ export default class APISetting extends Vue {
 
   port: number = 3000
 
+  host: string = '0.0.0.0'
+
   authEnabled: boolean = false
 
   apiKey: string = ''
@@ -320,6 +349,7 @@ export default class APISetting extends Vue {
     if (!this.site) {
       this.enabled = false
       this.port = 3000
+      this.host = '0.0.0.0'
       this.authEnabled = false
       this.apiKey = ''
       this.corsEnabled = true
@@ -332,6 +362,7 @@ export default class APISetting extends Vue {
       if (!api) {
         this.enabled = false
         this.port = 3000
+        this.host = '0.0.0.0'
         this.authEnabled = false
         this.apiKey = ''
         this.corsEnabled = true
@@ -340,6 +371,7 @@ export default class APISetting extends Vue {
       } else {
         this.enabled = api.enabled || false
         this.port = api.port || 3000
+        this.host = api.host || '0.0.0.0'
         this.authEnabled = (api.auth && api.auth.enabled) || false
         this.apiKey = (api.auth && api.auth.apiKey) || ''
         this.corsEnabled = (api.cors && api.cors.enabled) !== false
@@ -352,6 +384,7 @@ export default class APISetting extends Vue {
     this.originalConfig = {
       enabled: this.enabled,
       port: this.port,
+      host: this.host,
       auth: {
         enabled: this.authEnabled,
         apiKey: this.apiKey,
@@ -405,6 +438,13 @@ export default class APISetting extends Vue {
     this.updateApiSettings()
 
     ga.event('API Setting', 'Port Change', { evLabel: value.toString() })
+  }
+
+  handleHostChange(value: string) {
+    this.host = value
+    this.updateApiSettings()
+
+    ga.event('API Setting', 'Host Change', { evLabel: value })
   }
 
   handleAuthEnabledChange(checked: boolean) {
@@ -487,6 +527,7 @@ export default class APISetting extends Vue {
 
       const result = await ipcRenderer.invoke('start-api-server', {
         port: this.port,
+        host: this.host,
         auth: this.authEnabled ? this.apiKey : null,
         cors: {
           enabled: this.corsEnabled,
@@ -544,6 +585,7 @@ export default class APISetting extends Vue {
     const settings: APIConfig = {
       enabled: this.enabled,
       port: this.port,
+      host: this.host,
       auth: {
         enabled: this.authEnabled,
         apiKey: this.apiKey,
@@ -566,6 +608,7 @@ export default class APISetting extends Vue {
       await ipcRenderer.invoke('save-api-settings', {
         enabled: this.enabled,
         port: this.port,
+        host: this.host,
         auth: {
           enabled: this.authEnabled,
           secretKey: this.apiKey,
@@ -581,6 +624,7 @@ export default class APISetting extends Vue {
       this.originalConfig = {
         enabled: this.enabled,
         port: this.port,
+        host: this.host,
         auth: {
           enabled: this.authEnabled,
           apiKey: this.apiKey,

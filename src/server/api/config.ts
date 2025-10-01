@@ -5,9 +5,9 @@ import { APIServerConfig } from './types'
 export class ConfigManager {
   private static readonly DEFAULT_CONFIG: APIServerConfig = {
     port: 3000,
-    host: 'localhost',
+    host: '0.0.0.0', // 支持局域网访问
     cors: {
-      origin: ['http://localhost:4000', 'http://localhost:8080'],
+      origin: ['*', 'http://localhost:4000', 'http://localhost:8080', 'http://127.0.0.1:4000', 'http://127.0.0.1:8080'],
       credentials: true,
       optionsSuccessStatus: 200,
     },

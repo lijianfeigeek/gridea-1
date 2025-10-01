@@ -82,6 +82,12 @@ describe('Background IPC Handler', () => {
   })
 
   describe('IPC Handler Registration', () => {
+    beforeEach(() => {
+      // Clear the IPC handlers mock state before each test in this describe block
+      const { initializeIPCHandlers } = require('../../../src/background/ipc-handlers')
+      initializeIPCHandlers.mockClear()
+    })
+
     test('should register all required IPC handlers', () => {
       // Get the global mocked ipcMain from setup first to check its state
       const { ipcMain: globalIpcMain } = require('electron')
@@ -153,9 +159,9 @@ describe('Background IPC Handler', () => {
       expect(handlerNames).toContain('get-api-server-status')
       expect(handlerNames).toContain('save-api-settings')
 
-      // Verify handlers are functions
+      // Verify handlers are functions - use different check to avoid constructor issues
       handlerCalls.forEach((call) => {
-        expect(call[1]).toBeInstanceOf(Function)
+        expect(typeof call[1]).toBe('function')
       })
     })
   })

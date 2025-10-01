@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1759249438002" clover="3.2.0">
-  <project timestamp="1759249438002" name="All files">
-    <metrics statements="409" coveredstatements="0" conditionals="197" coveredconditionals="0" methods="67" coveredmethods="0" elements="673" coveredelements="0" complexity="0" loc="409" ncloc="409" packages="10" files="27" classes="27"/>
+<coverage generated="1759287491728" clover="3.2.0">
+  <project timestamp="1759287491728" name="All files">
+    <metrics statements="428" coveredstatements="0" conditionals="199" coveredconditionals="0" methods="72" coveredmethods="0" elements="699" coveredelements="0" complexity="0" loc="428" ncloc="428" packages="10" files="27" classes="27"/>
     <package name="src">
       <metrics statements="21" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="6" coveredmethods="0"/>
       <file name="router.ts" path="/Users/lijianfei/Desktop/gridea/src/router.ts">
@@ -47,9 +47,9 @@
       </file>
     </package>
     <package name="src.background">
-      <metrics statements="126" coveredstatements="0" conditionals="94" coveredconditionals="0" methods="14" coveredmethods="0"/>
+      <metrics statements="145" coveredstatements="0" conditionals="96" coveredconditionals="0" methods="19" coveredmethods="0"/>
       <file name="ipc-handlers.ts" path="/Users/lijianfei/Desktop/gridea/src/background/ipc-handlers.ts">
-        <metrics statements="126" coveredstatements="0" conditionals="94" coveredconditionals="0" methods="14" coveredmethods="0"/>
+        <metrics statements="145" coveredstatements="0" conditionals="96" coveredconditionals="0" methods="19" coveredmethods="0"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>
@@ -176,6 +176,25 @@
         <line num="387" count="0" type="stmt"/>
         <line num="395" count="0" type="stmt"/>
         <line num="402" count="0" type="stmt"/>
+        <line num="409" count="0" type="stmt"/>
+        <line num="416" count="0" type="stmt"/>
+        <line num="423" count="0" type="stmt"/>
+        <line num="430" count="0" type="stmt"/>
+        <line num="431" count="0" type="stmt"/>
+        <line num="432" count="0" type="stmt"/>
+        <line num="433" count="0" type="stmt"/>
+        <line num="434" count="0" type="stmt"/>
+        <line num="442" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="443" count="0" type="stmt"/>
+        <line num="444" count="0" type="stmt"/>
+        <line num="445" count="0" type="stmt"/>
+        <line num="446" count="0" type="stmt"/>
+        <line num="447" count="0" type="stmt"/>
+        <line num="448" count="0" type="stmt"/>
+        <line num="455" count="0" type="stmt"/>
+        <line num="456" count="0" type="stmt"/>
+        <line num="457" count="0" type="stmt"/>
+        <line num="458" count="0" type="stmt"/>
       </file>
     </package>
     <package name="src.components.MonacoMarkdownEditor">

@@ -246,7 +246,7 @@ describe('Configuration Integration Tests', () => {
       const defaultConfig = newConfigManager.getConfig()
 
       expect(defaultConfig.port).toBe(3000) // Default port
-      expect(defaultConfig.host).toBe('localhost') // Default host
+      expect(defaultConfig.host).toBe('0.0.0.0') // Default host
     })
 
     it('should handle file system errors gracefully', () => {

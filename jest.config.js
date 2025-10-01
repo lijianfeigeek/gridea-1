@@ -2,7 +2,12 @@ module.exports = {
   testEnvironment: 'node',
   testTimeout: 30000,
   testMatch: [
-    '**/tests/**/*.test.{js,ts}',
+    // 明确指定Jest应该运行的测试文件
+    '<rootDir>/tests/unit/background/ipc.test.ts', // Jest IPC测试
+    '<rootDir>/tests/unit/background/**/!(ipc-vitest).*.test.{js,ts}', // 背景测试，排除Vitest文件
+    '<rootDir>/tests/unit/components/**/*.test.{js,ts}', // 组件测试
+    '<rootDir>/tests/unit/validators/**/*.test.{js,ts}', // 验证器测试
+    '<rootDir>/tests/unit/services/**/*.test.{js,ts}', // 服务测试
   ],
   transform: {
     '^.+\\.js$': ['babel-jest', { configFile: './babel.config.jest.js' }],
@@ -51,5 +56,10 @@ module.exports = {
     '/dist/',
     '/coverage/',
     '/tests/e2e/',
+    // 明确排除Vitest专用测试文件
+    '/tests/unit/api/', // API测试由Vitest负责
+    '/tests/integration/', // 集成测试由Vitest负责
+    '.*-vitest\\.test\\.(js|ts)$', // 排除文件名包含-vitest的测试
+    '/tests/unit/background/ipc-vitest.test.ts', // 明确排除Vitest IPC测试
   ],
 }

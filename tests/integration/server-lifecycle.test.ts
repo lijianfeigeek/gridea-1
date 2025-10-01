@@ -10,16 +10,33 @@ import {
 } from 'vitest'
 import { ConfigManager } from '@/server/api/config'
 import { APIServerConfig } from '@/server/api/types'
+// Mock fs-extra with factory function
+vi.mock('fs-extra', () => {
+  const fsExtraMock = {
+    pathExistsSync: vi.fn(),
+    readJsonSync: vi.fn(),
+    writeJsonSync: vi.fn(),
+    ensureDirSync: vi.fn(),
+    removeSync: vi.fn(),
+    copySync: vi.fn(),
+  }
 
-// Mock file system operations
-vi.mock('fs-extra', () => ({
-  pathExistsSync: vi.fn().mockReturnValue(false),
-  readJsonSync: vi.fn().mockReturnValue({}),
-  writeJsonSync: vi.fn().mockReturnValue(true),
-  ensureDirSync: vi.fn().mockReturnValue(true),
-  removeSync: vi.fn().mockReturnValue(true),
-  copySync: vi.fn().mockReturnValue(true),
-}))
+  return {
+    default: fsExtraMock,
+    ...fsExtraMock,
+  }
+})
+
+// Get the mocked module for test control
+const fsExtra = await import('fs-extra')
+
+// Set default return values for the mocks
+vi.mocked(fsExtra).pathExistsSync.mockReturnValue(false)
+vi.mocked(fsExtra).readJsonSync.mockReturnValue({})
+vi.mocked(fsExtra).writeJsonSync.mockReturnValue(true)
+vi.mocked(fsExtra).ensureDirSync.mockReturnValue(true)
+vi.mocked(fsExtra).removeSync.mockReturnValue(true)
+vi.mocked(fsExtra).copySync.mockReturnValue(true)
 
 // Mock Electron modules
 vi.mock('electron', () => ({
@@ -290,12 +307,10 @@ describe('Server Lifecycle Integration Tests', () => {
     })
 
     it('should save configuration to file', () => {
-      const mockFsExtra = require('fs-extra')
-
       configManager.updateConfig(testConfig)
       configManager.saveConfig()
 
-      expect(mockFsExtra.writeJsonSync).toHaveBeenCalledWith(
+      expect(vi.mocked(fsExtra).writeJsonSync).toHaveBeenCalledWith(
         '/tmp/test-api-config.json',
         testConfig,
         { spaces: 2 },
@@ -486,8 +501,7 @@ describe('Server Lifecycle Integration Tests', () => {
     })
 
     it('should handle file system errors during configuration save', () => {
-      const mockFsExtra = require('fs-extra')
-      mockFsExtra.writeJsonSync.mockImplementation(() => {
+      vi.mocked(fsExtra).writeJsonSync.mockImplementation(() => {
         throw new Error('Permission denied')
       })
 
@@ -627,13 +641,11 @@ describe('Server Lifecycle Integration Tests', () => {
     })
 
     it('should handle configuration state persistence', () => {
-      const mockFsExtra = require('fs-extra')
-
       // Save configuration
       configManager.saveConfig()
 
       // Verify save was called with correct data
-      expect(mockFsExtra.writeJsonSync).toHaveBeenCalledWith(
+      expect(vi.mocked(fsExtra).writeJsonSync).toHaveBeenCalledWith(
         '/tmp/test-api-config.json',
         expect.objectContaining({
           port: testConfig.port,

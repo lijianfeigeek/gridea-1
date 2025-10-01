@@ -54,29 +54,57 @@ export default class Renderer extends Model {
   }
 
   async renderAll() {
-    await this.clearOutputFolder()
-    await this.formatDataForRender()
-    await this.buildCss()
+    const startTime = Date.now()
+    console.log('🚀 Starting renderAll process')
 
-    // Render post list page
-    await this.renderPostList('')
+    try {
+      console.log('📁 Step 1: Clearing output folder')
+      await this.clearOutputFolder()
 
-    // Render archives page
-    await this.renderPostList(urlJoin('/', this.db.themeConfig.archivesPath))
-    // Render tag list page
-    await this.renderTags()
-    await this.renderPostDetail()
-    await this.renderTagDetail()
+      console.log('📊 Step 2: Formatting data for render')
+      await this.formatDataForRender()
 
-    // Need before `renderCustomPage`, because maybe theme custom page include a `404 page`
-    await this.copyFiles()
+      console.log('🎨 Step 3: Building CSS')
+      await this.buildCss()
 
-    // Render custom page
-    await this.renderCustomPage()
+      console.log('📄 Step 4: Rendering post list page (index)')
+      await this.renderPostList('')
 
-    await this.buildCname()
+      // Render archives page
+      console.log('📑 Step 5: Rendering archives page')
+      await this.renderPostList(urlJoin('/', this.db.themeConfig.archivesPath))
 
-    await this.buildFeed()
+      // Render tag list page
+      console.log('🏷️  Step 6: Rendering tag list page')
+      await this.renderTags()
+
+      console.log('📝 Step 7: Rendering post detail pages')
+      await this.renderPostDetail()
+
+      console.log('🏷️  Step 8: Rendering tag detail pages')
+      await this.renderTagDetail()
+
+      // Need before `renderCustomPage`, because maybe theme custom page include a `404 page`
+      console.log('📁 Step 9: Copying static files')
+      await this.copyFiles()
+
+      // Render custom page
+      console.log('🎨 Step 10: Rendering custom pages')
+      await this.renderCustomPage()
+
+      console.log('🌐 Step 11: Building CNAME')
+      await this.buildCname()
+
+      console.log('📡 Step 12: Building RSS feed')
+      await this.buildFeed()
+
+      const duration = Date.now() - startTime
+      console.log(`✅ renderAll completed successfully in ${duration}ms`)
+    } catch (error) {
+      const duration = Date.now() - startTime
+      console.error(`❌ renderAll failed after ${duration}ms:`, error)
+      throw error
+    }
   }
 
   /**
@@ -225,18 +253,27 @@ export default class Renderer extends Model {
     let renderPath = urlJoin(outputFolder, 'index.html')
 
     const renderFile = async (path: string, data: any) => {
-      await ejs.renderFile(path, data, {}, async (err: any, str) => {
-        if (err) {
-          console.error('❌ Render post list error')
-          this.mainWindow.webContents.send('log-error', {
-            type: 'Render post list error',
-            message: err.message,
+      try {
+        html = await new Promise<string>((resolve, reject) => {
+          ejs.renderFile(path, data, {}, (err: any, str: any) => {
+            if (err) {
+              console.error('❌ Render post list error', err)
+              // Only send to mainWindow if it exists (API server environment)
+              if (this.mainWindow && this.mainWindow.webContents) {
+                this.mainWindow.webContents.send('log-error', {
+                  type: 'Render post list error',
+                  message: err.message,
+                })
+              }
+              return reject(err)
+            }
+            resolve(str || '')
           })
-        }
-        if (str) {
-          html = str
-        }
-      })
+        })
+      } catch (error) {
+        console.error('❌ Failed to render post list:', error)
+        throw error
+      }
     }
 
     // If there is no article to render
@@ -244,7 +281,7 @@ export default class Renderer extends Model {
       renderData.site.isHomepage = !archivePath
 
       fse.ensureDirSync(outputFolder)
-      renderFile(renderTemplatePath, renderData)
+      await renderFile(renderTemplatePath, renderData)
       await fs.writeFileSync(renderPath, html)
       return
     }
@@ -273,7 +310,7 @@ export default class Renderer extends Model {
         fse.ensureDirSync(urlJoin(this.outputDir, archivePath))
       }
 
-      renderFile(renderTemplatePath, renderData)
+      await renderFile(renderTemplatePath, renderData)
 
       console.log('👏  PostList Page:', renderPath)
       fs.writeFileSync(renderPath, html)
@@ -310,23 +347,32 @@ export default class Renderer extends Model {
         commentSetting: this.db.commentSetting,
         site: this.siteData,
       }
-      let html = ''
-      ejs.renderFile(urlJoin(this.themePath, 'templates', 'post.ejs'), renderData, {}, async (err: any, str) => {
-        if (err) {
-          console.error('❌ Render post detail error')
-          this.mainWindow.webContents.send('log-error', {
-            type: 'Render post detail error',
-            message: err.message,
-          })
-        }
-        if (str) {
-          html = str
-        }
-      })
 
-      const renderFolerPath = urlJoin(this.outputDir, `${this.db.themeConfig.postPath}`, post.fileName)
-      fse.ensureDirSync(renderFolerPath)
-      fs.writeFileSync(urlJoin(renderFolerPath, 'index.html'), html)
+      try {
+        const html = await new Promise<string>((resolve, reject) => {
+          ejs.renderFile(urlJoin(this.themePath, 'templates', 'post.ejs'), renderData, {}, (err: any, str: any) => {
+            if (err) {
+              console.error('❌ Render post detail error', err)
+              // Only send to mainWindow if it exists (API server environment)
+              if (this.mainWindow && this.mainWindow.webContents) {
+                this.mainWindow.webContents.send('log-error', {
+                  type: 'Render post detail error',
+                  message: err.message,
+                })
+              }
+              return reject(err)
+            }
+            resolve(str || '')
+          })
+        })
+
+        const renderFolerPath = urlJoin(this.outputDir, `${this.db.themeConfig.postPath}`, post.fileName)
+        fse.ensureDirSync(renderFolerPath)
+        fs.writeFileSync(urlJoin(renderFolerPath, 'index.html'), html)
+      } catch (error) {
+        console.error('❌ Failed to render post detail:', error)
+        throw error
+      }
     }
   }
 
@@ -345,20 +391,30 @@ export default class Renderer extends Model {
     let html = ''
 
     fse.ensureDirSync(tagsFolder)
-    await ejs.renderFile(urlJoin(this.themePath, 'templates', 'tags.ejs'), renderData, {}, async (err: any, str) => {
-      if (err) {
-        console.log('❌ Render tags page error', err)
-        this.mainWindow.webContents.send('log-error', {
-          type: 'Render tags page error',
-          message: err.message,
+
+    try {
+      html = await new Promise<string>((resolve, reject) => {
+        ejs.renderFile(urlJoin(this.themePath, 'templates', 'tags.ejs'), renderData, {}, (err: any, str: any) => {
+          if (err) {
+            console.log('❌ Render tags page error', err)
+            // Only send to mainWindow if it exists (API server environment)
+            if (this.mainWindow && this.mainWindow.webContents) {
+              this.mainWindow.webContents.send('log-error', {
+                type: 'Render tags page error',
+                message: err.message,
+              })
+            }
+            return reject(err)
+          }
+          resolve(str || '')
         })
-      }
-      if (str) {
-        html = str
-      }
-    })
-    console.log('👏  Tags Page:', renderPath)
-    fs.writeFileSync(renderPath, html)
+      })
+      console.log('👏  Tags Page:', renderPath)
+      fs.writeFileSync(renderPath, html)
+    } catch (error) {
+      console.error('❌ Failed to render tags page:', error)
+      throw error
+    }
   }
 
   /**
@@ -416,21 +472,29 @@ export default class Renderer extends Model {
             : ''
         }
 
-        let html = ''
-        ejs.renderFile(urlJoin(this.themePath, 'templates', 'tag.ejs'), renderData, {}, async (err: any, str) => {
-          if (err) {
-            console.log('❌ Render tag detail error', err)
-            this.mainWindow.webContents.send('log-error', {
-              type: 'Render tag detail error',
-              message: err.message,
+        try {
+          const html = await new Promise<string>((resolve, reject) => {
+            ejs.renderFile(urlJoin(this.themePath, 'templates', 'tag.ejs'), renderData, {}, (err: any, str: any) => {
+              if (err) {
+                console.log('❌ Render tag detail error', err)
+                // Only send to mainWindow if it exists (API server environment)
+                if (this.mainWindow && this.mainWindow.webContents) {
+                  this.mainWindow.webContents.send('log-error', {
+                    type: 'Render tag detail error',
+                    message: err.message,
+                  })
+                }
+                return reject(err)
+              }
+              resolve(str || '')
             })
-          }
-          if (str) {
-            html = str
-          }
-        })
-        console.log('👏  Tag Page:', renderPath)
-        fs.writeFileSync(renderPath, html)
+          })
+          console.log('👏  Tag Page:', renderPath)
+          fs.writeFileSync(renderPath, html)
+        } catch (error) {
+          console.error('❌ Failed to render tag detail:', error)
+          throw error
+        }
       }
     }
   }
@@ -468,10 +532,10 @@ export default class Renderer extends Model {
       site: this.siteData,
     }
 
-    customTemplates.forEach(async (name: string) => {
+    // Use Promise.all to wait for all custom pages to be rendered
+    await Promise.all(customTemplates.map(async (name: string) => {
       let renderFolder = urlJoin(this.outputDir, name.substring(0, name.length - 4))
       let renderPath = urlJoin(renderFolder, 'index.html')
-      let html = ''
 
       if (name === '404.ejs') {
         renderFolder = this.outputDir
@@ -479,21 +543,32 @@ export default class Renderer extends Model {
       }
 
       fse.ensureDirSync(renderFolder)
-      await ejs.renderFile(urlJoin(this.themePath, 'templates', name), renderData, async (err: any, str) => {
-        if (err) {
-          console.error('❌ Render custom page error', err)
-          this.mainWindow.webContents.send('log-error', {
-            type: 'Render custom page error',
-            message: err.message,
+
+      try {
+        const html = await new Promise<string>((resolve, reject) => {
+          ejs.renderFile(urlJoin(this.themePath, 'templates', name), renderData, (err: any, str: any) => {
+            if (err) {
+              console.error('❌ Render custom page error', err)
+              // Only send to mainWindow if it exists (API server environment)
+              if (this.mainWindow && this.mainWindow.webContents) {
+                this.mainWindow.webContents.send('log-error', {
+                  type: 'Render custom page error',
+                  message: err.message,
+                })
+              }
+              return reject(err)
+            }
+            resolve(str || '')
           })
-        }
-        if (str) {
-          html = str
-        }
-      })
-      fse.writeFileSync(renderPath, html)
-      console.log('✅ Render custom page success', renderPath)
-    })
+        })
+
+        fse.writeFileSync(renderPath, html)
+        console.log('✅ Render custom page success', renderPath)
+      } catch (error) {
+        console.error('❌ Failed to render custom page:', error)
+        throw error
+      }
+    }))
   }
 
   /**

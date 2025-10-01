@@ -1,5 +1,3 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-
 import { MarkdownValidator } from '../../../src/server/validators/markdown'
 
 describe('Markdown Validator - 基础验证测试', () => {
