@@ -321,18 +321,58 @@ export class ArticlesController {
           deploymentStatus = 'started'
 
           req.logger.info('Starting deployment process', { fileName })
+
+          console.log('🚀 [DEPLOY] Starting deployment process for article:', fileName)
           const deployStartTime = Date.now()
           const deployResult = await this.deploy.publish()
           const deployDuration = Date.now() - deployStartTime
+
+          console.log('📊 [DEPLOY] Deployment result received:', {
+            success: deployResult.success,
+            duration: `${deployDuration}ms`,
+            fileName,
+            timestamp: new Date().toISOString(),
+          })
 
           if (deployResult.success) {
             deploymentStatus = 'completed'
             deployedAt = new Date().toISOString()
             deployUrl = this.getDeployUrl()
+
+            console.log('🎉 [DEPLOY] Deployment successful!', {
+              fileName,
+              deployUrl,
+              duration: `${deployDuration}ms`,
+              deployedAt,
+              pushData: deployResult.data || null,
+            })
+
+            // Log detailed push information if available
+            if (deployResult.data && deployResult.data.ok) {
+              console.log('✅ [DEPLOY] Push operation details:', {
+                success: true,
+                refs: deployResult.data.refs || {},
+                server: deployResult.data.headers ? {
+                  server: deployResult.data.headers.server,
+                  date: deployResult.data.headers.date,
+                } : {},
+                totalDuration: `${deployDuration}ms`,
+              })
+            }
+
             req.logger.logDeploymentSuccess(fileName, deployUrl || undefined, deployDuration)
           } else {
             deploymentStatus = 'failed'
             deploymentError = deployResult.message || 'Deployment failed'
+
+            console.error('❌ [DEPLOY] Deployment failed!', {
+              fileName,
+              error: deploymentError,
+              duration: `${deployDuration}ms`,
+              pushData: deployResult.data || null,
+              timestamp: new Date().toISOString(),
+            })
+
             req.logger.logDeploymentFailure(fileName, deploymentError, deployDuration)
           }
         } else {

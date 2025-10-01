@@ -114,27 +114,43 @@ export default class Deploy extends Model {
   }
 
   async commonPush() {
-    console.log('common push')
+    console.log('🚀 [DEPLOY] Starting common push process')
+    const pushStartTime = Date.now()
     const { setting } = this.db
     const localBranchs = {}
+
     try {
+      console.log('📋 [DEPLOY] Repository status check...')
       const statusSummary = await git.status({ fs, dir: this.outputDir, filepath: '.' })
-      console.log('statusSummary', statusSummary)
+      console.log(`📊 [DEPLOY] Repository status: ${statusSummary}`)
+
+      console.log('🔗 [DEPLOY] Configuring remote origin...')
       await git.addRemote({
         fs, dir: this.outputDir, remote: 'origin', url: this.remoteUrl, force: true,
       })
+      console.log(`✅ [DEPLOY] Remote configured: ${this.remoteUrl}`)
 
       if (statusSummary !== 'unmodified') {
+        console.log('📝 [DEPLOY] Staging changes...')
         await git.add({ fs, dir: this.outputDir, filepath: '.' })
+
+        const commitMessage = `update from gridea: ${moment().format('YYYY-MM-DD HH:mm:ss')}`
+        console.log(`💾 [DEPLOY] Creating commit: "${commitMessage}"`)
         await git.commit({
           fs,
           dir: this.outputDir,
-          message: `update from gridea: ${moment().format('YYYY-MM-DD HH:mm:ss')}`,
+          message: commitMessage,
         })
+        console.log('✅ [DEPLOY] Commit created successfully')
+      } else {
+        console.log('ℹ️ [DEPLOY] No changes to commit - repository is up to date')
       }
 
+      console.log('🌿 [DEPLOY] Checking current branch...')
       await this.checkCurrentBranch()
 
+      console.log(`📤 [DEPLOY] Pushing to branch "${setting.branch}"...`)
+      const actualPushStartTime = Date.now()
       const pushRes = await git.push({
         fs,
         http: this.http,
@@ -143,7 +159,30 @@ export default class Deploy extends Model {
         ref: setting.branch,
         force: true,
       })
-      console.log('pushRes', pushRes)
+      const pushDuration = Date.now() - actualPushStartTime
+
+      console.log('🎉 [DEPLOY] Push completed successfully!', {
+        duration: `${pushDuration}ms`,
+        branch: setting.branch,
+        remote: this.remoteUrl,
+        result: pushRes,
+      })
+
+      // Detailed push success logging
+      if (pushRes && pushRes.ok) {
+        console.log('✅ [DEPLOY] Push operation details:', {
+          success: true,
+          refs: pushRes.refs || {},
+          server: pushRes.headers ? {
+            server: pushRes.headers.server,
+            date: pushRes.headers.date,
+            connection: pushRes.headers.connection,
+          } : {},
+          totalDuration: `${Date.now() - pushStartTime}ms`,
+          timestamp: new Date().toISOString(),
+        })
+      }
+
       return {
         success: true,
         data: pushRes,
@@ -151,7 +190,17 @@ export default class Deploy extends Model {
         localBranchs,
       }
     } catch (e) {
-      console.log(e)
+      const totalDuration = Date.now() - pushStartTime
+      console.error('❌ [DEPLOY] Push operation failed!', {
+        error: e.message,
+        errorType: e.constructor.name,
+        stack: e.stack,
+        duration: `${totalDuration}ms`,
+        branch: setting.branch,
+        remote: this.remoteUrl,
+        timestamp: new Date().toISOString(),
+      })
+
       return {
         success: false,
         message: e.message,
@@ -167,15 +216,29 @@ export default class Deploy extends Model {
    */
   async checkCurrentBranch() {
     const { setting } = this.db
+
+    console.log('🔍 [BRANCH] Checking current branch...')
     const currentBranch = await git.currentBranch({ fs, dir: this.outputDir, fullname: false })
     const localBranches = await git.listBranches({ fs, dir: this.outputDir })
 
+    console.log(`📊 [BRANCH] Current branch: "${currentBranch}", Target branch: "${setting.branch}"`)
+    console.log(`📋 [BRANCH] Available local branches: [${localBranches.join(', ')}]`)
+
     if (currentBranch !== setting.branch) {
+      console.log(`🔄 [BRANCH] Switching from "${currentBranch}" to "${setting.branch}"...`)
+
       if (!localBranches.includes(setting.branch)) {
+        console.log(`🌱 [BRANCH] Creating new branch "${setting.branch}"...`)
         await git.branch({ fs, dir: this.outputDir, ref: setting.branch })
+        console.log('✅ [BRANCH] New branch created successfully')
+      } else {
+        console.log(`📁 [BRANCH] Branch "${setting.branch}" already exists locally`)
       }
 
       await git.checkout({ fs, dir: this.outputDir, ref: setting.branch })
+      console.log(`✅ [BRANCH] Successfully switched to branch "${setting.branch}"`)
+    } else {
+      console.log(`✅ [BRANCH] Already on correct branch "${setting.branch}"`)
     }
   }
 }
