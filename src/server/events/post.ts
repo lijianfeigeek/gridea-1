@@ -21,17 +21,30 @@ export default class PostEvents {
     })
 
     ipcMain.on('app-post-delete', async (event: IpcMainEvent, post: IPostDb) => {
-      const data = await posts.deletePost(post)
-      event.sender.send('app-post-deleted', data)
+      try {
+        const data = await posts.deletePost(post)
+        // Ensure only serializable data is sent
+        event.sender.send('app-post-deleted', { success: !!data })
+      } catch (error) {
+        console.error('Error deleting post:', error)
+        event.sender.send('app-post-deleted', { success: false, error: error.message })
+      }
     })
 
     ipcMain.on('app-post-list-delete', async (event: IpcMainEvent, postList: IPostDb[]) => {
-      let data: any = false
-      for (const post of postList) {
-        data = posts.deletePost(post)
-      }
+      try {
+        let allSuccess = true
+        for (const post of postList) {
+          const result = await posts.deletePost(post)
+          if (!result) allSuccess = false
+        }
 
-      event.sender.send('app-post-list-deleted', data)
+        // Ensure only serializable data is sent
+        event.sender.send('app-post-list-deleted', { success: allSuccess })
+      } catch (error) {
+        console.error('Error deleting post list:', error)
+        event.sender.send('app-post-list-deleted', { success: false, error: error.message })
+      }
     })
 
     ipcMain.on('image-upload', async (event: IpcMainEvent, files: any[]) => {

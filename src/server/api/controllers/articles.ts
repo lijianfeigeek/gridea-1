@@ -42,6 +42,38 @@ export class ArticlesController {
     })
   }
 
+  /**
+   * Notify frontend that posts have been updated
+   */
+  private notifyPostsUpdated(articleData: any, success: boolean = true): void {
+    try {
+      // Send IPC event to notify frontend to refresh posts list
+      const allWindows = (require('electron') as any).BrowserWindow && (require('electron') as any).BrowserWindow.getAllWindows ? (require('electron') as any).BrowserWindow.getAllWindows() : []
+
+      allWindows.forEach((window: any) => {
+        if (window && !window.isDestroyed() && window.webContents) {
+          console.log('📢 [GUI_SYNC] Sending posts-updated event to frontend')
+          window.webContents.send('posts-updated', {
+            success,
+            article: {
+              fileName: articleData.fileName,
+              title: articleData.title,
+              published: articleData.published,
+              date: articleData.date,
+              tags: articleData.tags,
+            },
+            timestamp: new Date().toISOString(),
+            postsCount: (this.renderer.db.posts && this.renderer.db.posts.length) || 0,
+          })
+        }
+      })
+
+      console.log('✅ [GUI_SYNC] Posts update notification sent successfully')
+    } catch (error) {
+      console.warn('⚠️ [GUI_SYNC] Failed to send posts update notification:', error)
+    }
+  }
+
   public async publishArticle(req: RequestWithLogger, res: Response): Promise<void> {
     console.log('🚀 [ARTICLE_PUBLISH] Starting article publish process')
     console.log(`📝 [ARTICLE_PUBLISH] Request received at: ${new Date().toISOString()}`)
@@ -348,6 +380,16 @@ export class ArticlesController {
         tags,
         totalDuration: Date.now() - (req.startTime || Date.now()),
       })
+
+      // CRITICAL: Notify frontend GUI to update posts list
+      console.log('🔄 [GUI_SYNC] Notifying frontend to update posts list...')
+      this.notifyPostsUpdated({
+        fileName,
+        title: articleData.title,
+        published: articleData.published,
+        date: articleData.date,
+        tags: articleData.tags,
+      }, true)
 
       const apiResponse: APIResponse<ArticlePublishResponse> = {
         success: true,

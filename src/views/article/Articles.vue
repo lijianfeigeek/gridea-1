@@ -159,6 +159,34 @@ export default class Articles extends Vue {
 
   mounted() {
     this.$bus.$emit('site-reload')
+
+    // Listen for posts-updated events from API server
+    console.log('📢 [GUI_SYNC] Setting up posts-updated event listener...')
+    ipcRenderer.on('posts-updated', (event: IpcRendererEvent, data: any) => {
+      console.log('📥 [GUI_SYNC] Received posts-updated event:', data)
+
+      if (data && data.success) {
+        // Show success notification
+        this.$message.success(`文章 "${(data.article && data.article.title) || (data.article && data.article.fileName)}" 发布成功！`)
+
+        // Trigger site reload to refresh posts list
+        console.log('🔄 [GUI_SYNC] Triggering site reload to update posts list...')
+        this.$bus.$emit('site-reload')
+
+        // Log the update
+        console.log(`✅ [GUI_SYNC] Posts list updated. New posts count: ${data.postsCount || 'unknown'}`)
+      } else {
+        // Show error notification
+        this.$message.error('文章发布后同步更新失败')
+        console.warn('⚠️ [GUI_SYNC] Posts update notification indicated failure:', data)
+      }
+    })
+  }
+
+  beforeDestroy() {
+    // Clean up IPC event listener
+    console.log('🧹 [GUI_SYNC] Cleaning up posts-updated event listener...')
+    ipcRenderer.removeAllListeners('posts-updated')
   }
 
   close() {
