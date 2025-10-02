@@ -4,6 +4,7 @@ import Bluebird from 'bluebird'
 import Posts from '../../posts'
 import Deploy from '../../deploy'
 import Renderer from '../../renderer'
+import Tags from '../../tags'
 import { MarkdownValidator, ValidationResult } from '../../validators/markdown'
 import {
   ArticlePublishRequest,
@@ -31,10 +32,13 @@ export class ArticlesController {
 
   private validator: MarkdownValidator
 
+  private tags: Tags
+
   constructor(appInstance: any) {
     this.posts = new Posts(appInstance)
     this.deploy = new Deploy(appInstance)
     this.renderer = new Renderer(appInstance)
+    this.tags = new Tags(appInstance)
     this.validator = new MarkdownValidator({
       maxContentLength: 1000000,
       maxLineLength: 10000,
@@ -93,21 +97,77 @@ export class ArticlesController {
         requestId: req.requestId,
       })
 
+      // Enhanced tag logging
+      console.log('🏷️ [TAGS_DEBUG] Received tags from API request:', {
+        rawTags: tags,
+        tagsType: typeof tags,
+        tagsIsArray: Array.isArray(tags),
+        tagsLength: tags ? tags.length : 0,
+        tagsContent: tags ? JSON.stringify(tags) : 'null',
+        requestId: req.requestId,
+      })
+
+      // Process tags
+      const processedTags: string[] = []
+      if (tags && Array.isArray(tags)) {
+        processedTags.push(...tags.map(tag => tag.trim()).filter(tag => tag.length > 0))
+        console.log('🏷️ [TAGS_DEBUG] Processed array tags:', {
+          originalTags: tags,
+          processedTags: processedTags,
+          trimmedAndFiltered: tags.map(tag => tag.trim()).filter(tag => tag.length > 0),
+          requestId: req.requestId,
+        })
+      } else if (tags && typeof tags === 'string') {
+        const splitTags = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+        processedTags.push(...splitTags)
+        console.log('🏷️ [TAGS_DEBUG] Processed string tags:', {
+          originalTagString: tags,
+          splitTags: splitTags,
+          processedTags: processedTags,
+          requestId: req.requestId,
+        })
+      } else {
+        console.log('🏷️ [TAGS_DEBUG] No valid tags provided:', {
+          tagsValue: tags,
+          tagsType: typeof tags,
+          requestId: req.requestId,
+        })
+      }
+
+      if (processedTags.length > 0) {
+        console.log('🏷️ [TAGS_DEBUG] Final processed tags for article:', {
+          articleTitle: title,
+          processedTags: processedTags,
+          tagsCount: processedTags.length,
+          tagsList: processedTags.join(', '),
+          requestId: req.requestId,
+        })
+      }
+
       // Log article publish attempt
       req.logger.info('Article publish attempt', {
         title,
-        tags,
+        tags: processedTags,
         autoDeploy,
         contentLength: (content && content.length) || 0,
       })
 
-      const validation = this.validatePublishRequest(title, content, tags)
+      const validation = this.validatePublishRequest(title, content, processedTags)
       console.log('🔍 [ARTICLE_PUBLISH] Validation result:', {
         isValid: validation.isValid,
         errorsCount: validation.errors.length,
         warningsCount: validation.warnings.length,
         errors: validation.errors,
         warnings: validation.warnings,
+        validatedTags: processedTags,
+        tagsInValidation: validation.errors.filter(e => e.includes('tag')),
+      })
+
+      console.log('🏷️ [TAGS_DEBUG] Tag validation completed:', {
+        isValid: validation.isValid,
+        tagErrors: validation.errors.filter(e => e.includes('tag')),
+        validatedTags: processedTags,
+        requestId: req.requestId,
       })
 
       if (!validation.isValid) {
@@ -172,7 +232,7 @@ export class ArticlesController {
       const fileName = this.generateFileName(title)
       console.log(`📂 [ARTICLE_PUBLISH] Generated filename: ${fileName}`)
 
-      const articleData = this.createArticleData(title, content, tags, fileName)
+      const articleData = this.createArticleData(title, content, processedTags, fileName)
       console.log('📋 [ARTICLE_PUBLISH] Article data created:', {
         fileName: articleData.fileName,
         title: articleData.title,
@@ -180,6 +240,15 @@ export class ArticlesController {
         date: articleData.date,
         published: articleData.published,
         contentLength: articleData.content.length,
+      })
+
+      console.log('🏷️ [TAGS_DEBUG] Article data creation completed:', {
+        articleTitle: articleData.title,
+        articleFileName: articleData.fileName,
+        tagsInArticleData: articleData.tags,
+        tagsType: typeof articleData.tags,
+        tagsIsArray: Array.isArray(articleData.tags),
+        requestId: req.requestId,
       })
 
       console.log('💾 [ARTICLE_PUBLISH] Starting to save article...')
@@ -278,6 +347,46 @@ export class ArticlesController {
           newPostsCount: this.renderer.db.posts.length,
         })
 
+        // CRITICAL FIX: Synchronize tags to ensure renderer.db.tags is updated
+        console.log('🏷️ [TAGS_SYNC] Starting tags synchronization...')
+        try {
+          // Force refresh Tags instance's LowDB cache to read latest posts from disk
+          console.log('🔄 [TAGS_SYNC] Refreshing Tags database cache...')
+          this.tags.$posts.read()
+          console.log('✅ [TAGS_SYNC] Tags database cache refreshed')
+
+          // Use Tags.list() to get the latest tags after cache refresh
+          const updatedTags = await this.tags.list()
+          console.log('✅ [TAGS_SYNC] Tags synchronization completed successfully')
+
+          // Update both renderer.db.tags and posts.db.tags with the latest tags
+          this.renderer.db.tags = updatedTags
+          this.posts.db.tags = updatedTags
+
+          console.log('🏷️ [TAGS_DEBUG] Tags synchronization details:', {
+            fileName,
+            updatedTagsCount: Array.isArray(updatedTags) ? updatedTags.length : 0,
+            updatedTagsSample: Array.isArray(updatedTags)
+              ? updatedTags.slice(0, 5).map(tag => `${tag.name || tag}(${tag.slug || 'N/A'})`).join(', ')
+              : 'N/A',
+            rendererDbTagsLength: this.renderer.db.tags ? this.renderer.db.tags.length : 0,
+            postsDbTagsLength: this.posts.db.tags ? this.posts.db.tags.length : 0,
+            newTagsFound: updatedTags.filter(tag => ['完整', '发布', '部署'].includes(tag.name || tag)).map(tag => tag.name || tag),
+          })
+
+          req.logger.info('Tags synchronized', {
+            fileName,
+            tagsCount: Array.isArray(updatedTags) ? updatedTags.length : 0,
+            newTags: updatedTags.filter(tag => ['完整', '发布', '部署'].includes(tag.name || tag)).map(tag => tag.name || tag),
+          })
+        } catch (error) {
+          console.error('❌ [TAGS_SYNC] Tags synchronization failed:', error)
+          req.logger.error('Tags synchronization failed', {
+            fileName,
+            error: (error as Error).message,
+          })
+        }
+
         // Always generate static website to ensure article is visible
         console.log('🌐 [SYNCHRONIZATION] Step 3: Starting website generation process...')
         req.logger.info('Starting website generation process', {
@@ -294,11 +403,25 @@ export class ArticlesController {
           domain: this.renderer.db.themeConfig.domain,
         })
 
+        // Verification: Ensure latest tags are available before rendering
+        console.log('🔍 [RENDER_VERIFY] Verifying tag data before renderAll()...', {
+          rendererDbTagsCount: this.renderer.db.tags ? this.renderer.db.tags.length : 0,
+          postsDbTagsCount: this.posts.db.tags ? this.posts.db.tags.length : 0,
+          expectedNewTags: ['完整', '发布', '部署'],
+          actualTags: this.renderer.db.tags
+            ? this.renderer.db.tags.filter(tag => ['完整', '发布', '部署'].includes(tag.name || tag)).map(tag => tag.name || tag) : [],
+          tagsSlugInfo: this.renderer.db.tags
+            ? this.renderer.db.tags.filter(tag => ['完整', '发布', '部署'].includes(tag.name || tag)).map(tag => `${tag.name || tag}(${tag.slug || 'N/A'})`) : [],
+        })
+
         console.log('🎨 [SYNCHRONIZATION] Step 4: Calling renderAll() method to generate static website...')
         req.logger.info('Calling renderAll() method', {
           method: 'renderAll',
           timeout: 60000, // 60 second timeout expectation
           autoDeploy,
+          tagsCount: this.renderer.db.tags ? this.renderer.db.tags.length : 0,
+          newTagsAvailable: this.renderer.db.tags
+            ? this.renderer.db.tags.filter(tag => ['完整', '发布', '部署'].includes(tag.name || tag)).length : 0,
         })
 
         const renderStartTime = Date.now()
@@ -421,6 +544,16 @@ export class ArticlesController {
         totalDuration: Date.now() - (req.startTime || Date.now()),
       })
 
+      console.log('🏷️ [TAGS_DEBUG] Final response tags:', {
+        articleTitle: articleData.title,
+        responseTags: tags,
+        tagsType: typeof tags,
+        tagsIsArray: Array.isArray(tags),
+        tagsLength: tags ? tags.length : 0,
+        tagsInResponse: JSON.stringify(tags),
+        requestId: req.requestId,
+      })
+
       // CRITICAL: Notify frontend GUI to update posts list
       console.log('🔄 [GUI_SYNC] Notifying frontend to update posts list...')
       this.notifyPostsUpdated({
@@ -533,27 +666,85 @@ export class ArticlesController {
     return Math.abs(hash).toString(36).substring(0, 6)
   }
 
+  private generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = Math.floor(Math.random() * 16)
+      const v = c === 'x' ? r : ((r % 4) + 8)
+      return v.toString(16)
+    })
+  }
+
   private createArticleData(title: string, content: string, tags: string[], fileName: string): any {
+    console.log('🏷️ [TAGS_DEBUG] createArticleData called:', {
+      inputTitle: title,
+      inputTags: tags,
+      inputFileName: fileName,
+      tagsType: typeof tags,
+      tagsIsArray: Array.isArray(tags),
+      tagsLength: tags ? tags.length : 0,
+    })
+
     const helper = new ContentHelper()
     const formattedContent = helper.changeImageUrlLocalToDomain(content, (this.posts.db && this.posts.db.setting && this.posts.db.setting.domain) || '')
+    const date = moment().format('YYYY-MM-DD HH:mm:ss')
+    const uuid = this.generateUUID()
 
-    return {
-      title: formatYamlString(title),
-      content: formattedContent,
-      fileName,
-      tags,
-      date: moment().format('YYYY-MM-DD HH:mm:ss'),
+    const articleData = {
+      _id: uuid,
+      creation: date,
+      date: date,
+      updated: date,
       published: true,
-      hideInList: false,
-      isTop: false,
+      content: formattedContent,
+      htmlContent: '',
+      markdownContent: content,
+      link: fileName,
+      status: 'show',
+      title: title,
+      slug: fileName,
+      tags: tags, // Use processed tags
+      categories: [],
+      type: 'post',
       featureImage: {
         name: '',
         path: '',
-        type: '',
+        isExternal: false,
       },
-      featureImagePath: '',
-      deleteFileName: undefined,
+      hideInList: false,
+      isTop: false,
+      passwordProtected: false,
+      password: '',
+      template: '',
+      fileName: fileName,
+      featureImagePath: null, // Explicitly set to null to avoid empty feature field
+      coverImage: '',
+      theme: {
+        style: '',
+        iconfont: '',
+        icon: '',
+      },
+      comments: [],
+      externalUrl: '',
+      isExternalUrl: false,
+      lastSyncTime: date,
+      summary: '',
+      wordCount: 0,
+      readingTime: 0,
+      copyrightText: '',
+      license: '',
+      resources: [],
+      metadata: {},
     }
+
+    console.log('🏷️ [TAGS_DEBUG] createArticleData completed:', {
+      articleTitle: articleData.title,
+      articleFileName: articleData.fileName,
+      tagsInArticleData: articleData.tags,
+      tagsType: typeof articleData.tags,
+      tagsIsArray: Array.isArray(articleData.tags),
+    })
+
+    return articleData
   }
 
   private async saveArticle(articleData: any): Promise<boolean> {
@@ -564,6 +755,18 @@ export class ArticlesController {
       tags: articleData.tags,
       published: articleData.published,
       date: articleData.date,
+    })
+
+    console.log('🏷️ [TAGS_DEBUG] saveArticle called with detailed tag info:', {
+      articleTitle: articleData.title,
+      articleFileName: articleData.fileName,
+      articleTags: articleData.tags,
+      tagsType: typeof articleData.tags,
+      tagsIsArray: Array.isArray(articleData.tags),
+      tagsLength: articleData.tags ? articleData.tags.length : 0,
+      tagsContent: articleData.tags ? JSON.stringify(articleData.tags) : 'null',
+      postsDir: this.posts.postDir,
+      appDir: this.posts.appDir,
     })
 
     try {

@@ -57,7 +57,7 @@ export default class Posts extends Model {
       // If there is a `tag` and it is of string type, it is corrected to array type.
       if (data && typeof data.tags === 'string') {
         const tagReg = /tags: [^\s[]/i
-        const newTagString = data.tags.split(' ').toString()
+        const newTagString = data.tags.split(' ').map(tag => `'${tag}'`).join(', ')
 
         if (tagReg.test(result)) {
           const mdStr = `---
@@ -135,7 +135,25 @@ ${postMatter.content}`
 
     list.sort((a: any, b: any) => moment(b.data.date).unix() - moment(a.data.date).unix())
 
-    this.$posts.set('posts', list).write()
+    // Enhanced tag logging for database update
+    console.log('🏷️ [TAGS_DEBUG] Database update - savePosts completed:', {
+      totalPosts: list.length,
+      postsWithTags: list.filter(item => item.data.tags && item.data.tags.length > 0).length,
+      sampleTags: list.slice(0, 3).map(item => ({
+        title: item.data.title,
+        tags: item.data.tags,
+        hasTags: item.data.tags && item.data.tags.length > 0,
+      })),
+      postsDir: this.postDir,
+    })
+
+    const writeResult = this.$posts.set('posts', list).write()
+    console.log('🏷️ [TAGS_DEBUG] Database write completed:', {
+      writeResult: writeResult,
+      databasePath: `${this.appDir}/config/posts.json`,
+      updatedPostsCount: list.length,
+    })
+
     return true
   }
 
@@ -282,16 +300,36 @@ ${postMatter.content}`
 
     post.title = formatYamlString(post.title)
 
-    const mdStr = `---
+    let frontMatter = `---
 title: '${post.title}'
 date: ${post.date}
-tags: [${post.tags.join(',')}]
+tags: [${post.tags.map(tag => `'${tag}'`).join(', ')}]
 published: ${post.published}
-hideInList: ${post.hideInList}
-feature: ${post.featureImage.name ? `/post-images/${post.fileName}.${extendName}` : post.featureImagePath}
-isTop: ${post.isTop}
+hideInList: ${post.hideInList}`
+
+    // Only add feature line if there is a valid feature image
+    if (post.featureImage.name) {
+      frontMatter += `\nfeature: /post-images/${post.fileName}.${extendName}`
+    } else if (post.featureImagePath && post.featureImagePath.trim() !== '') {
+      frontMatter += `\nfeature: ${post.featureImagePath}`
+    }
+
+    frontMatter += `\nisTop: ${post.isTop}
 ---
 ${content}`
+
+    const mdStr = frontMatter
+
+    // Enhanced tag logging for markdown generation
+    console.log('🏷️ [TAGS_DEBUG] Markdown frontmatter generation:', {
+      fileName: post.fileName,
+      title: post.title,
+      inputTags: post.tags,
+      inputTagsType: typeof post.tags,
+      inputTagsIsArray: Array.isArray(post.tags),
+      frontMatterPreview: frontMatter.split('\n').slice(0, 6).join('\n'),
+      hasTagsInFrontmatter: frontMatter.includes('tags: ['),
+    })
 
     console.log(`📄 [FILE_SAVE] Markdown content prepared, length: ${mdStr.length}`)
 
